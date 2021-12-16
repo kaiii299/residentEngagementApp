@@ -1,0 +1,18 @@
+<mat-select class="option" >
+<mat-option >None</mat-option>
+<div class="own-form">
+  <input type="tel" placeholder="Country Code" maxlength="15" [(ngModel)]="number"  required  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+  <mat-option *ngFor="let state of states" [value]="state">+{{state}}</mat-option>
+</div>
+
+</mat-select>
+
+<div class="form">
+  <input type="tel" placeholder="Phone numebr" maxlength="12" class="password" required  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+</div>
+
+<div class="form2">
+  <input type="text" placeholder="OTP" maxlength="6" class="password" required  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" />
+</div>
+
+<p class="verify">verify</p>

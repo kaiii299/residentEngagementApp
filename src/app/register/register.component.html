@@ -1,0 +1,87 @@
+<body>
+  <div class="container">
+
+    <img src="/assets/images/people/Create Account.png" alt="" class="img-web">
+
+    <div class="welcome-container">
+      <h1 class="welcome">Create Account</h1>
+      <h6 class="login-text">Admin only</h6>
+    </div>
+
+    <div class="login">
+      <div class="form">
+        <mat-vertical-stepper [linear]="true" #stepper>
+          <!-- first block -->
+          <mat-step [stepControl]="firstFormGroup" label="Username and Password" errorMessage="Name is required.">
+            <form [formGroup]="firstFormGroup">
+              <input matInput placeholder="Email" [(ngModel)]="email" type="text" formControlName="emailCtrl" required>
+
+              <input matInput placeholder="Username" [(ngModel)]="userName" type="text" formControlName="usernameCtrl"
+                required>
+
+              <input matInput placeholder="First name" [(ngModel)]="firstName" type="text"
+                formControlName="firstNameCtrl" required>
+
+              <mat-select class="select" placeholder="Gender" [(ngModel)]="gender"
+                [ngModelOptions]="{standalone: true}">
+                <mat-option value="M">M</mat-option>
+                <mat-option value="F">F</mat-option>
+              </mat-select>
+
+              <input matInput placeholder="Password" [(ngModel)]="password" [type]="hide ? 'password' : 'text'"
+                formControlName="passwordCtrl" required>
+
+              <input matInput placeholder="Repeat Password" [(ngModel)]="repeatPassword"
+                [type]="hide ? 'password' : 'text'" type="password" formControlName="repeatPasswordCtrl" required>
+
+              <button class="show" disableRipple="true" mat-icon-button matSuffix type="button" (click)="hide = !hide"
+                [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                {{hide ? 'Show Password' : 'Hide Password'}}
+              </button>
+              <p class="message">{{message}}</p>
+              <div class="next">
+                <button mat-button type="button" (click)=" getErrorMessage()" [disabled]="!this.firstFormGroup.valid">Next</button>
+              </div>
+            </form>
+
+            <!-- second block -->
+          </mat-step>
+
+          <mat-step label="User Type" errorMessage="User type is required">
+            <mat-select class="select" placeholder="UserType" [(ngModel)]="userTypeValue" [ngModelOptions]="{standalone: true}">
+              <mat-option *ngFor="let userType of userTypes" [value]="userType">{{userType}}</mat-option>
+            </mat-select>
+
+            <div>
+              <button mat-button matStepperPrevious type="button">back</button>
+              <button mat-button matStepperNext type="button" class="next" (click)=" getErrorMessage()">Next</button>
+            </div>
+          </mat-step>
+
+          <!-- Third block -->
+          <mat-step label="Committee and block number" errorMessage="Committe and block is required">
+          <form [formGroup]="ThirdFormGroup">
+            <mat-select class="select" placeholder="committee" [(ngModel)]="committeesValue" [ngModelOptions]="{standalone: true}">
+              <mat-option *ngFor="let committee of committees" [value]="committee" >{{committee}}</mat-option>
+            </mat-select>
+
+              <input matInput placeholder="Block"  formControlName="blockCtrl" required
+                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+
+            </form>
+            <p class="message">{{message}}</p>
+            <div>
+              <button mat-button matStepperPrevious type="button">back</button>
+              <button mat-button type="button" class="next" (click)="register()" [disabled]="!this.ThirdFormGroup.valid">Register</button>
+            </div>
+          </mat-step>
+
+        </mat-vertical-stepper>
+
+        <button mat-button class="cancel-button" routerLink="/">Cancel</button>
+      </div>
+
+    </div>
+  </div>
+
+</body>

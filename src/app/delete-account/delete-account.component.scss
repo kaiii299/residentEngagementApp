@@ -1,0 +1,272 @@
+
+
+.eye{
+  position: absolute;
+  margin: 5px 0 0 0;
+  left: 75%;
+}
+
+body{
+  background-position: center;
+  background-color: #F2D9C5;
+  //background-color: #e9004e;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+
+.img-web{
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  transform: translate(-50%,-50%);
+  height: 100vh;
+  width: 75vw;
+}
+
+.img-phone{
+  display: none;
+}
+
+.welcome-container{
+  position: relative;
+  top:  -100px;
+  right: 1890px;
+  transform: translate(100%, -50%);
+  z-index: 100;
+}
+
+.welcome{
+  position: absolute;
+  color: rgb(255, 255, 255);
+  font-size: 110px;
+  text-align: flex-start;
+  height: 100px;
+  width: 70vw;
+  padding: 0px 0px 0px 0px;
+  //border: 5px solid red;
+}
+
+.login-text{
+  position: absolute;
+  color: rgb(248, 248, 248);
+  font-size: 30px;
+  width: 50vw;
+  padding: 80px 0px 0px 15px;
+}
+
+.login {
+  position: absolute;
+  top: 55%;
+  left: 60%;
+  transform: translate(50%, -50%);
+}
+
+.forget{
+  position: relative;
+  color: black;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 16px;
+  text-decoration: underline;
+  //border: 2px solid red;
+  margin-right: 210px;
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+.form  {   //card
+  //position: absolute;
+  z-index: 1;
+  background: #ffb477;
+  border-radius: 10px;
+  max-width: 380px;
+  margin: 0 auto 100px;
+  padding: 45px;
+  height: 450px;
+  text-align: center;
+  box-shadow: 0 9px 18px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+  top: 500px;
+}
+
+.form input {
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  border-radius: 5px;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+  //font-family: 'Comfortaa', cursive;
+}
+
+.form input:focus {
+  background: #dbdbdb;
+}
+
+.form .delete-btn { //login button
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 20px 134px 0 0px;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4b6cb7;
+  width: auto;
+  border: 0;
+  border-radius: 5px;
+  padding: 5px 15px 5px 15px ;
+  color: #FFFFFF;
+  font-size: 20px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+
+.form .delete-btn:active {
+  background: #395591;
+}
+
+.input-container{
+  position: relative;
+}
+
+.warning-container{
+  position: relative;
+  background-color: #FF9900;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  text-align: left;
+  padding: 5px 0px 0px 20px;
+}
+
+.form .warning-logo{
+  position: relative;
+  font-size: 25px;
+  display: flex;
+  left: -1%;
+  bottom: -100%;
+}
+
+.form .warning-header{
+position: absolute;
+top: 3%;
+left: 17%;
+font-size: 20px;
+}
+
+.warning{
+  font-size: 15px;
+  overflow: hidden;
+  width: 90%;
+}
+
+.form span {
+  position: absolute;
+  font-size: 40px;
+  top: 9%;
+  left: 80%;
+  transform: translate(-50,-50);
+  color: #e55b13;
+}
+
+
+
+.message{
+  color: rgb(255, 0, 0);
+  font-size: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.email::after{
+  content: "*";
+  font-size: 100px;
+  color: black;
+}
+
+@media(max-width: 1000px){
+  body{
+    position: absolute;
+    background-color: #EB9C5C;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+
+
+  .login {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 14%);
+    overflow: hidden;
+  }
+
+  .form {
+    height: 83vh;
+    overflow: hidden;
+  }
+
+  .welcome-container{
+    position: absolute;
+    top: 17%;
+    left: 6%;
+    transform: translate(100%, -50%);
+    z-index: 100;
+  }
+
+  .welcome{
+    position: absolute;
+    color: rgb(255, 255, 255);
+    font-size: 13vw;
+    text-align: flex-start;
+    height: 100px;
+    width: 90vw;
+    padding: 0px 0px 0px 0px;
+    //border: 5px solid red;
+  }
+
+  .login-text{
+    position: absolute;
+    color: rgb(248, 248, 248);
+    font-size: 6vw;
+    width: 90vw;
+    padding: 50px 0px 0px 6px;
+  }
+
+  .login-form{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+
+  span{
+    display: none;
+  }
+
+
+
+  .img-web{
+    display: none;
+  }
+
+
+  .img-phone{
+  display: flex;
+  position: absolute;
+  top: 26%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  height: 105vh;
+  width: 80vw;
+  z-index: -999;
+  }
+
+
+
+}

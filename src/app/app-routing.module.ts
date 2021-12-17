@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AddResidentComponent } from './add-resident/add-resident.component';
 import { AllUsersComponent } from './all-users/all-users.component';
 import { DeleteAccountComponent } from './delete-account/delete-account.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
@@ -13,6 +14,7 @@ const routes: Routes = [
 {path:"forgetpassword", component: ForgetPasswordComponent},
 {path:"deleteaccount", component: DeleteAccountComponent},
 {path:"allusers", component: AllUsersComponent},
+{path:"addresident", component: AddResidentComponent},
 {path:"**", component: PageNotFoundComponent ,  pathMatch: "full"}
 ];
 

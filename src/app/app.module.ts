@@ -26,6 +26,8 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatTableModule} from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { AddResidentComponent } from './add-resident/add-resident.component';
+
 
 @NgModule({
   declarations: [
@@ -37,6 +39,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
     ForgetPasswordComponent,
     DeleteAccountComponent,
     AllUsersComponent,
+    AddResidentComponent
   ],
   imports: [
     BrowserModule,

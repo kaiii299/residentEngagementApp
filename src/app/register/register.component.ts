@@ -83,7 +83,6 @@ export class RegisterComponent implements OnInit {
     });
   }
 
-
   getErrorMessage() {
     if (this.email == "") {
       this.message = "Email cannot be empty"

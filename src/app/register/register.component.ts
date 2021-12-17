@@ -31,6 +31,8 @@ export class RegisterComponent implements OnInit {
   blockNumber = "";
   userTypeValue ="";
   committeesValue = "";
+  dateTime =""
+  status ="" //active / sudpended
 
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
@@ -80,6 +82,7 @@ export class RegisterComponent implements OnInit {
       blockCtrl: ['', Validators.required],
     });
   }
+
 
   getErrorMessage() {
     if (this.email == "") {

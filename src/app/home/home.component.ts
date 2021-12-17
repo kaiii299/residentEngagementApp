@@ -17,11 +17,11 @@ hide = true
 
   errorMessage(){
     if(this.email == ""){
-      this.message ="Email cannot be Empty"
+      this.message ="Please provide email"
     }
 
     else if(this.password == ""){
-      this.message ="Password cannot be Empty"
+      this.message ="Please provide Password"
     }
 
     else{

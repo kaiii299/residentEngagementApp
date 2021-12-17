@@ -1,0 +1,107 @@
+body{
+  background-color: #EB9C5C;
+  height: 100vh;
+  overflow: auto;
+}
+
+.container{
+  position: relative;
+  top: 120px;
+}
+
+.search{
+  margin: 0px 0 0 0;
+}
+
+.filiterContainer{
+  margin: 10px 0px 0px 0px ;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.select ,.select::placeholder{
+  color: black;
+}
+
+.buttonContainer{
+  display: flex;
+}
+
+.filiter-btn, .excel-btn{
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  margin: 20px 15px 0 0px;
+  text-transform: uppercase;
+  outline: 0;
+  background: #4b6cb7;
+  width: auto;
+  border: 0;
+  border-radius: 5px;
+  padding: 5px 15px 5px 15px ;
+  color: #FFFFFF;
+  font-size: 15px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+
+.excel-btn{
+  background-color: #EB9C5C;
+}
+
+table {
+  background-color: #f2d9c5;
+  margin: 5px 0px 0px 0px;
+  width: 100%;
+}
+
+mat-paginator  {
+  position: relative;
+  background-color: #f2d9c5;
+  width: 100%;
+}
+
+mat-accordion{
+  position: relative;
+  width: 100%;
+}
+
+.mat-form-field {
+  margin: 0px 0px 10px 0px;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  border-radius: 5px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+  &:hover{
+    box-shadow: 0 9px 18px rgba(0,0,0,0.10), 0 5px 12px rgba(0,0,0,0.22);
+  }
+}
+
+mat-label{
+  font-size: 15px;
+  color: black;
+}
+
+td, th {
+  width: 0%;
+}
+
+input::placeholder{
+  color: rgb(119, 119, 119);
+}
+
+
+@media(max-width: 1000px){
+  table {
+    display: block;
+    background-color: #f2d9c5;
+    margin: 5px 0px 0px 0px;
+    overflow: auto;
+  }
+}

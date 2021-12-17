@@ -10,7 +10,6 @@ import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import {MatSelectModule} from '@angular/material/select';
 import { MatOptionModule} from '@angular/material/core';
-import { OTPComponent } from './otp/otp.component';
 import { FormsModule  , ReactiveFormsModule  } from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatStepperModule} from '@angular/material/stepper';
@@ -21,6 +20,12 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { DeleteAccountComponent } from './delete-account/delete-account.component';
 import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import { AllUsersComponent } from './all-users/all-users.component';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatTableModule} from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import {MatExpansionModule} from '@angular/material/expansion';
 
 @NgModule({
   declarations: [
@@ -30,8 +35,8 @@ import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
     PageNotFoundComponent,
     NavBarComponent,
     ForgetPasswordComponent,
-    OTPComponent,
     DeleteAccountComponent,
+    AllUsersComponent,
   ],
   imports: [
     BrowserModule,
@@ -50,7 +55,11 @@ import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
     MatIconModule,
     MatSidenavModule,
     MatDialogModule,
-
+    MatDividerModule,
+    MatPaginatorModule,
+    MatTableModule,
+    MatSortModule,
+    MatExpansionModule,
 
   ],
   entryComponents :[DeleteAccountComponent],

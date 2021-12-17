@@ -7,10 +7,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ForgetPasswordComponent implements OnInit {
 message="email sent check your email"
-email=''
+email=""
+phoneNumber =""
+otp =''
+verify = false
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  checkEmpty(){
+    if(this.email ==""){
+      this.message == "Please provide email"
+    }
+    if(this.phoneNumber ==""){
+      this.message=="Please provide phone number"
+    }
+    if(this.otp ==""){
+      this.message =="Please provide OTP"
+    }
   }
 
 

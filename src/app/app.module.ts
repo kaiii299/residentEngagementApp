@@ -21,6 +21,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { DeleteAccountComponent } from './delete-account/delete-account.component';
 import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import { AddResidentComponent } from './add-resident/add-resident.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
     ForgetPasswordComponent,
     OTPComponent,
     DeleteAccountComponent,
+    AddResidentComponent,
   ],
   imports: [
     BrowserModule,

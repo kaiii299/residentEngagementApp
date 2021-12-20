@@ -47,8 +47,9 @@
             <!-- second block -->
           </mat-step>
 
-          <mat-step label="User Type" errorMessage="User type is required">
-            <mat-select class="select" placeholder="UserType" [(ngModel)]="userTypeValue" [ngModelOptions]="{standalone: true}">
+          <mat-step label="Role" errorMessage="User type is required" [stepControl]="secondFormGroup">
+            <form [formGroup]="secondFormGroup">
+            <mat-select class="select" placeholder="Role"  [(ngModel)]="userTypeValue" formControlName="roleCtrl">
               <mat-option *ngFor="let userType of userTypes" [value]="userType">{{userType}}</mat-option>
             </mat-select>
 
@@ -56,6 +57,7 @@
               <button mat-button matStepperPrevious type="button">back</button>
               <button mat-button matStepperNext type="button" class="next" (click)=" getErrorMessage()">Next</button>
             </div>
+          </form>
           </mat-step>
 
           <!-- Third block -->

@@ -96,6 +96,10 @@ input::placeholder{
   color: rgb(119, 119, 119);
 }
 
+.mat-row:hover .mat-cell {
+  background-color: #ff8800;
+  color: white;
+}
 
 @media(max-width: 1000px){
   table {

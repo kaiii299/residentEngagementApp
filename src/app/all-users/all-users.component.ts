@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, ViewChild} from '@angular/core';
+import {animate, state, style, transition, trigger} from '@angular/animations';
 import {MatPaginator} from '@angular/material/paginator';
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
@@ -8,6 +9,7 @@ export interface PeriodicElement {
   position: number;
   weight: number;
   symbol: string;
+  //registeredDate: string;
 }
 
 const ELEMENT_DATA: PeriodicElement[] = [
@@ -26,13 +28,21 @@ const ELEMENT_DATA: PeriodicElement[] = [
 @Component({
   selector: 'app-all-users',
   templateUrl: './all-users.component.html',
-  styleUrls: ['./all-users.component.scss']
+  styleUrls: ['./all-users.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({height: '0px', minHeight: '0'})),
+      state('expanded', style({height: '*'})),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class AllUsersComponent implements AfterViewInit {
 panelOpenState = false;
 search=""
 committeesValue =""
 userTypeValue =""
+statusValue=""
 
 userTypes: string[] = [
   "Admin",
@@ -60,6 +70,11 @@ committees: string[] = [
   "Lakeside Grove NC",
 ]
 
+statuss: string[] = [
+  "Active",
+  "Inactive"
+]
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -83,15 +98,11 @@ committees: string[] = [
       cell: (element: PeriodicElement) => `${element.name}`,
     },
     {
-      columnDef: 'UserType',
-      header: 'User Type',
+      columnDef: 'Role',
+      header: 'Role',
       cell: (element: PeriodicElement) => `${element.symbol}`,
     },
-        {
-      columnDef: 'Status',
-      header: 'Status',
-      cell: (element: PeriodicElement) => `${element.name}`,
-    },
+
     {
       columnDef: 'Gender',
       header: 'Gender',
@@ -106,6 +117,11 @@ committees: string[] = [
       columnDef: 'Email',
       header: 'Email',
       cell: (element: PeriodicElement) => `${element.symbol}`,
+    },
+        {
+      columnDef: 'Status',
+      header: 'Status',
+      cell: (element: PeriodicElement) => `${element.name}`,
     },
   ];
 

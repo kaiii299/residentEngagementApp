@@ -76,7 +76,7 @@ export class RegisterComponent implements OnInit {
       repeatPasswordCtrl: ['', Validators.required,],
     });
     this.secondFormGroup = this._formBuilder.group({
-      secondCtrl: ['', Validators.required],
+      roleCtrl: ['', Validators.required],
     });
     this.ThirdFormGroup = this._formBuilder.group({
       blockCtrl: ['', Validators.required],
@@ -100,14 +100,12 @@ export class RegisterComponent implements OnInit {
       this.message = "Password does not match"
     }
     else {
+      this.message =""
       this.myStepper.next();
     }
   }
 
   register(){
-    if (this.blockNumber == "") {
-      this.message = "Block number cannot be empty"
-    }
     if(this.firstFormGroup.invalid, this.secondFormGroup.invalid, this.ThirdFormGroup.invalid){
       this.message = "There are still missing form fields"
     }

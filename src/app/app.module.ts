@@ -27,7 +27,7 @@ import {MatTableModule} from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { AddResidentComponent } from './add-resident/add-resident.component';
-import { UserProfileComponent } from './user-profile/user-profile.component';
+import { EventsPageComponent } from './events-page/events-page.component';
 
 
 @NgModule({
@@ -41,7 +41,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     DeleteAccountComponent,
     AllUsersComponent,
     AddResidentComponent,
-    UserProfileComponent
+    EventsPageComponent,
   ],
   imports: [
     BrowserModule,

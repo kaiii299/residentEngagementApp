@@ -28,7 +28,7 @@ body{
   display: flex;
 }
 
-.filiter-btn, .excel-btn{
+.filiter-btn, .excel-btn {
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -49,6 +49,10 @@ body{
 
 .excel-btn{
   background-color: #EB9C5C;
+}
+
+.edit-btn{
+  margin: 0px 0px 0px 0xp;
 }
 
 table {
@@ -99,6 +103,41 @@ input::placeholder{
 .mat-row:hover .mat-cell {
   background-color: #ff8800;
   color: white;
+  cursor: pointer;
+}
+
+//Expended collumn
+
+
+tr.example-detail-row {
+  height: 0;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.expended-cell:hover{
+  background-color: tra;
+}
+
+.example-element-symbol {
+  font-weight: bold;
+  font-size: 40px;
+  line-height: normal;
+}
+
+.example-element-description {
+  padding: 16px;
+}
+
+.example-element-description-attribution {
+  opacity: 0.5;
 }
 
 @media(max-width: 1000px){

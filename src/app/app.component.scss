@@ -1,12 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap");
 
-
-
-:root {
-    $Cancel-button: #F26C00;
+* {
+  font-family: "Lato", sans-serif;
 }
 
-*{
-  font-family: 'Lato', sans-serif;
+.example-container {
+  width: 100vw;
+  height: 100vh;
+  border: none;
 }
 
+.drawer {
+  background-color: #171d2f;
+  width: 180px;
+  overflow: hidden;
+  font-weight: bold;
+  color: white;
+  border: none;
+}
+
+ul {
+  list-style: none;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  margin: 70px 0px 0px -15px;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+li {
+  padding: 50px 0px 0px 0px;
+  &:hover{
+    text-decoration: underline;
+    border: none;
+    margin: 1px;
+    text-decoration-thickness: 3px;
+  }
+}
+
+.active{
+  text-decoration: underline;
+  text-decoration-thickness: 5px;
+}
+
+.logout-btn{
+  position: absolute;
+  bottom: 0%;
+  height: auto;
+  width: 179px;
+  background-color: #0497aa; /* Green */
+  border: none;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+
+@media (max-width: 1000px) {
+  .drawer {
+    display: none;
+  }
+}

@@ -32,7 +32,7 @@ export class RegisterComponent implements OnInit {
   userTypeValue ="";
   committeesValue = "";
   dateTime =""
-  status ="" //active / sudpended
+  status ="" 
 
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;

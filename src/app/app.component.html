@@ -1,2 +1,21 @@
+<!--
+<app-nav-bar></app-nav-bar>
+<mat-drawer-container class="example-container">
+  <mat-drawer mode="side" opened class="drawer">
+    <div class="main-container">
+      <ul class="content-container">
+        <li routerLink="/" class="home" [routerLinkActive]="['active']">Home</li>
+        <li routerLink="register" class="create-account" [routerLinkActive]="['active']">Create Account</li>
+        <li routerLink="allusers" class="all-users" [routerLinkActive]="['active']">All users</li>
+        <li routerLink="myprofile" class="my-profile" [routerLinkActive]="['active']">My profile</li>
+      </ul>
+      <button class="logout-btn">
+        logout
+      </button>
+    </div>
+    </mat-drawer>
+  <mat-drawer-content><router-outlet></router-outlet></mat-drawer-content>
+</mat-drawer-container> -->
+
 <app-nav-bar></app-nav-bar>
 <router-outlet></router-outlet>

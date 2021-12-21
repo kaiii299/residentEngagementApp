@@ -14,6 +14,7 @@
           <!-- first block -->
           <mat-step [stepControl]="firstFormGroup" label="Username and Password" errorMessage="Name is required.">
             <form [formGroup]="firstFormGroup">
+              <mat-label>Email</mat-label>
               <input matInput placeholder="Email" [(ngModel)]="email" type="text" formControlName="emailCtrl" required>
 
               <input matInput placeholder="Username" [(ngModel)]="userName" type="text" formControlName="usernameCtrl"
@@ -39,9 +40,7 @@
                 {{hide ? 'Show Password' : 'Hide Password'}}
               </button>
               <p class="message">{{message}}</p>
-              <div class="next">
-                <button mat-button type="button" (click)=" getErrorMessage()" [disabled]="!this.firstFormGroup.valid">Next</button>
-              </div>
+                <button class="next-btn" mat-button type="button" (click)=" getErrorMessage()" [disabled]="!this.firstFormGroup.valid">Next</button>
             </form>
 
             <!-- second block -->

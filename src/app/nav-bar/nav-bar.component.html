@@ -13,8 +13,7 @@
           <a class="user-type">Admin</a>
           <a href="register">Create Account</a>
           <a href="allusers">All users</a>
-          <a href="#">My profile</a>
-          <!-- <a class="logout">Logout</a> -->
+          <a routerLink="myprofile">My profile</a>
         </div>
       </div>
     </li>
@@ -30,10 +29,22 @@
     <div id="sidebarMenu">
       <div class="main-content-wrapper">
         <div class="container"></div>
-        <a>Home</a>
+        <a href="/">Home</a>
         <a>Events</a>
         <a>Dashboard</a>
-        <a>Login</a>
+        <a>
+          <div class="dropdown">
+            <button class="dropdownbtn">
+              <p class="name">name</p>
+            </button>
+            <div class="dropdown-content">
+              <a class="user-type">Admin</a>
+              <a href="register">Create Account</a>
+              <a href="allusers">All users</a>
+              <a href="myprofile">My profile</a>
+            </div>
+          </div>
+        </a>
       </div>
     </div>
   </div>

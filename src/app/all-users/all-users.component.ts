@@ -125,7 +125,7 @@ export class AllUsersComponent implements AfterViewInit {
   committeesValue = ""
   userTypeValue = ""
   statusValue = ""
-
+  activate = "Active"
 
   userTypes: string[] = [
     "Admin",
@@ -180,6 +180,15 @@ export class AllUsersComponent implements AfterViewInit {
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
+    }
+  }
+
+  active(){
+    if(this.activate == "Active"){
+      this.activate ="Inactive"
+    }
+    else if(this.activate == "Inactive"){
+      this.activate = "Active"
     }
   }
 }

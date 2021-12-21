@@ -3,13 +3,12 @@
 
     <img src="/assets/images/people/login-web.png" alt="" class="img-web">
 
-    <div class="welcome-container">
-      <h1 class="welcome">Welcome back!</h1>
-      <h6 class="login-text">Login to continue</h6>
-    </div>
-
     <div class="login">
       <div class="form">
+        <div class="welcome-container">
+          <h1 class="welcome">Welcome back!</h1>
+          <h6 class="login-text">Login to continue</h6>
+        </div>
         <form class="login-form">
           <span class="material-icons">lock</span>
           <input type="text" placeholder="email*" class="email" required [(ngModel)]="email" [ngModelOptions]="{standalone: true}"

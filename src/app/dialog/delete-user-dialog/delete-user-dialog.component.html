@@ -1,0 +1,13 @@
+<div mat-dialog-content>
+  <p><strong>ARE YOU SURE?</strong></p>
+  <p>Type <strong>DELETE</strong> to delete account</p>
+  <mat-form-field appearance="fill">
+    <mat-label>DELETE</mat-label>
+    <input title="delete" matInput [(ngModel)]="deleteConfirmation" maxlength="6">
+  </mat-form-field>
+  <p class="message">{{message}}</p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">cancle</button>
+  <button mat-button cdkFocusInitial class="dlt-btn" [disabled]="deleteConfirmation ==''" (click)="confirmDelete()">DELETE</button>
+</div>

@@ -1,7 +1,18 @@
-.next:hover{
+mat-label{
+  display: flex;
+  color: white;
+}
+
+.next-btn{
   color: white;
   background-color: #3D53AD;
   border-radius: 5px;
+  width: 100%;
+}
+
+.next-btn[disabled]{
+  color: rgb(119, 119, 119);
+  background-color: rgba(114, 114, 114, 0.493);
 }
 
 
@@ -50,7 +61,7 @@ body{
 .welcome{
   position: absolute;
   color: rgb(255, 255, 255);
-  font-size: 110px;
+  font-size: 6em;
   text-align: flex-flex-start;
   height: 100px;
   width: 70vw;
@@ -83,14 +94,15 @@ body{
 }
 
 .form  {   //card
-  //position: absolute;
+  position: relative;
   z-index: 1;
+  left: 0vw;
   background: #F2D9C5;
   border-radius: 10px;
   max-width: 380px;
-  margin: 0 auto 100px;
+  margin: 50 auto 100px;
   padding: 45px;
-  height: 600px;
+  height: 80vh;
   text-align: center;
   box-shadow: 0 9px 18px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
   overflow-x: hidden;

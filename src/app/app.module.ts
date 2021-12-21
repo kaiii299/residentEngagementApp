@@ -10,7 +10,7 @@ import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import {MatSelectModule} from '@angular/material/select';
 import { MatOptionModule} from '@angular/material/core';
-import { FormsModule  , ReactiveFormsModule  } from '@angular/forms';
+import { FormsModule  , ReactiveFormsModule , } from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -18,7 +18,6 @@ import {MatInputModule} from '@angular/material/input';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSidenavModule} from '@angular/material/sidenav';
-import { DeleteAccountComponent } from './delete-account/delete-account.component';
 import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import { AllUsersComponent } from './all-users/all-users.component';
 import {MatDividerModule} from '@angular/material/divider';
@@ -28,6 +27,9 @@ import { MatSortModule } from '@angular/material/sort';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { AddResidentComponent } from './add-resident/add-resident.component';
 import { EventsPageComponent } from './events-page/events-page.component';
+import { DeleteUserDialogComponent } from './dialog/delete-user-dialog/delete-user-dialog.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { PasswordVarificationDialogComponent } from './dialog/password-varification-dialog/password-varification-dialog.component';
 
 
 @NgModule({
@@ -38,10 +40,13 @@ import { EventsPageComponent } from './events-page/events-page.component';
     PageNotFoundComponent,
     NavBarComponent,
     ForgetPasswordComponent,
-    DeleteAccountComponent,
     AllUsersComponent,
     AddResidentComponent,
     EventsPageComponent,
+    DeleteUserDialogComponent,
+    UserProfileComponent,
+    PasswordVarificationDialogComponent
+,
   ],
   imports: [
     BrowserModule,
@@ -67,7 +72,7 @@ import { EventsPageComponent } from './events-page/events-page.component';
     MatExpansionModule,
 
   ],
-  entryComponents :[DeleteAccountComponent],
+  entryComponents :[DeleteUserDialogComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

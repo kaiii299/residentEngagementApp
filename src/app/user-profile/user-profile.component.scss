@@ -1,0 +1,276 @@
+.button2{
+display: flex;
+}
+
+.show{
+  display: flex;
+  background-color: #3D53AD;
+  color: white;
+  margin: 10px 10px 10px 0px;
+  &:hover{
+    background-color: none;
+    text-decoration: underline;
+  }
+}
+
+mat-label{
+  display: flex;
+  color: black
+}
+
+.eye{
+  position: absolute;
+  margin: 5px 0 0 0;
+  left: 75%;
+}
+
+body{
+  background-position: center;
+  //background-color: #329bf1;
+  background-color: #eb9c5c;
+  background-repeat: no-repeat;
+  height: 100vh;
+}
+
+.img-web{
+  position: absolute;
+  right: 360px;
+  height: 100vh;
+}
+
+.img-phone{
+  display: none;
+}
+
+.welcome-container{
+  position: absolute;
+  z-index: 1;
+  height: 50vh;
+  width: 50vw;
+  display: block;
+  left: 0%;
+  top: 45%;
+  transform: translate(10%,-60%);
+}
+
+.welcome{
+  position: relative;
+  color: rgb(255, 255, 255);
+  font-size:clamp(7rem,5vw,5rem);
+  height: 70px;
+  padding: 0px 0px 0px 0px;
+  display: flex;
+  //border: 5px solid red;
+}
+
+.login-text{
+  position: relative;
+  color: rgb(248, 248, 248);
+  font-size: 30px;
+  display: flex;
+  // width: 50vw;
+  left: -10px;
+  // bottom: -5px;
+  padding: 0px 0px 0px 15px;
+}
+
+.login {
+  position: absolute;
+  top: 55%;
+  left: 60%;
+  transform: translate(50%, -50%);
+}
+
+.forget{
+  position: relative;
+  color: black;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 16px;
+  text-decoration: underline;
+  //border: 2px solid red;
+  margin-right: 210px;
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+.form  {   //card
+  position: relative;
+  z-index: 1;
+  left: 0vw;
+  background: #f2d9c5;
+  border-radius: 10px;
+  max-width: 380px;
+  margin: 10 auto 100px;
+  padding: 45px;
+  height: 70vh;
+  text-align: center;
+  box-shadow: 0 9px 18px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+  overflow-x: hidden;
+}
+
+.form input, .selection-input, .selection-input::placeholder {
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  border-radius: 5px;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+  //font-family: 'Comfortaa', cursive;
+}
+
+.form input:focus {
+  background: #dbdbdb;
+}
+
+.form .delete-btn { //login button
+  position: relative;
+  top: 10px;
+  text-transform: uppercase;
+  outline: none;
+  background: #fd7200;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  margin: 0px 0px 0px 0px;
+  padding: 5px 15px 5px 15px ;
+  color: #FFFFFF;
+  font-size: 20px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+
+.form .edit-btn { //login button
+  position: relative;
+  display: block;
+  bottom: 10px;
+  margin: 0px 134px 10px 0px;
+  text-transform: uppercase;
+  outline: none;
+  background: #3D53AD;
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  margin: 0px 0px 0px 0px;
+  padding: 5px 15px 5px 15px ;
+  color: #FFFFFF;
+  font-size: 20px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+}
+
+.form .delete-btn:active {
+  background: #fd8727;
+}
+
+.form span {
+  font-size: 75px;
+  color: #008094;
+}
+
+.message{
+  color: rgb(255, 0, 0);
+  font-size: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.email::after{
+  content: "*";
+  font-size: 100px;
+  color: black;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 5px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgb(187, 187, 187);
+  border-radius: 5px;
+}
+
+@media(max-width: 1000px){
+  body{
+    position: absolute;
+    background-color: #EB9C5C;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+
+
+  .login {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, 14%);
+    overflow: hidden;
+  }
+
+  .form {
+    position: relative;
+    left: 0vw;
+    height: 83vh;
+    overflow: auto;
+  }
+
+  .welcome-container{
+    position: absolute;
+    z-index: 100;
+    height: 50vh;
+    width: 50vw;
+    display: block;
+    right: 160%;
+    top: 46.5%;
+    transform: translate(-0%,-50%);
+  }
+
+  .welcome{
+    position: relative;
+    color: rgb(255, 255, 255);
+    font-size: 2rem;
+  }
+
+  // .login-text{
+  //   position: relative;
+  //   color: rgb(248, 248, 248);
+  //   font-size: 6vw;
+  //   width: 90vw;
+  //   padding: 50px 0px 0px 6px;
+  // }
+
+  .login-form{
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+  }
+
+  span{
+    display: none;
+  }
+
+  .img-web{
+    display: none;
+  }
+
+
+
+
+
+}

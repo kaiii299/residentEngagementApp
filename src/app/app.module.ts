@@ -18,7 +18,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
 import {MatSidenavModule} from '@angular/material/sidenav';
-import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {MatDialogModule,} from '@angular/material/dialog';
 import { AllUsersComponent } from './all-users/all-users.component';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatPaginatorModule} from '@angular/material/paginator';
@@ -27,10 +27,14 @@ import { MatSortModule } from '@angular/material/sort';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { AddResidentComponent } from './add-resident/add-resident.component';
 import { EventsPageComponent } from './events-page/events-page.component';
-import { DeleteUserDialogComponent } from './dialog/delete-user-dialog/delete-user-dialog.component';
-import { UserProfileComponent } from './user-profile/user-profile.component';
-import { PasswordVarificationDialogComponent } from './dialog/password-varification-dialog/password-varification-dialog.component';
-
+import { DeleteUserConfirmationDialog, passwordVarificationDialog, UserProfileComponent } from './user-profile/user-profile.component';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatTooltipModule} from '@angular/material/tooltip';
+//firebase
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import {AngularFireDatabaseModule} from '@angular/fire/database'
+import { AngularFireModule } from '@angular/fire';
+import { environment } from 'src/environments/environment';
 
 @NgModule({
   declarations: [
@@ -43,9 +47,9 @@ import { PasswordVarificationDialogComponent } from './dialog/password-varificat
     AllUsersComponent,
     AddResidentComponent,
     EventsPageComponent,
-    DeleteUserDialogComponent,
     UserProfileComponent,
-    PasswordVarificationDialogComponent
+    passwordVarificationDialog,
+    DeleteUserConfirmationDialog
 ,
   ],
   imports: [
@@ -70,9 +74,12 @@ import { PasswordVarificationDialogComponent } from './dialog/password-varificat
     MatTableModule,
     MatSortModule,
     MatExpansionModule,
-
+    MatProgressBarModule,
+    MatTooltipModule,
+    AngularFirestoreModule,
+    AngularFireDatabaseModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
   ],
-  entryComponents :[DeleteUserDialogComponent],
   providers: [],
   bootstrap: [AppComponent]
 })

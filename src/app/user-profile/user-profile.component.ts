@@ -1,8 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DeleteUserDialogComponent } from '../dialog/delete-user-dialog/delete-user-dialog.component';
-import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { PasswordVarificationDialogComponent } from '../dialog/password-varification-dialog/password-varification-dialog.component';
+export interface DialogData {
+  password: string;
+}
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
@@ -10,7 +10,7 @@ import { PasswordVarificationDialogComponent } from '../dialog/password-varifica
 })
 export class UserProfileComponent implements OnInit {
   deleteConfirmation: string
-  passwordConfirmation: string
+  passwordConfirmation =""
 
   hide = true
   message = "";
@@ -72,7 +72,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   delete() {
-    const dialogRef = this.dialog.open(DeleteUserDialogComponent, {
+    const dialogRef = this.dialog.open(DeleteUserConfirmationDialog, {
       width: '250px',
       data: { delete: this.deleteConfirmation },
     });
@@ -83,18 +83,78 @@ export class UserProfileComponent implements OnInit {
   }
 
   edit() {
-
+    alert("edit")
   }
 
   confirmPassword() {
-    const passwordDialogRef = this.dialog.open(PasswordVarificationDialogComponent, {
+    const passwordDialogRef = this.dialog.open(passwordVarificationDialog, {
       width: '250px',
-      data: { delete: this.oldPassword },
+      data: { password: this.passwordConfirmation },
     });
     passwordDialogRef.afterClosed().subscribe(result => {
       this.passwordConfirmation = result;
-      this.hide = false;
+      if(result == "Password"){
+        this.hide = false
+      }
     })
   }
-
 }
+
+@Component({
+selector:"password-varification-dialog",
+templateUrl: './passwordVarification-dialog.html'
+})
+export class passwordVarificationDialog{
+  passwordConfirmation :any
+  message =""
+
+  constructor(public dialogRef: MatDialogRef<UserProfileComponent>){
+  dialogRef.disableClose = true;
+    }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  confirmPassword(passwordConfirmationFromHtml: any){
+    if(passwordConfirmationFromHtml == "Password"){
+      this.dialogRef.close(passwordConfirmationFromHtml)
+    }
+    else{
+      this.message ="Wrong password.Try Again"
+    }
+  }
+}
+
+@Component({
+  selector:"delete-user-confirmation-dialog",
+  templateUrl: './deleteUser-dialog.html'
+  })
+  export class DeleteUserConfirmationDialog{
+    deleteConfirmation = ''
+    message =""
+    text: any
+
+    constructor(public dialogRef: MatDialogRef<UserProfileComponent>){
+    dialogRef.disableClose = true;
+    }
+
+      ngOnInit(): void {
+      }
+
+      onNoClick(): void {
+        this.dialogRef.close();
+      }
+
+      confirmDelete(){
+        if(this.deleteConfirmation == "DELETE"){
+          alert("account deleted")
+          this.dialogRef.close()
+        }
+        else{
+          this.message = "Try again"
+          this.deleteConfirmation =''
+        }
+      }
+    }
+

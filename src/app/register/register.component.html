@@ -12,26 +12,30 @@
       <div class="form">
         <mat-vertical-stepper [linear]="true" #stepper>
           <!-- first block -->
-          <mat-step [stepControl]="firstFormGroup" label="Username and Password" errorMessage="Name is required.">
+          <mat-step [stepControl]="firstFormGroup" label="Username and Password" errorMessage="There are empty fields">
             <form [formGroup]="firstFormGroup">
               <mat-label>Email</mat-label>
               <input matInput placeholder="Email" [(ngModel)]="email" type="text" formControlName="emailCtrl" required>
-
+              <mat-label>Username</mat-label>
               <input matInput placeholder="Username" [(ngModel)]="userName" type="text" formControlName="usernameCtrl"
                 required>
-
+              <mat-label>First Name</mat-label>
               <input matInput placeholder="First name" [(ngModel)]="firstName" type="text"
                 formControlName="firstNameCtrl" required>
-
+              <mat-label>Gender</mat-label>
               <mat-select class="select" placeholder="Gender" [(ngModel)]="gender"
                 [ngModelOptions]="{standalone: true}">
                 <mat-option value="M">M</mat-option>
                 <mat-option value="F">F</mat-option>
               </mat-select>
+              <mat-label>Password<mat-icon *ngIf="this.strengthColor =='red'" aria-hidden="false" matTooltip="Please include uppercase, numbers and special characters" matTooltipClass="tooltip-class" class="warning-icon">warning</mat-icon></mat-label>
+              <input matInput placeholder="Password" [(ngModel)]="password" (keyup)="checkPasswordStrength($event)"
+                [type]="hide ? 'password' : 'text'" formControlName="passwordCtrl" required>
 
-              <input matInput placeholder="Password" [(ngModel)]="password" [type]="hide ? 'password' : 'text'"
-                formControlName="passwordCtrl" required>
+              <mat-progress-bar mode="determinate" Class="progress-bar" [value]="strength" [color]="strengthColor" *ngIf="this.password.length > 0"></mat-progress-bar>
+              <p class="password-strenght" [style.color]="strengthColor" *ngIf="this.password.length > 0">Strength: {{strengthMessage}}</p>
 
+              <mat-label>Repeat Password</mat-label>
               <input matInput placeholder="Repeat Password" [(ngModel)]="repeatPassword"
                 [type]="hide ? 'password' : 'text'" type="password" formControlName="repeatPasswordCtrl" required>
 
@@ -40,40 +44,44 @@
                 {{hide ? 'Show Password' : 'Hide Password'}}
               </button>
               <p class="message">{{message}}</p>
-                <button class="next-btn" mat-button type="button" (click)=" getErrorMessage()" [disabled]="!this.firstFormGroup.valid">Next</button>
+              <button class="next-btn" mat-button type="button" (click)=" getErrorMessage()"
+                [disabled]="!this.firstFormGroup.valid">Next</button>
             </form>
 
             <!-- second block -->
           </mat-step>
-
+          <mat-label>Role</mat-label>
           <mat-step label="Role" errorMessage="User type is required" [stepControl]="secondFormGroup">
             <form [formGroup]="secondFormGroup">
-            <mat-select class="select" placeholder="Role"  [(ngModel)]="userTypeValue" formControlName="roleCtrl">
-              <mat-option *ngFor="let userType of userTypes" [value]="userType">{{userType}}</mat-option>
-            </mat-select>
+              <mat-select class="select" placeholder="Role" [(ngModel)]="userTypeValue" formControlName="roleCtrl">
+                <mat-option *ngFor="let userType of userTypes" [value]="userType">{{userType}}</mat-option>
+              </mat-select>
 
-            <div>
-              <button mat-button matStepperPrevious type="button">back</button>
-              <button mat-button matStepperNext type="button" class="next" (click)=" getErrorMessage()">Next</button>
-            </div>
-          </form>
+              <div>
+                <button mat-button matStepperPrevious type="button">back</button>
+                <button mat-button matStepperNext type="button" class="next" (click)=" getErrorMessage()">Next</button>
+              </div>
+            </form>
           </mat-step>
 
           <!-- Third block -->
           <mat-step label="Committee and block number" errorMessage="Committe and block is required">
-          <form [formGroup]="ThirdFormGroup">
-            <mat-select class="select" placeholder="committee" [(ngModel)]="committeesValue" [ngModelOptions]="{standalone: true}">
-              <mat-option *ngFor="let committee of committees" [value]="committee" >{{committee}}</mat-option>
-            </mat-select>
-
-              <input matInput placeholder="Block"  formControlName="blockCtrl" required
+            <form [formGroup]="ThirdFormGroup">
+              <mat-label>Committee</mat-label>
+              <mat-select class="select" placeholder="committee" [(ngModel)]="committeesValue"
+                [ngModelOptions]="{standalone: true}">
+                <mat-option *ngFor="let committee of committees" [value]="committee">{{committee}}</mat-option>
+              </mat-select>
+              <mat-label>Block Number</mat-label>
+              <input matInput placeholder="Block" formControlName="blockCtrl" required
                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
 
             </form>
             <p class="message">{{message}}</p>
             <div>
               <button mat-button matStepperPrevious type="button">back</button>
-              <button mat-button type="button" class="next" (click)="register()" [disabled]="!this.ThirdFormGroup.valid">Register</button>
+              <button mat-button type="button" class="next" (click)="register()"
+                [disabled]="!this.ThirdFormGroup.valid">Register</button>
             </div>
           </mat-step>
 

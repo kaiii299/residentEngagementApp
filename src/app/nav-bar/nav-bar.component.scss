@@ -5,7 +5,7 @@
 
 .title {
   font-size: 50px;
-  margin: 0px 0 0px 30px;
+  margin: -10px 0 0px 30px;
 }
 
 .container{
@@ -174,7 +174,7 @@ li a:hover:not(.active) {
 
 .name{
   font-size: 30px;
-  margin: -10px 0px 0px 0px;
+  margin: -5px 0px 0px 0px;
 }
 
 .active {
@@ -197,10 +197,9 @@ li a:hover:not(.active) {
   border: none;
   text-align: center;
   background-color: #5151E4;
-  margin:5px 10px -0px 40px;
+  margin:3px 10px 0px 40px;
   border-radius: 5px;
   position: relative;
-  display: inline-block;
   &:hover{
     background-color: #011e92;
   }
@@ -211,6 +210,8 @@ li a:hover:not(.active) {
 .dropdown-content {
  display: none;
   position: absolute;
+  left: 50%;
+  transform: translateX(-40%);
   margin: 0px 0px 0px 0px;
   background-color: #3D53AD;
   min-width: 160px;
@@ -266,15 +267,16 @@ li a:hover:not(.active) {
 
   .main-content-wrapper{
     width: 100%;
-    height: 100vh;
+    height: 105vh;
     display: block;
     background: #eb9c5c;
+    overflow: hidden;
   }
 
   .main-content-wrapper a {
     display: block;
     text-align: center;
-    padding: 60px 0 10px 0px;
+    padding: 55px 0 10px 0px;
     font-size: 40px;
     color: rgb(255, 255, 255);
     text-decoration: none;
@@ -290,4 +292,37 @@ li a:hover:not(.active) {
   .open-menu{
     display: none;
   }
+
+  .name{
+    position: relative;
+    left: 50%;
+    top: -20%;
+    height: 40px;
+    padding: 0px  0px 0px;
+    transform: translate(-50%,-50%);
+    margin-top: none;
+    //text-align: center;
+    //background-color: #5151E4;
+    display: block;
+    width: auto;
+    border-radius: 5px;
+
+  }
+
+  .sidebar-container{
+     position: relative;
+     top: 15vh;
+     display: block;
+  }
+
+  a {
+    display: block;
+    color: white;
+    text-align: center;
+    bottom: 5%;
+    margin: -20px 0px 0 0;
+    //text-decoration: underline;
+  }
+
+
 }

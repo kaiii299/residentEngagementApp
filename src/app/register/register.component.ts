@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { StepperSelectionEvent, STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MatStepper } from '@angular/material/stepper';
@@ -17,7 +17,9 @@ import { MatStepper } from '@angular/material/stepper';
 export class RegisterComponent implements OnInit {
   @ViewChild('stepper') private myStepper: MatStepper;
 
-
+  strength= "0"
+  strengthColor =""
+  strengthMessage =""
   hide = true;
   disabled = true;
 
@@ -32,7 +34,7 @@ export class RegisterComponent implements OnInit {
   userTypeValue ="";
   committeesValue = "";
   dateTime =""
-  status ="" 
+  status =""
 
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
@@ -99,6 +101,9 @@ export class RegisterComponent implements OnInit {
     if (this.password != this.repeatPassword) {
       this.message = "Password does not match"
     }
+    else if (this.strengthColor =="red") {
+      this.message = "Password too weak"
+    }
     else {
       this.message =""
       this.myStepper.next();
@@ -112,6 +117,31 @@ export class RegisterComponent implements OnInit {
     else{
       alert("done done done")
       console.log(this.email, this.userName, this.firstName, this.password, this.repeatPassword,this.committeesValue,this.userTypeValue,this.gender, this.blockNumber)
+    }
+  }
+
+  checkPasswordStrength(event : Event){
+    var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    const passwordValue = (event.target as HTMLInputElement).lang;
+    if(this.password.length == 0){
+      this.message = "";
+      this.strengthMessage = "weak";
+
+    }
+    if(this.password.length < 8 && this.password.length > 0){
+      this.strengthMessage = "weak";
+      this.strengthColor = "red";
+      this.strength = "10";
+    }
+    if(this.password.length > 8){
+      this.strengthMessage = "Medium";
+      this.strengthColor = "Organge";
+      this.strength = "50";
+    }
+    if(this.password.length > 10 && this.password.match(format) ){
+      this.strengthMessage = "Strong";
+      this.strengthColor = "green";
+      this.strength = "100";
     }
   }
 

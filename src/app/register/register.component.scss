@@ -1,6 +1,25 @@
+.warning-icon{
+  position: relative;
+  top: -1px;
+  left: 5px;
+  font-size: 20px;
+  color: #ff9318;
+}
+
+::ng-deep .tooltip-class{
+  font-size: 15px;
+}
+
+.password-strenght{
+margin-top: 5px;
+display: flex;
+font-size: 15px;
+}
+
 mat-label{
   display: flex;
-  color: white;
+  color: rgb(75, 75, 75);
+  font-size: 15px;
 }
 
 .next-btn{
@@ -51,11 +70,12 @@ body{
 }
 
 .welcome-container{
-  position: absolute;
-  top: 25%;
-  left: 5%;
-  transform: translate(100%, -50%);
-  z-index: 100;
+  // position: absolute;
+  // top: 25%;
+  // left: 5%;
+  // transform: translate(100%, -50%);
+  // z-index: 100;
+  display: none;
 }
 
 .welcome{

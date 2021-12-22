@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./forget-password.component.scss']
 })
 export class ForgetPasswordComponent implements OnInit {
-message="email sent check your email"
+message=""
 email=""
 phoneNumber =""
 otp =''

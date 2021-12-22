@@ -7,11 +7,11 @@
     <li>
       <div class="dropdown">
         <button class="dropdownbtn">
-          <p class="name">name</p>
+          <p class="name">{{name}}</p>
         </button>
         <div class="dropdown-content">
           <a class="user-type">Admin</a>
-          <a href="register">Create Account</a>
+          <a href="register">New Account</a>
           <a href="allusers">All users</a>
           <a routerLink="myprofile">My profile</a>
         </div>
@@ -28,24 +28,19 @@
     </label>
     <div id="sidebarMenu">
       <div class="main-content-wrapper">
-        <div class="container"></div>
+        <div class="sidebar-container">
+
+        <a class="name"><strong>{{name}}</strong></a>
         <a href="/">Home</a>
+        <a href="myprofile">My profile</a>
         <a>Events</a>
         <a>Dashboard</a>
+        <a href="register">New Account</a>
+        <a href="allusers">All users</a>
         <a>
-          <div class="dropdown">
-            <button class="dropdownbtn">
-              <p class="name">name</p>
-            </button>
-            <div class="dropdown-content">
-              <a class="user-type">Admin</a>
-              <a href="register">Create Account</a>
-              <a href="allusers">All users</a>
-              <a href="myprofile">My profile</a>
-            </div>
-          </div>
         </a>
       </div>
+    </div>
     </div>
   </div>
 </nav>

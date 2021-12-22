@@ -1,29 +1,34 @@
+mat-label {
+  display: flex;
+  color: rgb(75, 75, 75);
+  font-size: 15px;
+}
 
-.eye{
+.eye {
   position: absolute;
   margin: 5px 0 0 0;
   left: 75%;
 }
 
-body{
+body {
   background-position: center;
-  background-color: #F2D9C5;
+  background-color: #f2d9c5;
   //background-color: #e9004e;
   background-repeat: no-repeat;
   height: 100vh;
 }
 
-.img-web{
+.img-web {
   position: absolute;
   right: 360px;
   height: 100vh;
 }
 
-.img-phone{
+.img-phone {
   display: none;
 }
 
-.welcome-container{
+.welcome-container {
   position: absolute;
   z-index: 100;
   height: 50vh;
@@ -31,20 +36,20 @@ body{
   display: block;
   right: 160%;
   top: 46.5%;
-  transform: translate(-0%,-50%);
+  transform: translate(-0%, -50%);
 }
 
-.welcome{
+.welcome {
   position: relative;
   color: rgb(255, 255, 255);
-  font-size:clamp(7rem,5vw,5rem);
+  font-size: clamp(7rem, 5vw, 5rem);
   height: 70px;
   padding: 0px 0px 0px 0px;
   display: flex;
   //border: 5px solid red;
 }
 
-.login-text{
+.login-text {
   position: relative;
   color: rgb(248, 248, 248);
   font-size: 30px;
@@ -62,7 +67,7 @@ body{
   transform: translate(50%, -50%);
 }
 
-.forget{
+.forget {
   position: relative;
   color: black;
   display: flex;
@@ -72,12 +77,13 @@ body{
   text-decoration: underline;
   //border: 2px solid red;
   margin-right: 210px;
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 }
 
-.form  {   //card
+.form {
+  //card
   position: relative;
   z-index: 1;
   right: 5vw;
@@ -86,9 +92,9 @@ body{
   max-width: 380px;
   margin: 0 auto 100px;
   padding: 45px;
-  max-height: 600px;
+  max-height: 83vh;
   text-align: center;
-  box-shadow: 0 9px 18px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
 }
 
 .form input {
@@ -108,7 +114,8 @@ body{
   background: #dbdbdb;
 }
 
-.form .login-btn { //login button
+.form .login-btn {
+  //login button
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -119,8 +126,8 @@ body{
   width: auto;
   border: 0;
   border-radius: 5px;
-  padding: 5px 15px 5px 15px ;
-  color: #FFFFFF;
+  padding: 5px 15px 5px 15px;
+  color: #ffffff;
   font-size: 20px;
   -webkit-transition: all 0.3 ease;
   transition: all 0.3 ease;
@@ -136,28 +143,27 @@ body{
   color: #008094;
 }
 
-.message{
+.message {
   color: rgb(255, 0, 0);
   font-size: 20px;
   display: flex;
   justify-content: flex-start;
 }
 
-.email::after{
+.email::after {
   content: "*";
   font-size: 100px;
   color: black;
 }
 
-@media(max-width: 1000px){
-  body{
+@media (max-width: 1000px) {
+  body {
     position: absolute;
-    background-color: #EB9C5C;
+    background-color: #eb9c5c;
     height: 100vh;
     width: 100vw;
     overflow: hidden;
   }
-
 
   .login {
     position: relative;
@@ -170,55 +176,53 @@ body{
   .form {
     position: relative;
     left: 0vw;
-    height: 83vh;
+    height: 90vh;
     overflow: hidden;
   }
 
-  .welcome-container{
+  .welcome-container {
     position: absolute;
-    z-index: 100;
+    z-index: 999;
     height: 50vh;
     width: 50vw;
-    display: block;
+    display: flex;
     right: 160%;
     top: 46.5%;
-    transform: translate(-0%,-50%);
+    transform: translate(-0%, -50%);
   }
 
-  .welcome{
+  .welcome {
     position: relative;
     color: rgb(255, 255, 255);
     font-size: 2rem;
   }
 
-
-  .login-form{
+  .login-form {
     position: absolute;
     top: 40%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
   }
 
-  span{
+  span {
     display: none;
   }
 
-  .img-web{
+  .img-web {
     display: none;
   }
 
-
-  .img-phone{
-  display: flex;
-  position: absolute;
-  top: 23%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  height: 105vh;
-  width: 80vw;
-  z-index: -999;
+  .img-phone {
+    display: block;
+    position: absolute;
+    z-index: -1;
+    left: 10%;
+    bottom: -.2%;
+    height: 130%;
+    width: 80%;
   }
 
-
-
+  
 }
+
+

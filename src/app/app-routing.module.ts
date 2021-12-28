@@ -7,7 +7,6 @@ import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { RegisterComponent } from './register/register.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
-import { AddResidentComponent } from './add-resident/add-resident.component';
 import { UpdateResidentComponent } from './update-resident/update-resident.component';
 import { ResidentInfoComponent } from './resident-info/resident-info.component';
 

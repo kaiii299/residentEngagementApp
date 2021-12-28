@@ -27,6 +27,9 @@ import {MatTableModule} from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { AddResidentComponent } from './add-resident/add-resident.component';
+import { UpdateResidentComponent } from './update-resident/update-resident.component';
+import { ResidentInfoComponent } from './resident-info/resident-info.component';
+import { ResidentInformation} from '../app/resident-information';
 
 
 @NgModule({
@@ -39,7 +42,9 @@ import { AddResidentComponent } from './add-resident/add-resident.component';
     ForgetPasswordComponent,
     DeleteAccountComponent,
     AllUsersComponent,
-    AddResidentComponent
+    AddResidentComponent,
+    UpdateResidentComponent,
+    ResidentInfoComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,7 +71,7 @@ import { AddResidentComponent } from './add-resident/add-resident.component';
 
   ],
   entryComponents :[DeleteAccountComponent],
-  providers: [],
+  providers: [ResidentInformation],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

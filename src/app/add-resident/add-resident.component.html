@@ -1,1 +1,107 @@
-<p>add-resident works!</p>
+<body>
+    <div class="main-container">
+        <div class="panel-container">
+            <div class="container">
+                <h1>Add A New Resident</h1>
+                <form [formGroup]="addResidentForm">
+                    <label>Resident Name :</label>
+                    <input class='form-control' type="text" oninput="this.value = this.value.toUpperCase()" formControlName="residentName" required>
+                    <div *ngIf="addResidentForm.controls['residentName'].invalid && (addResidentForm.controls['residentName'].dirty || addResidentForm.controls['residentName'].touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="addResidentForm.controls['residentName'].errors.required">
+                            Resident Name is required.
+                        </div>
+                    </div>
+                    <label>Committee :</label>
+                    <select class='form-control' formControlName="committee">
+                        <option value="" disabled selected hidden>Select Committee</option>
+                        <option *ngFor="let c of committees">
+                            {{c}}
+                        </option>
+                    </select>
+                    <div *ngIf="addResidentForm.controls['committee'].invalid && (addResidentForm.controls['committee'].dirty || addResidentForm.controls['committee'].touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="addResidentForm.controls['committee'].errors.required">
+                            Committee is required.
+                        </div>
+                    </div>
+                    <label>Block Number :</label>
+                    <input class='form-control' type="text" formControlName="blkNum" required>
+                    <div *ngIf="addResidentForm.controls['blkNum'].invalid && (addResidentForm.controls['blkNum'].dirty || addResidentForm.controls['blkNum'].touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="addResidentForm.controls['blkNum'].errors.required">
+                            Block Number is required.
+                        </div>
+                    </div>
+                    <label>Unit Number :</label>
+                    <input class='form-control' formControlName="unitNum" required>
+                    <div *ngIf="addResidentForm.controls['unitNum'].invalid && (addResidentForm.controls['unitNum'].dirty || addResidentForm.controls['unitNum'].touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="addResidentForm.controls['unitNum'].errors.required">
+                            Unit Number is required.
+                        </div>
+                    </div>
+                    <label>Gender :</label>
+                    <select class='form-control' formControlName="gender">
+                        <option value="" disabled selected hidden>Select Gender</option>
+                        <option *ngFor="let gen of genders">
+                            {{gen}}
+                        </option>
+                    </select>
+                    <div *ngIf="addResidentForm.controls['gender'].invalid && (addResidentForm.controls['gender'].dirty || addResidentForm.controls['gender'].touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="addResidentForm.controls['gender'].errors.required">
+                            Gender is required.
+                        </div>
+                    </div>
+                    <label>Race :</label>
+                    <input class='form-control' formControlName="race" required>
+                    <div *ngIf="addResidentForm.controls['race'].invalid && (addResidentForm.controls['race'].dirty || addResidentForm.controls['race'].touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="addResidentForm.controls['race'].errors.required">
+                            Race is required.
+                        </div>
+                    </div>
+                    <label>Age Group :</label>
+                    <select class='form-control' formControlName="ageGp">
+                        <option value="" disabled selected hidden>Select Age Group</option>
+                        <option *ngFor="let age of ageGps">
+                            {{age}}
+                        </option>
+                    </select>
+                    <div *ngIf="addResidentForm.controls['ageGp'].invalid && (addResidentForm.controls['ageGp'].dirty || addResidentForm.controls['ageGp'].touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="addResidentForm.controls['ageGp'].errors.required">
+                            Age Group is required.
+                        </div>
+                    </div>
+                    <label>Expertise :</label>
+                    <input class='form-control' type="text" formControlName="expertise" required>
+                    <div *ngIf="addResidentForm.controls['expertise'].invalid && (addResidentForm.controls['expertise'].dirty || addResidentForm.controls['expertise'].touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="addResidentForm.controls['expertise'].errors.required">
+                            Expertise is required.
+                        </div>
+                    </div>
+                    <label>Preferred Activity (Select All That Apply)</label>
+                    <div formArrayName="activities" *ngFor="let activity of activitiesFormArray.controls; let i = index">
+                        <label>
+                            <input type="checkbox" [formControlName]="i">
+                            {{activitiesList[i]}}
+                        </label>
+                    </div>
+                    <!-- <div *ngIf="addResidentForm.controls['i'].invalid && (addResidentForm.controls['i'].dirty || addResidentForm.controls['i'].touched)"
+                        class="alert alert-danger">
+                        <div *ngIf="addResidentForm.controls['i'].errors.required">
+                            Preferred Activity is required.
+                        </div>
+                    </div> -->
+                </form>
+                <div class="button">
+                    <button type="submit" class="btn-success" style="margin: 5px;" (click)="add(addResidentForm.value)">Add</button>
+                    <button type="submit" class="btn-cancel" style="margin: 5px;">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

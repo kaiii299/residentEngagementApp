@@ -6,14 +6,20 @@ import { ForgetPasswordComponent } from './forget-password/forget-password.compo
 import { HomeComponent } from './home/home.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { RegisterComponent } from './register/register.component';
+import { AddResidentComponent } from './add-resident/add-resident.component';
+import { UpdateResidentComponent } from './update-resident/update-resident.component';
+import { ResidentInfoComponent } from './resident-info/resident-info.component';
 
 const routes: Routes = [
-  {path:"", component: HomeComponent , pathMatch: "full"},
-{path:"register", component: RegisterComponent},
-{path:"forgetpassword", component: ForgetPasswordComponent},
-{path:"deleteaccount", component: DeleteAccountComponent},
-{path:"allusers", component: AllUsersComponent},
-{path:"**", component: PageNotFoundComponent ,  pathMatch: "full"}
+  { path: "", component: HomeComponent, pathMatch: "full" },
+  { path: "register", component: RegisterComponent },
+  { path: "forgetpassword", component: ForgetPasswordComponent },
+  { path: "deleteaccount", component: DeleteAccountComponent },
+  { path: "allusers", component: AllUsersComponent },
+  { path: "addresident", component: AddResidentComponent },
+  {path: "updateresident", component: UpdateResidentComponent },
+  {path: "residentinfo", component: ResidentInfoComponent},
+  { path: "**", component: PageNotFoundComponent, pathMatch: "full" },
 ];
 
 @NgModule({

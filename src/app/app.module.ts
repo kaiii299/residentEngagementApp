@@ -26,6 +26,9 @@ import {MatTableModule} from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { AddResidentComponent } from './add-resident/add-resident.component';
+import { UpdateResidentComponent } from './update-resident/update-resident.component';
+import { ResidentInfoComponent } from './resident-info/resident-info.component';
+import { ResidentInformation} from '../app/resident-information';
 import { EventsPageComponent } from './events-page/events-page.component';
 import { DeleteUserConfirmationDialog, passwordVarificationDialog, UserProfileComponent } from './user-profile/user-profile.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
@@ -49,8 +52,9 @@ import { environment } from 'src/environments/environment';
     EventsPageComponent,
     UserProfileComponent,
     passwordVarificationDialog,
-    DeleteUserConfirmationDialog
-,
+    DeleteUserConfirmationDialog,
+    UpdateResidentComponent,
+    ResidentInfoComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,7 +84,7 @@ import { environment } from 'src/environments/environment';
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
   ],
-  providers: [],
+  providers: [ResidentInformation],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

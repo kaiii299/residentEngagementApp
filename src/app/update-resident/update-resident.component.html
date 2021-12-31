@@ -4,36 +4,36 @@
             <h1>Update Resident Details</h1>
             <form [formGroup]="updateResidentForm">
                 <label>Resident Name :</label>
-                <input class='form-control' type="text" formControlName="residentNameControl" required>
+                <input title="residentName" class='form-control' type="text" formControlName="residentNameControl" required>
                 <label>Committee :</label>
-                <select class='form-control' formControlName="committeeControl">
+                <select title="committee" class='form-control' formControlName="committeeControl">
                     <option value="" disabled selected hidden>Select Committee</option>
                     <option *ngFor="let c of committees">
                         {{c}}
                     </option>
                 </select>
                 <label>Block Number :</label>
-                <input class='form-control' type="text" formControlName="blkNumControl">
+                <input title="blkNumber" class='form-control' type="text" formControlName="blkNumControl">
                 <label>Unit Number :</label>
-                <input class='form-control' formControlName="unitNumControl">
+                <input title="unit" class='form-control' formControlName="unitNumControl">
                 <label>Gender :</label>
-                <select class='form-control' formControlName="genderControl">
+                <select title="gender" class='form-control' formControlName="genderControl">
                     <option value="" disabled selected hidden>Select Gender</option>
                     <option *ngFor="let gen of genders">
                         {{gen}}
                     </option>
                 </select>
                 <label>Race :</label>
-                <input class='form-control' formControlName="raceControl">
+                <input title="race" class='form-control' formControlName="raceControl">
                 <label>Age Group :</label>
-                <select class='form-control' placeholder="Select Age Group" formControlName="ageGpControl">
+                <select title="Age" class='form-control' placeholder="Select Age Group" formControlName="ageGpControl">
                     <option value="" disabled selected hidden>Select Age Group</option>
                     <option *ngFor="let age of ageGps">
                         {{age}}
                     </option>
                 </select>
                 <label>Expertise :</label>
-                <input class='form-control' type="text" formControlName="expertiseControl">
+                <input title="activity" class='form-control' type="text" formControlName="expertiseControl">
                 <label>Preferred Activity (Select All That Apply)</label>
                 <div *ngFor="let activity of activities; let i=index">
                     <label>

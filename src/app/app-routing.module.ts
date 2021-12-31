@@ -9,6 +9,8 @@ import { RegisterComponent } from './register/register.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AuthRouteGuard } from './share/services/guards/auth.route.guard';
 import { HasRoleGuard } from './share/services/guards/has-role.guard';
+import { UpdateResidentComponent } from './update-resident/update-resident.component';
+import { ResidentInfoComponent } from './resident-info/resident-info.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' }, //login
@@ -37,6 +39,8 @@ const routes: Routes = [
     //canActivate: [AuthRouteGuard],
     //data: { role: 'Admin' },
   },
+  {path: "updateresident", component: UpdateResidentComponent },
+  {path: "residentinfo", component: ResidentInfoComponent},
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full' },
 ];
 

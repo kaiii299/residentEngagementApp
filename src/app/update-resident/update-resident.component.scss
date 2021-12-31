@@ -1,19 +1,15 @@
 body{
     background-color: #EB9C5C;
     background-repeat: no-repeat;
-    height: 1550px;
+    height: 1100px;
     padding-top: 90px;  
     width: 100%;
   }
-// @media screen and (max-width: 414px){
-//     .container{
-//         width: 90vw;
-//     }
-// }
 .container{
     background-color: #F2D9C5;
     border-radius: 25px;
-    width: 50vw;
+    width: 35%;
+    float: center;
 }
 .panel-container{
     width: 100%;
@@ -40,7 +36,7 @@ form{
     display: inline-block;
     text-transform: uppercase;
     background: #4b6cb7;
-    width: 80px;
+    width: 100px;
     border: 0;
     border-radius: 5px;
     padding: 5px 15px 5px 15px ;

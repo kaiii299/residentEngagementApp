@@ -1,0 +1,51 @@
+<body>
+    <div class="main-container">
+        <div class="container">
+            <h1>Update Resident Details</h1>
+            <form [formGroup]="updateResidentForm">
+                <label>Resident Name :</label>
+                <input class='form-control' type="text" formControlName="residentNameControl" required>
+                <label>Committee :</label>
+                <select class='form-control' formControlName="committeeControl">
+                    <option value="" disabled selected hidden>Select Committee</option>
+                    <option *ngFor="let c of committees">
+                        {{c}}
+                    </option>
+                </select>
+                <label>Block Number :</label>
+                <input class='form-control' type="text" formControlName="blkNumControl">
+                <label>Unit Number :</label>
+                <input class='form-control' formControlName="unitNumControl">
+                <label>Gender :</label>
+                <select class='form-control' formControlName="genderControl">
+                    <option value="" disabled selected hidden>Select Gender</option>
+                    <option *ngFor="let gen of genders">
+                        {{gen}}
+                    </option>
+                </select>
+                <label>Race :</label>
+                <input class='form-control' formControlName="raceControl">
+                <label>Age Group :</label>
+                <select class='form-control' placeholder="Select Age Group" formControlName="ageGpControl">
+                    <option value="" disabled selected hidden>Select Age Group</option>
+                    <option *ngFor="let age of ageGps">
+                        {{age}}
+                    </option>
+                </select>
+                <label>Expertise :</label>
+                <input class='form-control' type="text" formControlName="expertiseControl">
+                <label>Preferred Activity (Select All That Apply)</label>
+                <div *ngFor="let activity of activities; let i=index">
+                    <label>
+                        <input type="checkbox" [value]="activity" />
+                        {{activity}}
+                    </label>
+                </div>
+            </form>
+            <div class="button">
+                <button type="submit" class="btn-success" style="margin: 5px;">Update</button>
+                <button type="submit" class="btn-cancel" style="margin: 5px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+</body>

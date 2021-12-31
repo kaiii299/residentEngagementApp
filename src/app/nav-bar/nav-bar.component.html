@@ -3,7 +3,16 @@
   <ul class="open-menu">
     <li><a href="#">Home</a></li>
     <li><a>Events</a></li>
-    <li><a>Dashboard</a></li>
+    <li>
+      <div class="dropdown">
+        <a href="#">Resident Info</a>
+        <div class="dropdown-content">
+          <a href="#">Dashboard</a>
+          <a href="residentinfo">Resident Information</a>
+          <a href="addresident">Add A New Resident</a>
+        </div>
+      </div>
+    </li>
     <li>
       <div class="dropdown">
         <button class="dropdownbtn"  *ngIf="this.logedIn == true" (click)="logout()">
@@ -33,7 +42,7 @@
         <a href="/">Home</a>
         <a href="myprofile">My profile</a>
         <a>Events</a>
-        <a>Dashboard</a>
+        <a>Resident Info</a>
         <a href="register">New Account</a>
         <a href="allusers">All users</a>
         <a>

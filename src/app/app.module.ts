@@ -30,11 +30,20 @@ import { EventsPageComponent } from './events-page/events-page.component';
 import { DeleteUserConfirmationDialog, passwordVarificationDialog, UserProfileComponent } from './user-profile/user-profile.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import { AuthRouteGuard } from './share/services/guards/auth.route.guard';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './share/services/guards/auth.interceptor';
+import { HasRoleGuard } from './share/services/guards/has-role.guard';
+import { environment } from 'src/environments/environment';
+import { Authservice } from './share/services/auth.service';
+
+
 //firebase
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import {AngularFireDatabaseModule} from '@angular/fire/database'
 import { AngularFireModule } from '@angular/fire';
-import { environment } from 'src/environments/environment';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+
 
 @NgModule({
   declarations: [
@@ -53,6 +62,7 @@ import { environment } from 'src/environments/environment';
 ,
   ],
   imports: [
+    HttpClientModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -79,8 +89,16 @@ import { environment } from 'src/environments/environment';
     AngularFirestoreModule,
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireAuthModule,
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true,
+  },
+    HasRoleGuard,
+    Authservice,
+    AuthRouteGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

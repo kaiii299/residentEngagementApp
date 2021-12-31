@@ -6,11 +6,11 @@
     <li><a>Dashboard</a></li>
     <li>
       <div class="dropdown">
-        <button class="dropdownbtn">
-          <p class="name">{{name}}</p>
+        <button class="dropdownbtn"  *ngIf="this.logedIn == true" (click)="logout()">
+          <p class="name" >Log out</p>
         </button>
-        <div class="dropdown-content">
-          <a class="user-type">Admin</a>
+        <div class="dropdown-content" *ngFor="let user of userArray">
+          <a class="user-type">{{user.DisplayName}}</a>
           <a href="register">New Account</a>
           <a href="allusers">All users</a>
           <a routerLink="myprofile">My profile</a>
@@ -28,9 +28,8 @@
     </label>
     <div id="sidebarMenu">
       <div class="main-content-wrapper">
-        <div class="sidebar-container">
-
-        <a class="name"><strong>{{name}}</strong></a>
+        <div class="sidebar-container"  *ngFor="let user of userArray" >
+        <a class="name"><strong>{{user.DisplayName}}</strong></a>
         <a href="/">Home</a>
         <a href="myprofile">My profile</a>
         <a>Events</a>

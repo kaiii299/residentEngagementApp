@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Authservice } from '../share/services/auth.service';
 export interface DialogData {
   password: string;
 }
@@ -37,6 +38,8 @@ export class UserProfileComponent implements OnInit {
   newUserTypeValue = "";
   newCommitteesValue = "";
   newStatus = "";
+
+  userArray = Array();
 
   userTypesArrays: string[] = [
     "Admin",
@@ -108,8 +111,12 @@ export class passwordVarificationDialog{
   passwordConfirmation :any
   message =""
 
-  constructor(public dialogRef: MatDialogRef<UserProfileComponent>){
+  constructor(public dialogRef: MatDialogRef<UserProfileComponent>, private authService: Authservice){
   dialogRef.disableClose = true;
+  this.authService.getSignInUser().subscribe(res=>{
+
+  })
+
     }
 
   onNoClick(): void {
@@ -137,6 +144,7 @@ export class passwordVarificationDialog{
 
     constructor(public dialogRef: MatDialogRef<UserProfileComponent>){
     dialogRef.disableClose = true;
+    
     }
 
       ngOnInit(): void {
@@ -156,5 +164,7 @@ export class passwordVarificationDialog{
           this.deleteConfirmation =''
         }
       }
+
+
     }
 

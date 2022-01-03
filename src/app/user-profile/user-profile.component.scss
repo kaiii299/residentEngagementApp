@@ -164,6 +164,9 @@ body{
   -webkit-transition: all 0.3 ease;
   transition: all 0.3 ease;
   cursor: pointer;
+  &:hover{
+    background: #3d60f0;
+  }
 }
 
 

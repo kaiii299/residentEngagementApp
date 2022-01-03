@@ -13,7 +13,7 @@
         <form class="edit-form">
           <mat-label>User name</mat-label>
           <input type="text" title="username" placehnewer="Username" [ngModelOptions]="{standalone: true}"
-            value={{user.userName}} [(ngModel)]="user.userName" required>
+            value={{user.userName}} [(ngModel)]="newUserName" required>
 
           <mat-label>First Name</mat-label>
           <input type="text" title="first name" placehnewer="First name" value={{newFirstName}}
@@ -36,9 +36,9 @@
 
 
           <mat-label>Role</mat-label>
-          <mat-select class="selection-input" placehnewer="Role" 
+          <mat-select class="selection-input" placehnewer="Role"
             [ngModelOptions]="{standalone: true}" [disabled]="user.role != 'Admin' "
-            [(ngModel)]="user.role">
+            [(ngModel)]="newRoleValue">
             <mat-option *ngFor="let userTypesArray of userTypesArrays" [value]="userTypesArray">{{userTypesArray}}
             </mat-option>
           </mat-select>

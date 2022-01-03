@@ -11,19 +11,22 @@ import {userDataInterface} from 'src/app/share/services/Users'
 })
 export class NavBarComponent implements OnInit {
   user: any;
+  userObj: any
   userArray = Array();
   userName: any;
 
   constructor(public authService: Authservice, public dialog: MatDialog) {
   }
 
-  ngOnInit() {
+ async ngOnInit() {
     var encryptedUid = localStorage.getItem("uid");
     var uid = this.authService.decryptData(encryptedUid)
-    this.authService.getUserById(uid).subscribe(data => {
+   const res: any = await this.authService.getUserById(uid).subscribe(data => {
       this.user = data
       console.log(data)
     });
+    var _userObj = JSON.stringify(localStorage.getItem("data"));
+    this.userObj = JSON.parse(_userObj)
   }
 
   openLogoutDialog() {

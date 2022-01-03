@@ -36,7 +36,10 @@ hide = true
        var uid = userObj.user.uid;
        const encryptedText = this.authService.encryptData(uid)
        localStorage.setItem("uid",encryptedText);
-       localStorage.setItem("data",JSON.stringify(userObj.user))
+        var _uid = this.authService.decryptData(encryptedText)
+        this.authService.getUserById(_uid).subscribe(res=>{
+        localStorage.setItem('data', JSON.stringify(res).replace("'\"",' '))
+      })
        this.route.navigate(['allusers']);
      }).catch(error=>{
        this.message = "Wrong password"

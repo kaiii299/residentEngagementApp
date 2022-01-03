@@ -66,6 +66,8 @@ export class UserProfileComponent implements OnInit {
     var uid = localStorage.getItem("uid")
     this.authService.getUserById(uid).subscribe(res => {
       this.user = res
+      this.newRoleValue = this.user.role
+      this.newUserName = this.user.userName
       console.log(res)
     })
   }
@@ -83,12 +85,12 @@ export class UserProfileComponent implements OnInit {
 
   edit() {
     const obj: userDataInterface = {
-      username: this.user.userName,
+      username: this.newUserName,
       email: this.user.email,
       firstName: this.user.firstName,
       gender: this.user.gender,
       phoneNumber: this.user.phoneNumber,
-      Role: this.user.role,
+      Role: this.newRoleValue,
       committee: this.user.committee,
       blockNumber: this.user.blockNumber,
     }

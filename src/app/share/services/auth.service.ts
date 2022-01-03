@@ -1,65 +1,62 @@
-import { Injectable, Input } from "@angular/core";
-import { BehaviorSubject, Observable, Subject, throwError } from "rxjs";
+import { DoBootstrap, Injectable, Input, OnInit } from "@angular/core";
+import { BehaviorSubject, Observable, of, Subject, throwError } from "rxjs";
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { HttpClient, JsonpClientBackend } from "@angular/common/http";
 import { map, retry, switchMap, take } from 'rxjs/operators'
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from "@angular/fire/firestore";
-import { userDataInfo } from "./Users"
-
-
-export interface userInterface{
-Email:string
-Display:string
-FirstName:string
-PhoneNumber:string
-Gender:string
-Role:string
-Committee:string
-BlockNumber:string
-RegisteredTime:string
-RegisteredDate:string
-Status:string
-}
+import { userDataInterface } from "./Users"
+import { Router } from "@angular/router";
+import * as CryptoJS from 'crypto-js';
 
 @Injectable()
-export class Authservice {
+export class Authservice implements OnInit {
   userInfo: BehaviorSubject<any> = new BehaviorSubject(null);
   jwtHelper = new JwtHelperService();
   authState: any = null;
   currentLogedInUserId: any;
   currentLogedInUserName: string;
-  currentUserObject : any;
+  currentUserObject: any;
   newUserId: any;
-  storageSub = new Subject<string>();
-  userSubscription : any
+  userLoggedIn: boolean
+  secretKey = "YourSecretKeyForEncryption&Descryption";
 
-  constructor(private http: HttpClient, private firebaseAuth: AngularFireAuth, private db: AngularFirestore) {
-    this.loadUserInfo();
-    this.getSignInUser();
+  constructor(private http: HttpClient, private firebaseAuth: AngularFireAuth, private db: AngularFirestore, private router: Router) {
+    //this.loadUserInfo();
+
   }
 
-  watchStroage(){
-    return this.storageSub.asObservable();
+  ngOnInit(): void {
+    if(localStorage.getItem("uid")){
+      this.userLoggedIn = true;
+    }
+    this.userLoggedIn = false;
+    console.log(this.userLoggedIn);
   }
 
-  async signIn(email: string, password: string) {
-    await this.firebaseAuth.signInWithEmailAndPassword(email, password).then(res => {
-      var userId = JSON.stringify(res.user?.uid);
-      localStorage.setItem('userId', userId );
-      this.storageSub.next('added');
+
+  signIn(email: string, password: string) {
+    return new Promise<any>((resolve, reject)=>{
+      this.firebaseAuth.signInWithEmailAndPassword(email,password).then(
+        res => resolve(res),
+        err => reject(err))
     })
-    this.userSubscription = this.firebaseAuth.onAuthStateChanged(user =>{
-      if(user === null || user == undefined){
-        return null
-      }
-      return this.db.collection("Users").doc(user.uid).valueChanges();
-    })
+  }
+
+  logout() {
+    this.firebaseAuth.signOut();
+    localStorage.clear();
+    this.router.navigate(['/']);
+  }
+
+   updateUserData(data: any,user: any) {
+    const userRef: AngularFirestoreDocument<userDataInterface> = this.db.doc(`Users/${user.uid}`)
+    return userRef.set(data, { merge: true }) //allows users to keep existing data
   }
 
 
   async register(email: string, password: string) {
-    await this.firebaseAuth.createUserWithEmailAndPassword(email, password).then((userinfo)=>{
+    await this.firebaseAuth.createUserWithEmailAndPassword(email, password).then((userinfo) => {
       this.newUserId = userinfo.user?.uid
     })
   }
@@ -70,19 +67,11 @@ export class Authservice {
   }
 
   getAllUsers() {
-    return this.db.collection("Users").snapshotChanges();
+    return this.db.collection("Users").valueChanges();
   }
 
-
-  getSignInUser() {
-    if(this.currentLogedInUserId !== '0'){
-       this.currentLogedInUserId = localStorage.getItem("userId")
-       this.currentLogedInUserId = JSON.parse(this.currentLogedInUserId)
-    }
-    if(this.currentLogedInUserId == '0'){
-      this.currentLogedInUserId = JSON.parse(JSON.stringify(localStorage.getItem("userId")))
-    }
-     return this.db.collection('Users').doc(this.currentLogedInUserId).valueChanges()
+  getUserById(id: any){
+     return this.db.doc(`Users/${this.currentLogedInUserId}`).valueChanges();
   }
 
   async forgetPassword(email: string) {
@@ -90,57 +79,60 @@ export class Authservice {
     })
   }
 
-
-  logout(){
-    this.firebaseAuth.signOut();
-    localStorage.setItem("userId", "0");
-    this.storageSub.next('removed')
+  encryptData(value : string) : string{
+    return CryptoJS.AES.encrypt(value, this.secretKey.trim()).toString();
   }
 
-  loadUserInfo() {
-    const userData = this.userInfo.getValue();
-    if (!userData) {
-      const accessToken = localStorage.getItem("access_token")
-      if (accessToken) {
-        const decryptedUser = this.jwtHelper.decodeToken(accessToken);
-        const data = {
-          access_token: accessToken,
-          refresh_token: localStorage.getItem("refresh_token"),
-          username: decryptedUser.username,
-          userid: decryptedUser.sub,
-          tokenExpiration: decryptedUser.exp
-        };
-        this.userInfo.next(data);
-      }
-    }
+  decryptData(textToDecrypt : any){
+    var bytes = CryptoJS.AES.decrypt(textToDecrypt, this.secretKey.trim());
+    this.currentLogedInUserId = bytes.toString(CryptoJS.enc.Utf8);
   }
 
-  userLogin(userPayload: any): Observable<boolean> {
 
-    return this.http.post("http://localhost:3000/login/auth", userPayload).pipe(
-      map((value: any) => {
-        if (value) {
-          localStorage.setItem("access_token", value.access_token);
-          localStorage.setItem("refresh_token", value.refresh_token);
-          const decryptedUser = this.jwtHelper.decodeToken(value.access_token);
+//   loadUserInfo() {
+//     const userData = this.userInfo.getValue();
+//     if (!userData) {
+//       const accessToken = localStorage.getItem("access_token")
+//       if (accessToken) {
+//         const decryptedUser = this.jwtHelper.decodeToken(accessToken);
+//         const data = {
+//           access_token: accessToken,
+//           refresh_token: localStorage.getItem("refresh_token"),
+//           username: decryptedUser.username,
+//           userid: decryptedUser.sub,
+//           tokenExpiration: decryptedUser.exp
+//         };
+//         this.userInfo.next(data);
+//       }
+//     }
+//   }
 
-          const data = {
-            access_token: value.access_token,
-            refresh_token: value.refresh_token,
-            username: decryptedUser.username,
-            userid: decryptedUser.sub,
-            tokenExpiration: decryptedUser.exp
-          };
+//   userLogin(userPayload: any): Observable<boolean> {
 
-          this.userInfo.next(data);
-          return true;
-        }
-        return false;
-      })
-      );
-    }
+//     return this.http.post("http://localhost:3000/login/auth", userPayload).pipe(
+//       map((value: any) => {
+//         if (value) {
+//           localStorage.setItem("access_token", value.access_token);
+//           localStorage.setItem("refresh_token", value.refresh_token);
+//           const decryptedUser = this.jwtHelper.decodeToken(value.access_token);
 
-    callRefreshToken(tokenPayload: any): Observable<any> {
-      return this.http.post('http://localhost:3000/auth/login', tokenPayload);
-    }
-  }
+//           const data = {
+//             access_token: value.access_token,
+//             refresh_token: value.refresh_token,
+//             username: decryptedUser.username,
+//             userid: decryptedUser.sub,
+//             tokenExpiration: decryptedUser.exp
+//           };
+
+//           this.userInfo.next(data);
+//           return true;
+//         }
+//         return false;
+//       })
+//     );
+//   }
+
+//   callRefreshToken(tokenPayload: any): Observable<any> {
+//     return this.http.post('http://localhost:3000/auth/login', tokenPayload);
+//   }
+}

@@ -1,28 +1,28 @@
 <nav class="navbar fixed-top">
   <div class="title">Resident App</div>
-  <ul class="open-menu">
-    <li><a href="#">Home</a></li>
+  <ul class="open-menu" >
+    <li><a routerLink="/">Home</a></li>
     <li><a>Events</a></li>
     <li>
       <div class="dropdown">
-        <a href="#">Resident Info</a>
+        <a >Resident Info</a>
         <div class="dropdown-content">
-          <a href="#">Dashboard</a>
+          <a routerLink="#">Dashboard</a>
           <a href="residentinfo">Resident Information</a>
           <a href="addresident">Add A New Resident</a>
         </div>
       </div>
     </li>
     <li>
-      <div class="dropdown">
-        <button class="dropdownbtn"  *ngIf="this.logedIn == true" (click)="logout()">
-          <p class="name" >Log out</p>
-        </button>
-        <div class="dropdown-content" *ngFor="let user of userArray">
-          <a class="user-type">{{user.DisplayName}}</a>
-          <a href="register">New Account</a>
-          <a href="allusers">All users</a>
+      <div class="dropdown" *ngIf="user">
+        <p class="dropdownbtn">{{user.userName}}</p>
+        <div class="dropdown-content">
+          <a routerLink="register">New Account</a>
+          <a routerLink="allusers">All users</a>
           <a routerLink="myprofile">My profile</a>
+          <a class='user-type' (click)="openLogoutDialog()">
+            Log out
+        </a>
         </div>
       </div>
     </li>
@@ -37,8 +37,8 @@
     </label>
     <div id="sidebarMenu">
       <div class="main-content-wrapper">
-        <div class="sidebar-container"  *ngFor="let user of userArray" >
-        <a class="name"><strong>{{user.DisplayName}}</strong></a>
+        <div class="sidebar-container">
+        <a *ngIf="user" class="name"><strong>{{user.userName}}</strong></a>
         <a href="/">Home</a>
         <a href="myprofile">My profile</a>
         <a>Events</a>

@@ -4,7 +4,7 @@
     <img src="/assets/images/people/View Profile.png" alt="" class="img-web">
 
     <div class="welcome-container">
-      <h1 class="welcome">Hello {{currentUsername}}</h1>
+      <h1 class="welcome">Hello {{user.userName}}</h1>
       <h6 class="login-text">Click to edit info</h6>
     </div>
 
@@ -12,67 +12,54 @@
       <div class="form">
         <form class="edit-form">
           <mat-label>User name</mat-label>
-          <input type="text" title="username" placeholder="Username" [ngModelOptions]="{standalone: true}"
-            value={{oldUserName}} [(ngModel)]="newUserName" required>
+          <input type="text" title="username" placehnewer="Username" [ngModelOptions]="{standalone: true}"
+            value={{user.userName}} [(ngModel)]="user.userName" required>
 
           <mat-label>First Name</mat-label>
-          <input type="text" title="first name" placeholder="First name" value={{oldFirstName}}
-            [(ngModel)]="newFirstName" [ngModelOptions]="{standalone: true}" required>
+          <input type="text" title="first name" placehnewer="First name" value={{newFirstName}}
+            [(ngModel)]="user.firstName" [ngModelOptions]="{standalone: true}" required>
 
           <mat-label>Gender</mat-label>
-          <mat-select class="selection-input" placeholder="Gender" [(ngModel)]="newGender" required value={{oldGender}}
+          <mat-select class="selection-input" placehnewer="Gender" [(ngModel)]="user.gender" required value={{newGender}}
             [ngModelOptions]="{standalone: true}">
             <mat-option value="M">M</mat-option>
             <mat-option value="F">F</mat-option>
           </mat-select>
 
           <mat-label>Email</mat-label>
-          <input type="text" title="Email" placeholder="Email" value={{oldEmail}} [ngModelOptions]="{standalone: true}"
-            [(ngModel)]="newEmail" required>
+          <input type="text" title="Email" placehnewer="Email" value={{newEmail}} [ngModelOptions]="{standalone: true}"
+            [(ngModel)]="user.email" required>
 
-          <mat-label>Password</mat-label>
-          <input [type]="hide ? 'password' : 'text'" title="password" placeholder="password" value={{oldPassword}}
-            [ngModelOptions]="{standalone: true}" [(ngModel)]="newPassword" required>
+          <mat-label>Phone Number</mat-label>
+          <input type="text" title="Email" placehnewer="Phone Number" value={{newPhoneNumber}} [ngModelOptions]="{standalone: true}"
+            [(ngModel)]="user.phoneNumber" required>
 
-
-
-          <mat-label *ngIf="this.oldPassword != this.newPassword">Repeat password</mat-label>
-          <input type="password" title="repeat password" *ngIf="this.oldPassword !== this.newPassword"
-            [ngModelOptions]="{standalone: true}" placeholder="Repeat password" [(ngModel)]="newUserName">
-
-          <div class="button2">
-            <button class="show" disableRipple="true" mat-button matSuffix type="button" (click)="confirmPassword()"
-              [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-              {{hide ? 'Show Password' : 'Hide Password'}}
-            </button>
-
-            <button type="button" routerLink="/forgetpassword" class="show" mat-button>Forget?</button>
-          </div>
 
           <mat-label>Role</mat-label>
-          <mat-select class="selection-input" placeholder="Role" value={{oldUserTypeValue}}
-            [ngModelOptions]="{standalone: true}" [disabled]="this.currentUserType !=='Admin' "
-            [(ngModel)]="newUserTypeValue">
+          <mat-select class="selection-input" placehnewer="Role" 
+            [ngModelOptions]="{standalone: true}" [disabled]="user.role != 'Admin' "
+            [(ngModel)]="user.role">
             <mat-option *ngFor="let userTypesArray of userTypesArrays" [value]="userTypesArray">{{userTypesArray}}
             </mat-option>
           </mat-select>
 
           <mat-label>Committee</mat-label>
-          <mat-select class="selection-input" placeholder="Committee" value={{oldUserTypeValue}}
-            [ngModelOptions]="{standalone: true}" [disabled]="this.currentUserType !=='Admin' "
-            [(ngModel)]="newUserTypeValue">
-            <mat-option *ngFor="let userTypesArray of userTypesArrays" [value]="userTypesArray">{{userTypesArray}}
+          <mat-select class="selection-input" placehnewer="Committee" value={{newCommitteeValue}}
+            [ngModelOptions]="{standalone: true}" [disabled]="user.role !=='Admin' "
+            [(ngModel)]="user.committee">
+            <mat-option *ngFor="let committeeArray of committeeArrays" [value]="committeeArray">{{committeeArray}}
             </mat-option>
           </mat-select>
 
           <mat-label>Block Number</mat-label>
-          <input type="text" title="username" placeholder="Block Number" value={{oldBlockNumber}}
-            [ngModelOptions]="{standalone: true}" [(ngModel)]="newBlockNumber"
-            [readonly]="this.currentUserType !=='Admin'" required>
+          <input type="text" title="username" placehnewer="Block Number" value={{newBlockNumber}}
+            [ngModelOptions]="{standalone: true}" [(ngModel)]="user.blockNumber"
+            [readonly]="user.role !=='Admin'" required>
 
           <div class="button">
             <br>
             <button class="edit-btn" type="button" [disabled]="" (click)="edit()">Save changes</button>
+            <button class="forget-btn" type="button" routerLink="/forgetpassword">Forget Password?</button>
             <button class="delete-btn" type="button" (click)="delete()">Delete Account</button>
           </div>
         </form>

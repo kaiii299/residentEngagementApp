@@ -1,6 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Authservice } from '../share/services/auth.service';
+import {userDataInterface} from 'src/app/share/services/Users'
+
 export interface DialogData {
   password: string;
 }
@@ -11,35 +13,26 @@ export interface DialogData {
 })
 export class UserProfileComponent implements OnInit {
   deleteConfirmation: string
-  passwordConfirmation =""
+  passwordConfirmation = ""
 
   hide = true
   message = "";
-  dateTime = "";
-  currentUserType = 'CCC'
-  currentUsername = 'Tom'
+  dateTime: any
+  currentUserType: any
+  currentUsername: string
 
-  oldEmail = ""
-  oldUserName = "Tom";
-  oldFirstName = "";
-  oldPassword = "";
-  oldGender = "";
-  oldBlockNumber = "";
-  oldUserTypeValue = "Bussin";
-  oldCommitteesValue = "";
-  oldStatus = "";
+  newEmail: any
+  newUserName: any
+  newFirstName: any
+  newPassword: any
+  newGender: any
+  newBlockNumber: any
+  newRoleValue: any
+  newCommitteeValue: any
+  newStatus: any
+  newPhoneNumber: string;
 
-  newEmail = ""
-  newUserName = "";
-  newFirstName = "";
-  newPassword = "";
-  newGender = "";
-  newBlockNumber = "";
-  newUserTypeValue = "";
-  newCommitteesValue = "";
-  newStatus = "";
-
-  userArray = Array();
+  user : any;
 
   userTypesArrays: string[] = [
     "Admin",
@@ -50,7 +43,7 @@ export class UserProfileComponent implements OnInit {
     "Normal RN Manager"
   ]
 
-  committeesArrays: string[] = [
+  committeeArrays: string[] = [
     "Taman Jurong Zone A RN",
     "Taman Jurong Zone B RC",
     "Taman Jurong Zone C RN",
@@ -65,13 +58,16 @@ export class UserProfileComponent implements OnInit {
     "Lakelife RN",
     "Lakepoint Condo NC",
     "Lakeside Grove NC",
-  ]
+]
 
-
-
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, public authService: Authservice) { }
 
   ngOnInit(): void {
+    var uid = localStorage.getItem("uid")
+    this.authService.getUserById(uid).subscribe(res => {
+      this.user = res
+      console.log(res)
+    })
   }
 
   delete() {
@@ -86,7 +82,17 @@ export class UserProfileComponent implements OnInit {
   }
 
   edit() {
-    alert("edit")
+    const obj: userDataInterface = {
+      username: this.user.userName,
+      email: this.user.email,
+      firstName: this.user.firstName,
+      gender: this.user.gender,
+      phoneNumber: this.user.phoneNumber,
+      Role: this.user.role,
+      committee: this.user.committee,
+      blockNumber: this.user.blockNumber,
+    }
+    console.log(obj)
   }
 
   confirmPassword() {
@@ -96,7 +102,7 @@ export class UserProfileComponent implements OnInit {
     });
     passwordDialogRef.afterClosed().subscribe(result => {
       this.passwordConfirmation = result;
-      if(result == "Password"){
+      if (result == "Password") {
         this.hide = false
       }
     })
@@ -104,67 +110,64 @@ export class UserProfileComponent implements OnInit {
 }
 
 @Component({
-selector:"password-varification-dialog",
-templateUrl: './passwordVarification-dialog.html'
+  selector: "password-varification-dialog",
+  templateUrl: './passwordVarification-dialog.html'
 })
-export class passwordVarificationDialog{
-  passwordConfirmation :any
-  message =""
+export class passwordVarificationDialog {
+  passwordConfirmation: any
+  message = ""
 
-  constructor(public dialogRef: MatDialogRef<UserProfileComponent>, private authService: Authservice){
-  dialogRef.disableClose = true;
-  this.authService.getSignInUser().subscribe(res=>{
+  constructor(public dialogRef: MatDialogRef<UserProfileComponent>, private authService: Authservice) {
+    dialogRef.disableClose = true;
 
-  })
-
-    }
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  confirmPassword(passwordConfirmationFromHtml: any){
-    if(passwordConfirmationFromHtml == "Password"){
+  confirmPassword(passwordConfirmationFromHtml: any) {
+    if (passwordConfirmationFromHtml == "Password") {
       this.dialogRef.close(passwordConfirmationFromHtml)
     }
-    else{
-      this.message ="Wrong password.Try Again"
+    else {
+      this.message = "Wrong password.Try Again"
     }
   }
 }
 
 @Component({
-  selector:"delete-user-confirmation-dialog",
+  selector: "delete-user-confirmation-dialog",
   templateUrl: './deleteUser-dialog.html'
-  })
-  export class DeleteUserConfirmationDialog{
-    deleteConfirmation = ''
-    message =""
-    text: any
+})
+export class DeleteUserConfirmationDialog {
+  deleteConfirmation = ''
+  message = ""
+  text: any
 
-    constructor(public dialogRef: MatDialogRef<UserProfileComponent>){
+  constructor(public dialogRef: MatDialogRef<UserProfileComponent>) {
     dialogRef.disableClose = true;
-    
+
+  }
+
+  ngOnInit(): void {
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  confirmDelete() {
+    if (this.deleteConfirmation == "DELETE") {
+      alert("account deleted")
+      this.dialogRef.close()
     }
-
-      ngOnInit(): void {
-      }
-
-      onNoClick(): void {
-        this.dialogRef.close();
-      }
-
-      confirmDelete(){
-        if(this.deleteConfirmation == "DELETE"){
-          alert("account deleted")
-          this.dialogRef.close()
-        }
-        else{
-          this.message = "Try again"
-          this.deleteConfirmation =''
-        }
-      }
-
-
+    else {
+      this.message = "Try again"
+      this.deleteConfirmation = ''
     }
+  }
+
+
+}
 

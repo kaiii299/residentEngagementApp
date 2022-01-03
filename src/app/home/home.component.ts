@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Authservice } from '../share/services/auth.service';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-home',
@@ -17,10 +18,10 @@ hide = true
   }
 
   ngOnInit(): void {
-    localStorage.setItem("userId" , '0')
   }
 
-  async Login(){
+
+   Login(){
     if(this.loginData.email == ""){
       this.message ="Please provide email"
     }
@@ -30,9 +31,13 @@ hide = true
     }
 
     else{
-     await this.authService.signIn(this.loginData.email, this.loginData.password).then(res=>{
-      //  console.log(res)
-       this.route.navigate(['allusers'])
+      this.authService.signIn(this.loginData.email, this.loginData.password).then(userInfo=>{
+       var userObj: any = userInfo;
+       var uid = userObj.user.uid;
+       const encryptedText = this.authService.encryptData(uid)
+       localStorage.setItem("uid",encryptedText);
+       localStorage.setItem("data",JSON.stringify(userObj.user))
+       this.route.navigate(['allusers']);
      }).catch(error=>{
        this.message = "Wrong password"
      })

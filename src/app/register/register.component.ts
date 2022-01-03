@@ -27,7 +27,7 @@ export class RegisterComponent implements OnInit {
 
   message = "";
   email = ""
-  displayName = "";
+  userName = "";
   firstName = "";
   phoneNumber = "";
   password = "";
@@ -95,7 +95,7 @@ export class RegisterComponent implements OnInit {
     if (this.email == "") {
       this.message = "Email cannot be empty"
     }
-    if (this.displayName == "") {
+    if (this.userName == "") {
       this.message = "Username cannot be empty"
     }
     if (this.firstName == "") {
@@ -150,17 +150,17 @@ export class RegisterComponent implements OnInit {
       this.registeredTime = new Date().toLocaleTimeString();
 
       let newUser:any = {}
-      newUser['Email'] = this.email;
-      newUser['DisplayName']  = this.displayName;
-      newUser['FirstName'] = this.firstName;
-      newUser['PhoneNumber']  = this.phoneNumber;
-      newUser['Gender'] = this.gender;
-      newUser['Role'] = this.roleValue;
-      newUser['Commmittee'] = this.committeesValue;
-      newUser['BlockNumber'] = this.blockNumber;
-      newUser['RegsitrationDate'] = this.registeredDate;
-      newUser['RegistrationTime'] = this.registeredTime;
-      newUser['Status'] = this.status;
+      newUser['email'] = this.email;
+      newUser['userName']  = this.userName;
+      newUser['firstName'] = this.firstName;
+      newUser['phoneNumber']  = this.phoneNumber;
+      newUser['gender'] = this.gender;
+      newUser['role'] = this.roleValue;
+      newUser['commiittee'] = this.committeesValue;
+      newUser['blockNumber'] = this.blockNumber;
+      newUser['regsitrationDate'] = this.registeredDate;
+      newUser['registrationTime'] = this.registeredTime;
+      newUser['status'] = this.status;
 
       this.authService.register(this.email, this.password).then(res => {
         this.authService.createNewUser(newUser).then(res => {
@@ -172,7 +172,7 @@ export class RegisterComponent implements OnInit {
           console.log(error)
         })
       }).catch(error => {
-        this.message = "The Email address is already in use"
+        this.message = "The Email address is in use"
         this.messageColor = "red"
         console.log(error)
       });

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { map } from 'rxjs/operators';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { map, takeWhile } from 'rxjs/operators';
 import { Authservice } from '../share/services/auth.service';
-
+import {userDataInterface} from 'src/app/share/services/Users'
 
 @Component({
   selector: 'app-nav-bar',
@@ -9,32 +10,46 @@ import { Authservice } from '../share/services/auth.service';
   styleUrls: ['./nav-bar.component.scss']
 })
 export class NavBarComponent implements OnInit {
-  users: any;
+  user: any;
   userArray = Array();
-  displayName: string;
-  logedIn: boolean ;
+  userName: any;
 
-  constructor(private authService: Authservice) {
-    if(localStorage.getItem("userId") == "0" || !localStorage.getItem("userId")){
-      this.logedIn = false
-    }
-    else{
-      this.logedIn = true
-    }
+  constructor(public authService: Authservice, public dialog: MatDialog) {
   }
 
-  ngOnInit(): void {
-    this.users = this.authService.getSignInUser().subscribe(res=>{
-      this.userArray.push(res)
-      console.log(this.userArray)
+  ngOnInit() {
+    var encryptedUid = localStorage.getItem("uid");
+    var uid = this.authService.decryptData(encryptedUid)
+    this.authService.getUserById(uid).subscribe(data => {
+      this.user = data
+      console.log(data)
     });
+  }
+
+  openLogoutDialog() {
+    this.dialog.open(logoutConfirmationDialog, {
+      width: '300px',
+      height: '150px'
+    })
+  }
+}
+
+@Component({
+  selector: 'app-nav-bar-dialog',
+  templateUrl: './logout-confirmation-dialog.html',
+  styleUrls: ['./nav-bar.component.scss']
+})
+
+export class logoutConfirmationDialog {
+  constructor(private authService: Authservice) {
+  }
+
+  onNoClick() {
   }
 
   logout() {
     this.authService.logout()
     window.location.reload()
   }
-
-
 
 }

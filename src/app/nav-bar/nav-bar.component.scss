@@ -18,7 +18,7 @@
   justify-content: space-between;
   align-items: center;
   background-color: #f28832;
-  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(49, 49, 49, 0.22);
   color: white;
   height: 60px;
 }
@@ -163,7 +163,7 @@ li a {
 
 li a:hover:not(.active) {
   text-decoration: underline;
-  text-decoration-thickness: 5px;
+  //text-decoration-thickness: 5px;
 }
 
 .a-button{
@@ -191,21 +191,22 @@ li a:hover:not(.active) {
 }
 
 .dropdownbtn{
-  display: block;
-  height: 40px;
-  width: auto;
-  color: white;
-  border: none;
+  display: flex;
   text-align: center;
+  justify-content: center;
+  align-items: center;
+  margin: 0px 30px 10px 50px;
+  padding: 20px 15px 25px 15px;
+  width: auto;
+  height: 40px;
+  font-size: 35px;
   background-color: #5151E4;
-  margin:3px 10px 0px 40px;
   border-radius: 5px;
   position: relative;
   &:hover{
     background-color: #011e92;
   }
 }
-
 
 
 .dropdown-content {
@@ -222,11 +223,15 @@ li a:hover:not(.active) {
   border-radius: 5px;
 }
 
-.dropdown-content .user-type{
-  color: rgb(255, 255, 255);
+ .user-type{
+  background-color: #fa7900;
   font-weight: bold;
-  background-color: rgb(255, 81, 0);
-  border-radius: 5px;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 30px;
   &:hover{
     text-decoration: none;
   }
@@ -250,7 +255,7 @@ li a:hover:not(.active) {
   margin-left:0px;
 }
 
-// .dropdown-content a:hover {background-color: #ddd;}
+// .dropdown-content a:hover {background-color: rgb(221, 221, 221);}
 .dropdown:hover .dropdown-content {display: block;}
 .dropdown:hover .dropdown-content {display: block;}
 
@@ -302,12 +307,9 @@ li a:hover:not(.active) {
     padding: 0px  0px 0px;
     transform: translate(-50%,-50%);
     margin-top: none;
-    //text-align: center;
-    //background-color: #5151E4;
     display: block;
     width: auto;
     border-radius: 5px;
-
   }
 
   .sidebar-container{

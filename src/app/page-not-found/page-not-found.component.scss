@@ -16,11 +16,14 @@ img{
 
 p{
   position: absolute;
+  display: flex;
+  text-align: center;
   left: 50%;
-  top: 45%;
+  top: 50%;
   transform: translate(-50%,-50%);
   height: 70vh;
-  font-size: 8em;
+  width: auto;
+  font-size: 6em;
   color: whitesmoke;
 }
 

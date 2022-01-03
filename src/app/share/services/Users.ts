@@ -1,4 +1,4 @@
-export interface userDataInfo {
+export interface userDataInterface {
   email?: string,
   registeredTime?: string,
   phoneNumber?: string,

@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
@@ -6,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { logoutConfirmationDialog, NavBarComponent } from './nav-bar/nav-bar.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
@@ -62,10 +63,12 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
     UserProfileComponent,
     passwordVarificationDialog,
     DeleteUserConfirmationDialog,
+    logoutConfirmationDialog,
     UpdateResidentComponent,
     ResidentInfoComponent,
   ],
   imports: [
+    CommonModule,
     HttpClientModule,
     BrowserModule,
     AppRoutingModule,

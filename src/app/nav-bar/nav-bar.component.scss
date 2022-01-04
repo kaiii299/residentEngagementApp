@@ -161,9 +161,8 @@ li a {
   cursor: pointer;
 }
 
-li a:hover:not(.active) {
+li a:hover {
   text-decoration: underline;
-  //text-decoration-thickness: 5px;
 }
 
 .a-button{
@@ -171,7 +170,6 @@ li a:hover:not(.active) {
     text-decoration: none;
   }
 }
-
 
 .name{
   font-size: 30px;
@@ -223,7 +221,7 @@ li a:hover:not(.active) {
   border-radius: 5px;
 }
 
- .user-type{
+.user-type{
   background-color: #fa7900;
   font-weight: bold;
   border: none;

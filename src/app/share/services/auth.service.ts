@@ -59,11 +59,13 @@ export class Authservice implements OnInit {
     this.router.navigate(['/']);
   }
 
-  updateUserData(data: any, user: any) {
-    const userRef: AngularFirestoreDocument<userDataInterface> = this.db.doc(
-      `Users/${user.uid}`
-    );
-    return userRef.set(data, { merge: true }); //allows users to keep existing data
+  updateUserData(data: any) {
+    this.firebaseAuth.onAuthStateChanged(user=>{
+      const userRef: AngularFirestoreDocument<userDataInterface> = this.db.doc(
+        `Users/${user?.uid}`
+      );
+      return userRef.set(data, { merge: true }); //allows users to keep existing data
+    })
   }
 
   async register(email: string, password: string) {
@@ -99,7 +101,7 @@ export class Authservice implements OnInit {
     var bytes = CryptoJS.AES.decrypt(textToDecrypt, this.secretKey.trim());
     this.currentLogedInUserId = bytes.toString(CryptoJS.enc.Utf8);
   }
-  
+
   //   loadUserInfo() {
   //     const userData = this.userInfo.getValue();
   //     if (!userData) {

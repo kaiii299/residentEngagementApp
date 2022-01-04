@@ -31,7 +31,7 @@ import { UpdateResidentComponent } from './update-resident/update-resident.compo
 import { ResidentInfoComponent } from './resident-info/resident-info.component';
 import { ResidentInformation } from '../app/resident-information';
 import { EventsPageComponent } from './events-page/events-page.component';
-import { DeleteUserConfirmationDialog, passwordVarificationDialog, UserProfileComponent } from './user-profile/user-profile.component';
+import { DeleteUserConfirmationDialog, saveChangesDialog, UserProfileComponent } from './user-profile/user-profile.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthRouteGuard } from './share/services/guards/auth.route.guard';
@@ -61,7 +61,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
     AddResidentComponent,
     EventsPageComponent,
     UserProfileComponent,
-    passwordVarificationDialog,
+    saveChangesDialog,
     DeleteUserConfirmationDialog,
     logoutConfirmationDialog,
     UpdateResidentComponent,

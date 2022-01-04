@@ -7,7 +7,7 @@ import {userDataInterface} from 'src/app/share/services/Users'
 
 const ELEMENT_DATA: userDataInterface[] = [
   {
-    username:"jack"
+    userName:"jack"
   }
 ];
 

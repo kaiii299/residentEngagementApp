@@ -13,7 +13,7 @@ export class NavBarComponent implements OnInit {
   user: any;
   userObj: any
   userArray = Array();
-  userName: any;
+  displayName: any;
 
   constructor(public authService: Authservice, public dialog: MatDialog) {
   }
@@ -23,7 +23,7 @@ export class NavBarComponent implements OnInit {
     var uid = this.authService.decryptData(encryptedUid)
    const res: any = await this.authService.getUserById(uid).subscribe(data => {
       this.user = data
-      console.log(data)
+      this.displayName = this.user.userName
     });
     var _userObj = JSON.stringify(localStorage.getItem("data"));
     this.userObj = JSON.parse(_userObj)

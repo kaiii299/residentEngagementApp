@@ -8,14 +8,14 @@
         <a >Resident Info</a>
         <div class="dropdown-content">
           <a routerLink="#">Dashboard</a>
-          <a href="residentinfo">Resident Information</a>
-          <a href="addresident">Add A New Resident</a>
+          <a  routerLink="residentinfo">Resident Information</a>
+          <a routerLink="addresident">Add A New Resident</a>
         </div>
       </div>
     </li>
     <li>
       <div class="dropdown" *ngIf="user">
-        <p class="dropdownbtn">{{user.userName}}</p>
+        <p class="dropdownbtn">{{displayName}}</p>
         <div class="dropdown-content">
           <a routerLink="register">New Account</a>
           <a routerLink="allusers">All users</a>
@@ -38,9 +38,9 @@
     <div id="sidebarMenu">
       <div class="main-content-wrapper">
         <div class="sidebar-container">
-        <a *ngIf="user" class="name"><strong>{{user.userName}}</strong></a>
-        <a href="/">Home</a>
-        <a href="myprofile">My profile</a>
+        <a *ngIf="user" class="name"><strong>{{displayName}}</strong></a>
+        <a routerLink="/">Home</a>
+        <a routerLink="myprofile">My profile</a>
         <a>Events</a>
         <a>Resident Info</a>
         <a href="register">New Account</a>

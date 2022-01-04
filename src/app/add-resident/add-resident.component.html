@@ -5,7 +5,7 @@
                 <h1>Add A New Resident</h1>
                 <form [formGroup]="addResidentForm">
                     <label>Resident Name :</label>
-                    <input class='form-control' type="text" oninput="this.value = this.value.toUpperCase()" formControlName="residentName" required>
+                    <input title="residentName" class='form-control' type="text" oninput="this.value = this.value.toUpperCase()" formControlName="residentName" required>
                     <div *ngIf="addResidentForm.controls['residentName'].invalid && (addResidentForm.controls['residentName'].dirty || addResidentForm.controls['residentName'].touched)"
                         class="alert alert-danger">
                         <div *ngIf="addResidentForm.controls['residentName'].errors.required">
@@ -13,7 +13,7 @@
                         </div>
                     </div>
                     <label>Committee :</label>
-                    <select class='form-control' formControlName="committee">
+                    <select title="committee" class='form-control' formControlName="committee">
                         <option value="" disabled selected hidden>Select Committee</option>
                         <option *ngFor="let c of committees">
                             {{c}}
@@ -26,7 +26,7 @@
                         </div>
                     </div>
                     <label>Block Number :</label>
-                    <input class='form-control' type="text" formControlName="blkNum" required>
+                    <input title="blockNum" class='form-control' type="text" formControlName="blkNum" required>
                     <div *ngIf="addResidentForm.controls['blkNum'].invalid && (addResidentForm.controls['blkNum'].dirty || addResidentForm.controls['blkNum'].touched)"
                         class="alert alert-danger">
                         <div *ngIf="addResidentForm.controls['blkNum'].errors.required">
@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <label>Unit Number :</label>
-                    <input class='form-control' formControlName="unitNum" required>
+                    <input title="unitNumber" class='form-control' formControlName="unitNum" required>
                     <div *ngIf="addResidentForm.controls['unitNum'].invalid && (addResidentForm.controls['unitNum'].dirty || addResidentForm.controls['unitNum'].touched)"
                         class="alert alert-danger">
                         <div *ngIf="addResidentForm.controls['unitNum'].errors.required">
@@ -42,7 +42,7 @@
                         </div>
                     </div>
                     <label>Gender :</label>
-                    <select class='form-control' formControlName="gender">
+                    <select title="gender" class='form-control' formControlName="gender">
                         <option value="" disabled selected hidden>Select Gender</option>
                         <option *ngFor="let gen of genders">
                             {{gen}}
@@ -55,7 +55,7 @@
                         </div>
                     </div>
                     <label>Race :</label>
-                    <input class='form-control' formControlName="race" required>
+                    <input title="race" class='form-control' formControlName="race" required>
                     <div *ngIf="addResidentForm.controls['race'].invalid && (addResidentForm.controls['race'].dirty || addResidentForm.controls['race'].touched)"
                         class="alert alert-danger">
                         <div *ngIf="addResidentForm.controls['race'].errors.required">
@@ -63,7 +63,7 @@
                         </div>
                     </div>
                     <label>Age Group :</label>
-                    <select class='form-control' formControlName="ageGp">
+                    <select title="ageGrp" class='form-control' formControlName="ageGp">
                         <option value="" disabled selected hidden>Select Age Group</option>
                         <option *ngFor="let age of ageGps">
                             {{age}}
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                     <label>Expertise :</label>
-                    <input class='form-control' type="text" formControlName="expertise" required>
+                    <input title="expertise" class='form-control' type="text" formControlName="expertise" required>
                     <div *ngIf="addResidentForm.controls['expertise'].invalid && (addResidentForm.controls['expertise'].dirty || addResidentForm.controls['expertise'].touched)"
                         class="alert alert-danger">
                         <div *ngIf="addResidentForm.controls['expertise'].errors.required">

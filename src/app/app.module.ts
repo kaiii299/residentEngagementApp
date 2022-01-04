@@ -47,6 +47,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/database'
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import { windowService } from './share/services/window.service';
 
 
 @NgModule({
@@ -106,7 +107,8 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
     ResidentInformation,
     HasRoleGuard,
     Authservice,
-    AuthRouteGuard],
+    AuthRouteGuard,
+  windowService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

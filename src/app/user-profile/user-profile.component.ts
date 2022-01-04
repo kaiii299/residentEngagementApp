@@ -96,18 +96,20 @@ export class UserProfileComponent implements OnInit {
   }
 
   openEditDialog(
-    userName$ = this.newUserName,
-    email$ = this.newEmail,
-    firstName$ = this.newFirstName ,
-    gender$ = this.newGender ,
-    phoneNumber$ = this.newPhoneNumber ,
-    Role$ = this.newRoleValue ,
-    committee$ = this.newCommitteeValue ,
-    blockNumber$ = this.newBlockNumber
+    userName = this.newUserName,
+    email = this.newEmail,
+    firstName = this.newFirstName ,
+    gender = this.newGender ,
+    phoneNumber = this.newPhoneNumber ,
+    role = this.newRoleValue ,
+    committee = this.newCommitteeValue ,
+    blockNumber = this.newBlockNumber,
+    LastUpdatedDate = new Date().toLocaleDateString(),
+    LastUpdtedTime = new Date().toLocaleTimeString(),
   ) {
     this.dialog.open(saveChangesDialog,{
-      data:{userName$,
-        email$, firstName$, gender$, phoneNumber$, Role$, committee$, blockNumber$
+      data:{userName,
+        email, firstName, gender, phoneNumber, role, committee, blockNumber ,LastUpdatedDate, LastUpdtedTime
       }
     })
   }
@@ -121,7 +123,7 @@ export class saveChangesDialog {
   message = '';
 
   constructor(
-    public dialogRef: MatDialogRef<UserProfileComponent>,
+    public dialogRef: MatDialogRef<UserProfileComponent>,public authService: Authservice,
     @Inject(MAT_DIALOG_DATA) public data: DialogData,
   ) {
     dialogRef.disableClose = true;
@@ -134,7 +136,8 @@ export class saveChangesDialog {
   update(){
     console.log(this.data);
     this.dialogRef.close();
-    //alert('updated profile');
+    this.authService.updateUserData(this.data)
+    alert('updated profile');
   }
 }
 

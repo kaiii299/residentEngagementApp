@@ -4,7 +4,7 @@
     <img src="/assets/images/people/View Profile.png" alt="" class="img-web">
 
     <div class="welcome-container">
-      <h1 class="welcome">Hello {{user.userName}</h1>
+      <h1 class="welcome">Hello <em>{{user.userName}}</em></h1>
       <h6 class="login-text">Click to edit info</h6>
     </div>
 
@@ -13,7 +13,7 @@
         <form class="edit-form">
           <mat-label>User name</mat-label>
           <input type="text" title="username" placehnewer="Username" [ngModelOptions]="{standalone: true}"
-            value={{user.userName} [(ngModel)]="newUserName" required>
+             [(ngModel)]="newUserName" required>
 
           <mat-label>First Name</mat-label>
           <input type="text" title="first name" placehnewer="First name" value={{newFirstName}}
@@ -38,7 +38,7 @@
           <mat-label>Role</mat-label>
           <mat-select class="selection-input" placehnewer="Role"
             [ngModelOptions]="{standalone: true}" [disabled]="newRoleValue != 'Admin' "
-            [(ngModel)]="newRoleValue" [value]="newRoleValue">
+            [(ngModel)]="user.role" [value]="newRoleValue">
             <mat-option *ngFor="let userTypesArray of userTypesArrays" [value]="userTypesArray">{{userTypesArray}}
             </mat-option>
           </mat-select>

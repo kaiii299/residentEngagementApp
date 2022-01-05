@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { Constants } from '../constants';
-import { ResidentInformation } from '../resident-information';
+import { ResidentService } from '../resident.service';
+import { Router, NavigationExtras } from '@angular/router';
+
 
 @Component({
   selector: 'app-add-resident',
@@ -16,7 +18,7 @@ export class AddResidentComponent implements OnInit {
   activitiesList = Constants.activities;
 
 
-  constructor(private formBuilder: FormBuilder, private residentInformation: ResidentInformation) {
+  constructor(private formBuilder: FormBuilder, private residentService: ResidentService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -41,18 +43,36 @@ export class AddResidentComponent implements OnInit {
   }
 
   add(value: any) {
-    if (this.addResidentForm.valid) {
-      console.log(value);
-      let temp_activities = value.activities;
-      var selected_activities = [];
+    console.log(value);
+    let temp_activities = value.activities;
+    var selected_activities = [];
       for (let i = 0; i < temp_activities.length; i++) {
         let get_activity = this.activitiesList[i];
         if (temp_activities[i]) {
           selected_activities.push(get_activity);
         }
       }
-      value.activities = selected_activities;
-      this.residentInformation.addResident(value)
+      console.log(selected_activities.length);
+    if (this.addResidentForm.valid && selected_activities.length != 0) {
+       value.activities = selected_activities;
+      let resident = {
+        residentName: value.residentName,
+        committee: value.committee,
+        blkNum: value.blkNum,
+        unitNum: value.unitNum,
+        gender: value.gender,
+        race: value.race,
+        ageGp: value.ageGp,
+        expertise: value.expertise,
+        activities: value.activities,
+      }
+      this.residentService.addResident(resident).then(results => {
+        alert("Resident has been successfully added")
+        //console.log(results);
+        //console.log(results.id);
+        this.router.navigate(['residentinfo']);
+      });
+      
     } else {
       alert("Missing information !");
     }

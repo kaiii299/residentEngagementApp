@@ -9,17 +9,19 @@ import { RegisterComponent } from './register/register.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UpdateResidentComponent } from './update-resident/update-resident.component';
 import { ResidentInfoComponent } from './resident-info/resident-info.component';
+import { ResidentDetailComponent } from './resident-detail/resident-detail.component';
 
 const routes: Routes = [
-  {path:"", component: HomeComponent , pathMatch: "full"},
-{path:"register", component: RegisterComponent},
-{path:"forgetpassword", component: ForgetPasswordComponent},
-{path:"allusers", component: AllUsersComponent},
-{path:"addresident", component: AddResidentComponent},
-{path:"myprofile", component: UserProfileComponent},
-  {path: "updateresident", component: UpdateResidentComponent },
-  {path: "residentinfo", component: ResidentInfoComponent},
-{path:"**", component: PageNotFoundComponent ,  pathMatch: "full"}
+  { path: "", component: HomeComponent, pathMatch: "full" },
+  { path: "register", component: RegisterComponent },
+  { path: "forgetpassword", component: ForgetPasswordComponent },
+  { path: "allusers", component: AllUsersComponent },
+  { path: "addresident", component: AddResidentComponent },
+  { path: "myprofile", component: UserProfileComponent },
+  { path: "updateresident", component: UpdateResidentComponent },
+  { path: "residentinfo", component: ResidentInfoComponent },
+  { path: "residentdetail", component: ResidentDetailComponent},
+  { path: "**", component: PageNotFoundComponent, pathMatch: "full" }
 ];
 
 @NgModule({

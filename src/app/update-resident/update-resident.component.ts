@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Constants } from '../constants';
-import {ResidentInformation} from '../resident-information';
 
 @Component({
   selector: 'app-update-resident',
@@ -18,10 +17,10 @@ export class UpdateResidentComponent implements OnInit {
   activities = Constants.activities;
   testResident: any ={};
 
-  constructor(private formBuilder: FormBuilder, private residentInformation: ResidentInformation) { }
+  constructor(private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    this.testResident = this.residentInformation.getResidentById(1);
+    //this.testResident = this.residentInformation.getResidentById(1);
     console.log(this.testResident);
 
     this.updateResidentForm = this.formBuilder.group({

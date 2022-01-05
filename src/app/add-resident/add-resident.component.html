@@ -90,12 +90,12 @@
                             {{activitiesList[i]}}
                         </label>
                     </div>
-                    <!-- <div *ngIf="addResidentForm.controls['i'].invalid && (addResidentForm.controls['i'].dirty || addResidentForm.controls['i'].touched)"
+                    <div *ngIf="addResidentForm.controls['activities'].invalid && (addResidentForm.controls['i'].dirty || addResidentForm.controls['i'].touched)"
                         class="alert alert-danger">
-                        <div *ngIf="addResidentForm.controls['i'].errors.required">
+                        <div *ngIf="addResidentForm.controls['activities'].errors.required">
                             Preferred Activity is required.
                         </div>
-                    </div> -->
+                    </div>
                 </form>
                 <div class="button">
                     <button type="submit" class="btn-success" style="margin: 5px;" (click)="add(addResidentForm.value)">Add</button>

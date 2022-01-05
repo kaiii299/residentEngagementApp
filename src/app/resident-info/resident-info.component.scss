@@ -13,7 +13,7 @@ body{
   margin: 0px 0 0 0;
 }
 
-.filiterContainer{
+.filterContainer{
   margin: 10px 0px 0px 0px ;
   display: flex;
   align-items: center;
@@ -94,6 +94,44 @@ td, th {
 
 input::placeholder{
   color: rgb(119, 119, 119);
+}
+.mat-row:hover .mat-cell {
+  background-color: #ff8800;
+  color: white;
+  cursor: pointer;
+}
+
+//Expanded 
+
+tr.example-detail-row {
+  height: 0;
+}
+
+.example-element-row td {
+  border-bottom-width: 0;
+}
+
+.example-element-detail {
+  overflow: hidden;
+  display: flex;
+}
+
+.expended-cell:hover{
+  background-color: transparent;
+}
+
+.example-element-symbol {
+  font-weight: bold;
+  font-size: 40px;
+  line-height: normal;
+}
+
+.example-element-description {
+  padding: 16px;
+}
+
+.example-element-description-attribution {
+  opacity: 0.5;
 }
 
 

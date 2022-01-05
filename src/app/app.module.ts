@@ -28,7 +28,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import { AddResidentComponent } from './add-resident/add-resident.component';
 import { UpdateResidentComponent } from './update-resident/update-resident.component';
 import { ResidentInfoComponent } from './resident-info/resident-info.component';
-import { ResidentInformation} from '../app/resident-information';
+import { ResidentDetailComponent } from './resident-detail/resident-detail.component';
 import { EventsPageComponent } from './events-page/events-page.component';
 import { DeleteUserConfirmationDialog, passwordVarificationDialog, UserProfileComponent } from './user-profile/user-profile.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
@@ -38,6 +38,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import {AngularFireDatabaseModule} from '@angular/fire/database'
 import { AngularFireModule } from '@angular/fire';
 import { environment } from 'src/environments/environment';
+
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { environment } from 'src/environments/environment';
     DeleteUserConfirmationDialog,
     UpdateResidentComponent,
     ResidentInfoComponent,
+    ResidentDetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,7 +86,6 @@ import { environment } from 'src/environments/environment';
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
   ],
-  providers: [ResidentInformation],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

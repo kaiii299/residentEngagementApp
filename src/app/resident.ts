@@ -1,5 +1,4 @@
-export class Resident{
-    id: number;
+export interface Resident{
     residentName: string;
     committee: string;
     blkNum: string;

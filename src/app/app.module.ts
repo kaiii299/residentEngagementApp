@@ -1,6 +1,7 @@
+import { MbscModule } from '@mobiscroll/angular';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -68,7 +69,8 @@ import { windowService } from './share/services/window.service';
     UpdateResidentComponent,
     ResidentInfoComponent,
   ],
-  imports: [
+  imports: [ 
+    MbscModule, 
     CommonModule,
     HttpClientModule,
     BrowserModule,
@@ -99,6 +101,9 @@ import { windowService } from './share/services/window.service';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
   ],
+
+  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+  
   providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,

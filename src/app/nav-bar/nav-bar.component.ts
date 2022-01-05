@@ -29,16 +29,6 @@ export class NavBarComponent implements OnInit {
       var encrypted = this.authService.encryptData(this.displayName)
       localStorage.setItem("username",encrypted)
     })
-
-  //   console.log(this.authService.currentLogedInUserId);
-  //   var encryptedUid = localStorage.getItem("uid");
-  //   var uid = this.authService.decryptData(encryptedUid)
-  //  const res: any =  this.authService.getUserById(uid).subscribe(data => {
-  //     this.user = data
-  //     this.displayName = this.user.userName
-  //   });
-  //   var _userObj = JSON.stringify(localStorage.getItem("data"));
-  //   this.userObj = JSON.parse(_userObj)
   }
 
   openLogoutDialog() {

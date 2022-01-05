@@ -13,20 +13,32 @@ export class NavBarComponent implements OnInit {
   user: any;
   userObj: any
   userArray = Array();
-  displayName: any;
+  displayName: any ;
 
   constructor(public authService: Authservice, public dialog: MatDialog) {
+    var encrypted = localStorage.getItem("username")
+    // console.log(encrypted);
+    if(encrypted){
+      this.displayName = this.authService.decryptData(encrypted)
+    }
   }
 
- async ngOnInit() {
-    var encryptedUid = localStorage.getItem("uid");
-    var uid = this.authService.decryptData(encryptedUid)
-   const res: any = await this.authService.getUserById(uid).subscribe(data => {
-      this.user = data
-      this.displayName = this.user.userName
-    });
-    var _userObj = JSON.stringify(localStorage.getItem("data"));
-    this.userObj = JSON.parse(_userObj)
+  ngOnInit() {
+    this.authService.eventCallback$.subscribe(data=>{
+      this.displayName = data
+      var encrypted = this.authService.encryptData(this.displayName)
+      localStorage.setItem("username",encrypted)
+    })
+
+  //   console.log(this.authService.currentLogedInUserId);
+  //   var encryptedUid = localStorage.getItem("uid");
+  //   var uid = this.authService.decryptData(encryptedUid)
+  //  const res: any =  this.authService.getUserById(uid).subscribe(data => {
+  //     this.user = data
+  //     this.displayName = this.user.userName
+  //   });
+  //   var _userObj = JSON.stringify(localStorage.getItem("data"));
+  //   this.userObj = JSON.parse(_userObj)
   }
 
   openLogoutDialog() {

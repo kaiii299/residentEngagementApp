@@ -11,6 +11,7 @@ import { AuthRouteGuard } from './share/services/guards/auth.route.guard';
 import { HasRoleGuard } from './share/services/guards/has-role.guard';
 import { UpdateResidentComponent } from './update-resident/update-resident.component';
 import { ResidentInfoComponent } from './resident-info/resident-info.component';
+import { EventsPageComponent } from './events-page/events-page.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' }, //login
@@ -34,13 +35,19 @@ const routes: Routes = [
     //data: { role: 'Admin' },
   },
   {
+    path: 'events',
+    component: EventsPageComponent,
+    //canActivate: [AuthRouteGuard, HasRoleGuard],
+    //data: { role: 'Admin' },
+  },
+  {
     path: 'myprofile',
     component: UserProfileComponent,
     //canActivate: [AuthRouteGuard],
     //data: { role: 'Admin' },
   },
-  {path: "updateresident", component: UpdateResidentComponent },
-  {path: "residentinfo", component: ResidentInfoComponent},
+  { path: 'updateresident', component: UpdateResidentComponent },
+  { path: 'residentinfo', component: ResidentInfoComponent },
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full' },
 ];
 

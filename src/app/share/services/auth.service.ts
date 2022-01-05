@@ -12,45 +12,50 @@ import {
 import { userDataInterface } from './Users';
 import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
-import { StorageMap } from '@ngx-pwa/local-storage';
 
 @Injectable()
-export class Authservice implements OnInit {
+export class Authservice {
   userInfo: BehaviorSubject<any> = new BehaviorSubject(null);
   jwtHelper = new JwtHelperService();
-  authState: any = null;
   currentLogedInUserId: any;
   currentLogedInUserName: string;
   currentUserObject: any;
   newUserId: any;
   userLoggedIn: boolean;
+  authState: any = null;
   secretKey = 'YourSecretKeyForEncryption&Descryption';
+  eventCallback = new Subject<string>();//source
+  eventCallback$ = this.eventCallback.asObservable();
 
   constructor(
     private http: HttpClient,
     private firebaseAuth: AngularFireAuth,
     private db: AngularFirestore,
     private router: Router,
-    private storage: StorageMap
   ) {
-    //this.loadUserInfo();
+    this.firebaseAuth.onAuthStateChanged(user=>{
+      if(user){
+        this.getUserById(user.uid)
+      }
+      else{
+        console.log("user not sign in")
+      }
+    })
   }
 
-  ngOnInit(): void {
-    if (localStorage.getItem('uid')) {
-      this.userLoggedIn = true;
-    }
-    this.userLoggedIn = false;
-    console.log(this.userLoggedIn);
-  }
-
-  signIn(email: string, password: string) {
-    return new Promise<any>((resolve, reject) => {
-      this.firebaseAuth.signInWithEmailAndPassword(email, password).then(
-        (res) => resolve(res),
-        (err) => reject(err)
-      );
-    });
+  signIn(email: string, password: string){
+    return this.firebaseAuth.signInWithEmailAndPassword(email, password).then(res=>{
+       const encryptedText = this.encryptData(res.user?.uid)
+       localStorage.setItem("uid",encryptedText);
+       const _uid = this.decryptData(encryptedText);
+        this.getUserById(this.currentLogedInUserId).subscribe(data=>{
+          const _data: any = data
+          this.eventCallback.next(_data.userName)
+        })
+      }).catch(error=>{
+        console.log(error)
+        throw error
+      })
   }
 
   logout() {
@@ -93,13 +98,14 @@ export class Authservice implements OnInit {
     await this.firebaseAuth.sendPasswordResetEmail(email).then((res) => {});
   }
 
-  encryptData(value: string): string {
+  encryptData(value: any) {
     return CryptoJS.AES.encrypt(value, this.secretKey.trim()).toString();
   }
 
   decryptData(textToDecrypt: any) {
     var bytes = CryptoJS.AES.decrypt(textToDecrypt, this.secretKey.trim());
     this.currentLogedInUserId = bytes.toString(CryptoJS.enc.Utf8);
+    return bytes.toString(CryptoJS.enc.Utf8);
   }
 
   //   loadUserInfo() {

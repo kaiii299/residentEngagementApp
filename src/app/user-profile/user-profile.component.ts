@@ -112,6 +112,8 @@ export class UserProfileComponent implements OnInit {
         email, firstName, gender, phoneNumber, role, committee, blockNumber ,LastUpdatedDate, LastUpdtedTime
       }
     })
+    var encrypt = this.authService.encryptData(this.newUserName)
+    localStorage.setItem("username",encrypt)
   }
 }
 

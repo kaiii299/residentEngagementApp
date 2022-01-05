@@ -1,0 +1,53 @@
+<body>
+    <div class="main-container">
+        <div class="container">
+            <h1>Details of the Resident</h1>
+            <form *ngIf="residentDetail">
+                <div class="info">
+                    <label class="top">Resident Name : </label>
+                    <label class="bottom">{{residentDetail.residentName}}</label>
+                </div>
+                <div>
+                    <label class="top">Committee : </label>
+                    <label class="bottom">{{residentDetail.committee}}</label>
+                </div>
+                <div>
+                    <label class="top">Block Number : </label>
+                    <label class="bottom">{{residentDetail.blkNum}}</label>
+                </div>
+                <div>
+                    <label class="top">Unit Number : </label>
+                    <label class="bottom">{{residentDetail.unitNum}}</label>
+
+                </div>
+                <div>
+                    <label class="top">Gender : </label>
+                    <label class="bottom">{{residentDetail.gender}}</label>
+
+                </div>
+                <div>
+                    <label class="top">Race : </label>
+                    <label class="bottom">{{residentDetail.race}}</label>
+
+                </div>
+                <div>
+                    <label class="top">Age Group : </label>
+                    <label class="bottom">{{residentDetail.ageGp}}</label>
+
+                </div>
+                <div>
+                    <label class="top">Expertise : </label>
+                    <label class="bottom">{{residentDetail.expertise}}</label>
+                </div>
+                <div class="activity">
+                    <label>Preferred Activities</label>
+                    <div class="acti">
+                        <div class="item" *ngFor=" let act of residentDetail.activities">
+                            {{act}}
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>

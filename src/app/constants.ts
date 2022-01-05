@@ -1,4 +1,5 @@
 export abstract class Constants{
+
     static readonly committees: string[] =  [
         '9 @ Yuan Ching NC',
         'Caspian NC',
@@ -26,7 +27,7 @@ export abstract class Constants{
     static readonly genders:  string[] =[
         'Male',
         'Female'];
-    
+
     static readonly ageGps:  string[] = [
         'Toddler (below 5)',
         'Child (6-12)',
@@ -34,7 +35,7 @@ export abstract class Constants{
         'Youth (20-25)',
         'Adult (26-54)',
         'Senior (55 onwards)'];
-        
+
     static readonly activities:  string[] =  [
         'Small Social Activities',
         'Family Bonding Activities',

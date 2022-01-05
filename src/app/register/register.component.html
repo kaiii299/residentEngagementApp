@@ -16,10 +16,10 @@
             <form [formGroup]="firstFormGroup">
               <mat-label>Email</mat-label>
               <input matInput placeholder="Email" [(ngModel)]="email" type="text" formControlName="emailCtrl" required>
-              <mat-label>Username</mat-label>
+              <mat-label>Display Name</mat-label>
               <input matInput placeholder="Username" [(ngModel)]="userName" type="text" formControlName="usernameCtrl"
                 required>
-              <mat-label>First Name</mat-label>
+              <mat-label>User Name</mat-label>
               <input matInput placeholder="First name" [(ngModel)]="firstName" type="text"
                 formControlName="firstNameCtrl" required>
               <mat-label>Gender</mat-label>
@@ -28,6 +28,9 @@
                 <mat-option value="M">M</mat-option>
                 <mat-option value="F">F</mat-option>
               </mat-select>
+              <mat-label>Phone Number</mat-label>
+              <input matInput placeholder="Phone Number" [(ngModel)]="phoneNumber" type="tel" maxlength="8"oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+                formControlName="phoneNumberCtrl" required>
               <mat-label>Password<mat-icon *ngIf="this.strengthColor =='red'" aria-hidden="false" matTooltip="Please include uppercase, numbers and special characters" matTooltipClass="tooltip-class" class="warning-icon">warning</mat-icon></mat-label>
               <input matInput placeholder="Password" [(ngModel)]="password" (keyup)="checkPasswordStrength($event)"
                 [type]="hide ? 'password' : 'text'" formControlName="passwordCtrl" required>
@@ -43,7 +46,7 @@
                 [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                 {{hide ? 'Show Password' : 'Hide Password'}}
               </button>
-              <p class="message">{{message}}</p>
+              <p class="message" [style.color]="messageColor">{{message}}</p>
               <button class="next-btn" mat-button type="button" (click)=" getErrorMessage()"
                 [disabled]="!this.firstFormGroup.valid">Next</button>
             </form>
@@ -53,8 +56,8 @@
           <mat-label>Role</mat-label>
           <mat-step label="Role" errorMessage="User type is required" [stepControl]="secondFormGroup">
             <form [formGroup]="secondFormGroup">
-              <mat-select class="select" placeholder="Role" [(ngModel)]="userTypeValue" formControlName="roleCtrl">
-                <mat-option *ngFor="let userType of userTypes" [value]="userType">{{userType}}</mat-option>
+              <mat-select class="select" placeholder="Role" [(ngModel)]="roleValue" formControlName="roleCtrl">
+                <mat-option *ngFor="let role of roles" [value]="role">{{role}}</mat-option>
               </mat-select>
 
               <div>
@@ -73,14 +76,14 @@
                 <mat-option *ngFor="let committee of committees" [value]="committee">{{committee}}</mat-option>
               </mat-select>
               <mat-label>Block Number</mat-label>
-              <input matInput placeholder="Block" formControlName="blockCtrl" required
-                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
+              <input matInput placeholder="Block" formControlName="blockCtrl" required   [(ngModel)]="blockNumber"
+               >
 
             </form>
-            <p class="message">{{message}}</p>
+            <p class="message"[style.color]="messageColor">{{message}}</p>
             <div>
               <button mat-button matStepperPrevious type="button">back</button>
-              <button mat-button type="button" class="next" (click)="register()"
+              <button mat-button type="button" class="next" (click)="createNewuser()"
                 [disabled]="!this.ThirdFormGroup.valid">Register</button>
             </div>
           </mat-step>

@@ -1,74 +1,87 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { Authservice } from '../share/services/auth.service';
+import { userDataInterface } from 'src/app/share/services/Users';
+
 export interface DialogData {
   password: string;
 }
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
-  styleUrls: ['./user-profile.component.scss']
+  styleUrls: ['./user-profile.component.scss'],
 })
 export class UserProfileComponent implements OnInit {
-  deleteConfirmation: string
-  passwordConfirmation =""
+  deleteConfirmation: string;
+  passwordConfirmation = '';
 
-  hide = true
-  message = "";
-  dateTime = "";
-  currentUserType = 'CCC'
-  currentUsername = 'Tom'
+  hide = true;
+  message = '';
+  dateTime: any;
+  currentUserType: any;
+  currentUsername: string;
 
-  oldEmail = ""
-  oldUserName = "Tom";
-  oldFirstName = "";
-  oldPassword = "";
-  oldGender = "";
-  oldBlockNumber = "";
-  oldUserTypeValue = "Bussin";
-  oldCommitteesValue = "";
-  oldStatus = "";
-
-  newEmail = ""
-  newUserName = "";
-  newFirstName = "";
-  newPassword = "";
-  newGender = "";
-  newBlockNumber = "";
-  newUserTypeValue = "";
-  newCommitteesValue = "";
-  newStatus = "";
+  newEmail: any;
+  newUserName: any;
+  newFirstName: any;
+  newPassword: any;
+  newGender: any;
+  newBlockNumber: any;
+  newRoleValue: any;
+  oldRoleValue: any;
+  newCommitteeValue: any;
+  newStatus: any;
+  newPhoneNumber: string;
+  uid: any;
+  user: any;
+  userObj: any
 
   userTypesArrays: string[] = [
-    "Admin",
-    "CC staff",
-    "Key Ccc",
-    "RN Manager",
-    "Key RN Manager",
-    "Normal RN Manager"
-  ]
+    'Admin',
+    'CC staff',
+    'Key Ccc',
+    'RN Manager',
+    'Key RN Manager',
+    'Normal RN Manager',
+  ];
 
-  committeesArrays: string[] = [
-    "Taman Jurong Zone A RN",
-    "Taman Jurong Zone B RC",
-    "Taman Jurong Zone C RN",
-    "Taman Jurong Zone D RC",
-    "Taman Jurong Zone E RC",
-    "Taman Jurong Zone F RC",
-    "Taman Jurong Zone G RN",
-    "9 @ Yuan Ching NC",
-    "Caspian NC",
-    "Lakefront Residences NC",
-    "Lakeholmz Condo NC",
-    "Lakelife RN",
-    "Lakepoint Condo NC",
-    "Lakeside Grove NC",
-  ]
+  committeeArrays: string[] = [
+    'Taman Jurong Zone A RN',
+    'Taman Jurong Zone B RC',
+    'Taman Jurong Zone C RN',
+    'Taman Jurong Zone D RC',
+    'Taman Jurong Zone E RC',
+    'Taman Jurong Zone F RC',
+    'Taman Jurong Zone G RN',
+    '9 @ Yuan Ching NC',
+    'Caspian NC',
+    'Lakefront Residences NC',
+    'Lakeholmz Condo NC',
+    'Lakelife RN',
+    'Lakepoint Condo NC',
+    'Lakeside Grove NC',
+  ];
 
-
-
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, public authService: Authservice) {}
 
   ngOnInit(): void {
+    var encryptedUid = localStorage.getItem('uid');
+    this.uid = this.authService.decryptData(encryptedUid);
+    this.authService.getUserById(this.uid).subscribe((res) => {
+      this.user = res;
+      this.newUserName = this.user.userName;
+      this.newFirstName = this.user.firstName;
+      this.newGender = this.user.gender;
+      this.newEmail = this.user.email;
+      this.newPhoneNumber = this.user.phoneNumber;
+      this.newRoleValue = this.user.role;
+      this.newCommitteeValue = this.user.committee;
+      this.newBlockNumber = this.user.blockNumber;
+    });
   }
 
   delete() {
@@ -77,84 +90,85 @@ export class UserProfileComponent implements OnInit {
       data: { delete: this.deleteConfirmation },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       this.deleteConfirmation = result;
-    })
-  }
-
-  edit() {
-    alert("edit")
-  }
-
-  confirmPassword() {
-    const passwordDialogRef = this.dialog.open(passwordVarificationDialog, {
-      width: '250px',
-      data: { password: this.passwordConfirmation },
     });
-    passwordDialogRef.afterClosed().subscribe(result => {
-      this.passwordConfirmation = result;
-      if(result == "Password"){
-        this.hide = false
+  }
+
+  openEditDialog(
+    userName = this.newUserName,
+    email = this.newEmail,
+    firstName = this.newFirstName ,
+    gender = this.newGender ,
+    phoneNumber = this.newPhoneNumber ,
+    role = this.newRoleValue ,
+    committee = this.newCommitteeValue ,
+    blockNumber = this.newBlockNumber,
+    LastUpdatedDate = new Date().toLocaleDateString(),
+    LastUpdtedTime = new Date().toLocaleTimeString(),
+  ) {
+    this.dialog.open(saveChangesDialog,{
+      data:{userName,
+        email, firstName, gender, phoneNumber, role, committee, blockNumber ,LastUpdatedDate, LastUpdtedTime
       }
     })
+    var encrypt = this.authService.encryptData(this.newUserName)
+    localStorage.setItem("username",encrypt)
   }
 }
 
 @Component({
-selector:"password-varification-dialog",
-templateUrl: './passwordVarification-dialog.html'
+  selector: 'password-varification-dialog',
+  templateUrl: './saveChangesDialog.html',
 })
-export class passwordVarificationDialog{
-  passwordConfirmation :any
-  message =""
+export class saveChangesDialog {
+  message = '';
 
-  constructor(public dialogRef: MatDialogRef<UserProfileComponent>){
-  dialogRef.disableClose = true;
-    }
+  constructor(
+    public dialogRef: MatDialogRef<UserProfileComponent>,public authService: Authservice,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+  ) {
+    dialogRef.disableClose = true;
+  }
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  confirmPassword(passwordConfirmationFromHtml: any){
-    if(passwordConfirmationFromHtml == "Password"){
-      this.dialogRef.close(passwordConfirmationFromHtml)
-    }
-    else{
-      this.message ="Wrong password.Try Again"
-    }
+  update(){
+    console.log(this.data);
+    this.dialogRef.close();
+    this.authService.updateUserData(this.data)
+    alert('updated profile');
   }
 }
 
 @Component({
-  selector:"delete-user-confirmation-dialog",
-  templateUrl: './deleteUser-dialog.html'
-  })
-  export class DeleteUserConfirmationDialog{
-    deleteConfirmation = ''
-    message =""
-    text: any
+  selector: 'delete-user-confirmation-dialog',
+  templateUrl: './deleteUser-dialog.html',
+})
+export class DeleteUserConfirmationDialog {
+  deleteConfirmation = '';
+  message = '';
+  text: any;
 
-    constructor(public dialogRef: MatDialogRef<UserProfileComponent>){
+  constructor(public dialogRef: MatDialogRef<UserProfileComponent>) {
     dialogRef.disableClose = true;
+  }
+
+  ngOnInit(): void {}
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  confirmDelete() {
+    if (this.deleteConfirmation == 'DELETE') {
+      alert('account deleted');
+      this.dialogRef.close();
+    } else {
+      this.message = 'Try again';
+      this.deleteConfirmation = '';
     }
-
-      ngOnInit(): void {
-      }
-
-      onNoClick(): void {
-        this.dialogRef.close();
-      }
-
-      confirmDelete(){
-        if(this.deleteConfirmation == "DELETE"){
-          alert("account deleted")
-          this.dialogRef.close()
-        }
-        else{
-          this.message = "Try again"
-          this.deleteConfirmation =''
-        }
-      }
-    }
-
+  }
+}

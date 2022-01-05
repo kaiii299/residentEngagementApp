@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Authservice } from '../share/services/auth.service';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-home',
@@ -7,25 +10,33 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 message= " "
-email = ""
-password=""
 hide = true
-  constructor() { }
+  constructor(private authService: Authservice,private route: Router) { }
+  loginData ={
+    email:'',
+    password: ''
+  }
 
   ngOnInit(): void {
   }
 
-  errorMessage(){
-    if(this.email == ""){
+
+   Login(){
+    if(this.loginData.email == ""){
       this.message ="Please provide email"
     }
 
-    else if(this.password == ""){
+    else if(this.loginData.password == ""){
       this.message ="Please provide Password"
     }
 
     else{
-      alert("okay work")
+      this.authService.signIn(this.loginData.email, this.loginData.password).then(userInfo=>{
+        
+       this.route.navigate(['allusers']);
+     }).catch(error=>{
+       this.message = "Wrong password"
+     })
     }
 
   }

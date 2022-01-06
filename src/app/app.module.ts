@@ -41,6 +41,7 @@ import { AuthInterceptor } from './share/services/guards/auth.interceptor';
 import { HasRoleGuard } from './share/services/guards/has-role.guard';
 import { environment } from 'src/environments/environment';
 import { Authservice } from './share/services/auth.service';
+import { ListComponent } from './list/list.component';
 
 
 //firebase
@@ -49,6 +50,7 @@ import { AngularFireDatabaseModule } from '@angular/fire/database'
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { windowService } from './share/services/window.service';
+
 
 
 @NgModule({
@@ -69,6 +71,7 @@ import { windowService } from './share/services/window.service';
     UpdateResidentComponent,
     ResidentInfoComponent,
     ResidentDetailComponent,
+    ListComponent,
   ],
   imports: [ 
     MbscModule, 

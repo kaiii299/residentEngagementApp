@@ -4,63 +4,68 @@
     <img src="/assets/images/people/View Profile.png" alt="" class="img-web">
 
     <div class="welcome-container">
-      <h1 class="welcome">Hello <em>{{user.userName}}</em></h1>
+      <h1 class="welcome">Hello <p class="user-name">{{user.userName}}</p></h1>
       <h6 class="login-text">Click to edit info</h6>
     </div>
-
     <div class="login">
       <div class="form">
-        <form class="edit-form">
-          <mat-label>User name</mat-label>
-          <input type="text" title="username" placehnewer="Username" [ngModelOptions]="{standalone: true}"
-             [(ngModel)]="newUserName" required>
+        <form class="edit-form" [formGroup]="updateUserForm">
+          <mat-label>User name<p *ngIf="newUserName.length == 10" class="limit"> (limit reach)</p></mat-label>
+          <input type="text" title="username" placeholder="Username" maxlength="10" formControlName="usernameCtrl"
+            [(ngModel)]="newUserName" required>
 
           <mat-label>First Name</mat-label>
-          <input type="text" title="first name" placehnewer="First name" value={{newFirstName}}
-            [(ngModel)]="newFirstName" [ngModelOptions]="{standalone: true}" required>
+          <input type="text" title="first name" placeholder="First name" value={{newFirstName}}
+            [(ngModel)]="newFirstName" formControlName="firstNameCtrl" required>
 
           <mat-label>Gender</mat-label>
-          <mat-select class="selection-input" placehnewer="Gender" [(ngModel)]="newGender" required value={{newGender}}
-            [ngModelOptions]="{standalone: true}">
+          <mat-select class="selection-input" placeholder="Gender" [(ngModel)]="newGender"  required value={{newGender}}
+          formControlName="genderCtrl">
             <mat-option value="M">M</mat-option>
             <mat-option value="F">F</mat-option>
           </mat-select>
 
           <mat-label>Email</mat-label>
-          <input type="text" title="Email" placehnewer="Email" value={{newEmail}} [ngModelOptions]="{standalone: true}"
-            [(ngModel)]="newEmail" required>
+          <input type="text" title="Email" placeholder="Email" value={{newEmail}} formControlName="emailCtrl"
+            [(ngModel)]="newEmail"  required>
 
           <mat-label>Phone Number</mat-label>
-          <input type="text" title="Email" placehnewer="Phone Number" value={{newPhoneNumber}} [ngModelOptions]="{standalone: true}"
+          <input type="text" title="Email" placeholder="Phone Number" value={{newPhoneNumber}} formControlName="phoneNumberCtrl"
             [(ngModel)]="newPhoneNumber" maxlength="8" required>
 
 
           <mat-label>Role</mat-label>
-          <mat-select class="selection-input" placehnewer="Role"
-            [ngModelOptions]="{standalone: true}" [disabled]="newRoleValue != 'Admin' "
+          <mat-select class="selection-input" placeholder="Role"
+          formControlName="roleCtrl" [disabled]="newRoleValue != 'Admin' "
             [(ngModel)]="user.role" [value]="newRoleValue">
             <mat-option *ngFor="let userTypesArray of userTypesArrays" [value]="userTypesArray">{{userTypesArray}}
             </mat-option>
           </mat-select>
 
           <mat-label>Committee</mat-label>
-          <mat-select class="selection-input" placehnewer="Committee" value={{newCommitteeValue}}
-            [ngModelOptions]="{standalone: true}" [disabled]="newRoleValue !=='Admin' "
+          <mat-select class="selection-input" placeholder="Committee" value={{newCommitteeValue}}
+          formControlName="committeeCtrl" [disabled]="newRoleValue !=='Admin' "
             [(ngModel)]="newCommitteeValue">
             <mat-option *ngFor="let committeeArray of committeeArrays" [value]="committeeArray">{{committeeArray}}
             </mat-option>
           </mat-select>
 
           <mat-label>Block Number</mat-label>
-          <input type="text" title="username" placehnewer="Block Number" value={{newBlockNumber}}
-            [ngModelOptions]="{standalone: true}" [(ngModel)]="newBlockNumber"
-            [readonly]="newRoleValue !=='Admin'" required>
+
+          <input type="text" placeholder="Block Number" aria-label="Number" [(ngModel)]="newBlockNumber" formControlName="blockNumberCtrl" class="search" [formControl]="myControl"
+            [matAutocomplete]="auto">
+
+          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+            <mat-option *ngFor="let blockNumber of filterdBlockNumbers | async"[value]="blockNumber">{{blockNumber}}</mat-option>
+          </mat-autocomplete>
 
           <div class="button">
             <br>
-            <button class="edit-btn" type="button" [disabled]="" (click)="openEditDialog()">Save changes</button>
-            <button class="forget-btn" type="button" routerLink="/forgetpassword">Change Password?</button>
-            <button class="delete-btn" type="button" (click)="delete()">Delete Account</button>
+            <button class="edit-btn" type="button" [disabled]="updateUserForm.pristine"
+            (click)="openEditDialog()">Save changes</button>
+            <button  class="forget-btn" type="button" routerLink="/forgetpassword">Change Password?</button>
+            <button mat-button class="delete-btn" type="button" (click)="delete()">Delete Account</button>
+            <button mat-button type="button" class="cancel-button" (click)="goBack()" routerLink="/">Back</button>
           </div>
         </form>
       </div>

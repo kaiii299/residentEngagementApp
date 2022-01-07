@@ -1,3 +1,8 @@
+.active{
+  text-decoration: underline !important;
+  text-underline-position: under !important;
+}
+
 .body {
   width: 100%;
   height: 100%;
@@ -163,6 +168,7 @@ li a {
 
 li a:hover {
   text-decoration: underline;
+  text-underline-position: under !important;
 }
 
 .a-button{
@@ -221,7 +227,7 @@ li a:hover {
   border-radius: 5px;
 }
 
-.user-type{
+.logout{
   background-color: #fa7900;
   font-weight: bold;
   border: none;
@@ -237,11 +243,11 @@ li a:hover {
 
 .dropdown-content .logout{
   &:hover{
+    background-color: #ff9900;
     color: rgb(255, 255, 255);
     font-weight: bold;
-    background-color: rgb(255, 0, 0);
-    border-radius: 5px;
-    text-decoration: none;
+    transform:translateY(5%);
+    text-decoration: transparent;
   }
 }
 
@@ -312,7 +318,7 @@ li a:hover {
 
   .sidebar-container{
      position: relative;
-     top: 15vh;
+     top: 13vh;
      display: block;
   }
 
@@ -325,5 +331,18 @@ li a:hover {
     //text-decoration: underline;
   }
 
+  .logout{
+    background-color: transparent;
+    font-weight: bold;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 10px;
+    &:hover{
+      text-decoration: none;
+    }
+  }
 
 }

@@ -4,12 +4,11 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import {userDataInterface} from 'src/app/share/services/Users'
+import { Constants } from '../constants';
+import { Authservice } from '../share/services/auth.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { NavigationExtras, Router} from '@angular/router';
 
-const ELEMENT_DATA: userDataInterface[] = [
-  {
-    userName:"jack"
-  }
-];
 
 @Component({
   selector: 'app-all-users',
@@ -23,57 +22,39 @@ const ELEMENT_DATA: userDataInterface[] = [
     ]),
   ],
 })
+
 export class AllUsersComponent implements AfterViewInit {
-  columnsToDisplay = ['username', 'weight', 'symbol', 'position'];
-  expandedElement: userDataInterface | null;
+  columnsToDisplay = ['firstName', 'email', 'committee', 'blockNumber','status'];
+  expandedElement:  null;
+
+  committees = Constants.committees
+  roles = Constants.roles
+  status = Constants.status
+  blockNumber = Constants.blkNum
 
   panelOpenState = false;
-  search = ""
-  committeesValue = ""
-  userTypeValue = ""
-  statusValue = ""
-  activate = "Active"
+  search = "";
+  committeesValue: string;
+  roleValue: string;
+  statusValue: string;
+  blockValue:string
+  searchValue: any;
+  filiter_form: FormGroup
+  uid = localStorage.getItem("uid");
 
-  userTypes: string[] = [
-    "Admin",
-    "CC staff",
-    "Key Ccc",
-    "RN Manager",
-    "Key RN Manager",
-    "Normal RN Manager"
-  ]
+  dataSource = new MatTableDataSource();
 
-  committees: string[] = [
-    "Taman Jurong Zone A RN",
-    "Taman Jurong Zone B RC",
-    "Taman Jurong Zone C RN",
-    "Taman Jurong Zone D RC",
-    "Taman Jurong Zone E RC",
-    "Taman Jurong Zone F RC",
-    "Taman Jurong Zone G RN",
-    "9 @ Yuan Ching NC",
-    "Caspian NC",
-    "Lakefront Residences NC",
-    "Lakeholmz Condo NC",
-    "Lakelife RN",
-    "Lakepoint Condo NC",
-    "Lakeside Grove NC",
-  ]
-
-  statuss: string[] = [
-    "Active",
-    "Inactive"
-  ]
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor() {
+  constructor(private authService:Authservice,private formBuilder: FormBuilder, private router: Router) {
+    authService.getAllUsers().subscribe(data=>{
+      let userData = data
+      this.dataSource.data = userData
+    })
+    this.uid = authService.decryptData(this.uid)
   }
-
-
-  dataSource = new MatTableDataSource(ELEMENT_DATA);
-
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -90,13 +71,10 @@ export class AllUsersComponent implements AfterViewInit {
     }
   }
 
-  active(){
-    if(this.activate == "Active"){
-      this.activate ="Inactive"
-    }
-    else if(this.activate == "Inactive"){
-      this.activate = "Active"
-    }
+  userInfo(uid: any){
+    const navigationExtras: NavigationExtras = {queryParams:{id: uid}}
+    this.router.navigate(['myprofile'],navigationExtras)
   }
+
 }
 

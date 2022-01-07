@@ -1,5 +1,27 @@
+.cancel-button { //login button
+  margin: 20px 134px 0 0px;
+  text-transform: uppercase;
+  outline: 0;
+  background: #F26C00;
+  width: 100%;
+  border: 0;
+  border-radius: 5px;
+  padding: 10px 25px 10px 25px ;
+  color: #FFFFFF;
+  font-size: 20px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  text-align: center;
+}
+
+.limit{
+  color: red;
+  margin-left: 5px;
+}
+
 .button2{
-display: flex;
+  display: flex;
 }
 
 .show{
@@ -42,6 +64,15 @@ body{
   display: none;
 }
 
+.user-name{
+ color: rgb(255, 255, 255);
+ font-size: 110px;
+ position: relative;
+ bottom: 12px;
+ margin: 0px 0px 50px 10px;
+ font-weight: 450;
+}
+
 .welcome-container{
   position: absolute;
   z-index: 1;
@@ -57,9 +88,10 @@ body{
   position: relative;
   color: rgb(255, 255, 255);
   font-size:clamp(7rem,5vw,5rem);
-  height: 70px;
+  height: auto;
   padding: 0px 0px 0px 0px;
   display: flex;
+  font-size: 70px;
   //border: 5px solid red;
 }
 
@@ -69,8 +101,8 @@ body{
   font-size: 30px;
   display: flex;
   // width: 50vw;
-  left: -10px;
-  // bottom: -5px;
+  left: -15px;
+  bottom: 30px;
   padding: 0px 0px 0px 15px;
 }
 
@@ -165,11 +197,12 @@ body{
   transition: all 0.3 ease;
   cursor: pointer;
   &:hover{
-    background: #3d60f0;
+    background: #5675f3;
   }
-  &:disabled{
-    background: red;
-  }
+}
+
+.form .edit-btn:disabled{
+  background-color: rgba(128, 128, 128, 0.452);
 }
 
 
@@ -298,6 +331,23 @@ body{
 
   .img-web{
     display: none;
+  }
+
+  .cancel-button { //login button
+    margin: 20px 0px 0 0px;
+    text-transform: uppercase;
+    outline: 0;
+    background: #F26C00;
+    width: 100%;
+    border: 0;
+    border-radius: 5px;
+    padding: 10px 25px 10px 25px ;
+    color: #FFFFFF;
+    font-size: 20px;
+    -webkit-transition: all 0.3 ease;
+    transition: all 0.3 ease;
+    cursor: pointer;
+    text-align: center;
   }
 
 

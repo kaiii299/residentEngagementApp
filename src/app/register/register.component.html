@@ -14,29 +14,41 @@
           <!-- first block -->
           <mat-step [stepControl]="firstFormGroup" label="Username and Password" errorMessage="There are empty fields">
             <form [formGroup]="firstFormGroup">
+
               <mat-label>Email</mat-label>
               <input matInput placeholder="Email" [(ngModel)]="email" type="text" formControlName="emailCtrl" required>
-              <mat-label>Display Name</mat-label>
-              <input matInput placeholder="Username" [(ngModel)]="userName" type="text" formControlName="usernameCtrl"
+
+              <mat-label>User Name<p *ngIf="userName.length == 10" class="limit"> (limit reached)</p></mat-label>
+              <input matInput placeholder="Username" [(ngModel)]="userName" maxlength="10" type="text" formControlName="usernameCtrl"
                 required>
-              <mat-label>User Name</mat-label>
+
+              <mat-label>First Name</mat-label>
               <input matInput placeholder="First name" [(ngModel)]="firstName" type="text"
                 formControlName="firstNameCtrl" required>
+
               <mat-label>Gender</mat-label>
               <mat-select class="select" placeholder="Gender" [(ngModel)]="gender"
                 [ngModelOptions]="{standalone: true}">
                 <mat-option value="M">M</mat-option>
                 <mat-option value="F">F</mat-option>
               </mat-select>
+
               <mat-label>Phone Number</mat-label>
-              <input matInput placeholder="Phone Number" [(ngModel)]="phoneNumber" type="tel" maxlength="8"oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
+              <input matInput placeholder="Phone Number" [(ngModel)]="phoneNumber" type="tel" maxlength="8"
+                oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
                 formControlName="phoneNumberCtrl" required>
-              <mat-label>Password<mat-icon *ngIf="this.strengthColor =='red'" aria-hidden="false" matTooltip="Please include uppercase, numbers and special characters" matTooltipClass="tooltip-class" class="warning-icon">warning</mat-icon></mat-label>
+
+              <mat-label>Password<mat-icon *ngIf="this.strengthColor =='red'" aria-hidden="false"
+                  matTooltip="Please include uppercase, numbers and special characters" matTooltipClass="tooltip-class"
+                  class="warning-icon">warning</mat-icon>
+              </mat-label>
               <input matInput placeholder="Password" [(ngModel)]="password" (keyup)="checkPasswordStrength($event)"
                 [type]="hide ? 'password' : 'text'" formControlName="passwordCtrl" required>
 
-              <mat-progress-bar mode="determinate" Class="progress-bar" [value]="strength" [color]="strengthColor" *ngIf="this.password.length > 0"></mat-progress-bar>
-              <p class="password-strenght" [style.color]="strengthColor" *ngIf="this.password.length > 0">Strength: {{strengthMessage}}</p>
+              <mat-progress-bar mode="determinate" Class="progress-bar" [value]="strength" [color]="strengthColor"
+                *ngIf="this.password.length > 0"></mat-progress-bar>
+              <p class="password-strenght" [style.color]="strengthColor" *ngIf="this.password.length > 0">Strength:
+                {{strengthMessage}}</p>
 
               <mat-label>Repeat Password</mat-label>
               <input matInput placeholder="Repeat Password" [(ngModel)]="repeatPassword"
@@ -46,6 +58,7 @@
                 [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
                 {{hide ? 'Show Password' : 'Hide Password'}}
               </button>
+
               <p class="message" [style.color]="messageColor">{{message}}</p>
               <button class="next-btn" mat-button type="button" (click)=" getErrorMessage()"
                 [disabled]="!this.firstFormGroup.valid">Next</button>
@@ -53,6 +66,7 @@
 
             <!-- second block -->
           </mat-step>
+
           <mat-label>Role</mat-label>
           <mat-step label="Role" errorMessage="User type is required" [stepControl]="secondFormGroup">
             <form [formGroup]="secondFormGroup">
@@ -75,16 +89,20 @@
                 [ngModelOptions]="{standalone: true}">
                 <mat-option *ngFor="let committee of committees" [value]="committee">{{committee}}</mat-option>
               </mat-select>
-              <mat-label>Block Number</mat-label>
-              <input matInput placeholder="Block" formControlName="blockCtrl" required   [(ngModel)]="blockNumber"
-               >
+                <mat-label>Block Number</mat-label>
 
+                <input type="text" placeholder="Block Number" aria-label="Number" [(ngModel)]="blockNumberValue" class="search" [formControl]="myControl"
+                  [matAutocomplete]="auto">
+
+                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                  <mat-option *ngFor="let blockNumber of filterdBlockNumbers | async"[value]="blockNumber" >{{blockNumber}}</mat-option>
+                </mat-autocomplete>
             </form>
-            <p class="message"[style.color]="messageColor">{{message}}</p>
+            <p class="message" [style.color]="messageColor">{{message}}</p>
             <div>
               <button mat-button matStepperPrevious type="button">back</button>
               <button mat-button type="button" class="next" (click)="createNewuser()"
-                [disabled]="!this.ThirdFormGroup.valid">Register</button>
+                [disabled]="!this.myControl.valid">Register</button>
             </div>
           </mat-step>
 

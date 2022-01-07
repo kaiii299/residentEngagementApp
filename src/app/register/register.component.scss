@@ -1,3 +1,9 @@
+.limit{
+color: red;
+margin-left: 5px;
+font-size: 15px;
+}
+
 .warning-icon{
   position: relative;
   top: -1px;
@@ -19,7 +25,6 @@ font-size: 15px;
 mat-label{
   display: flex;
   color: rgb(75, 75, 75);
-  font-size: 15px;
 }
 
 .next-btn{
@@ -71,7 +76,7 @@ body{
 
 .welcome-container{
   position: absolute;
-  top: 25%;
+  top: 13%;
   left: 5%;
   transform: translate(100%, -50%);
   z-index: 100;
@@ -129,7 +134,7 @@ body{
   overflow-x: hidden;
 }
 
-.form input , .select {
+.form input , .select, .search {
   outline: 0;
   background: #f2f2f2;
   width: 100%;

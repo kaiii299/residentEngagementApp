@@ -41,6 +41,8 @@ import { AuthInterceptor } from './share/services/guards/auth.interceptor';
 import { HasRoleGuard } from './share/services/guards/has-role.guard';
 import { environment } from 'src/environments/environment';
 import { Authservice } from './share/services/auth.service';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+
 
 
 //firebase
@@ -49,6 +51,7 @@ import { AngularFireDatabaseModule } from '@angular/fire/database'
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { windowService } from './share/services/window.service';
+import { confirmationDialog } from './share/confirmatonDialog';
 
 
 @NgModule({
@@ -69,9 +72,10 @@ import { windowService } from './share/services/window.service';
     UpdateResidentComponent,
     ResidentInfoComponent,
     ResidentDetailComponent,
+    confirmationDialog
   ],
-  imports: [ 
-    MbscModule, 
+  imports: [
+    MbscModule,
     CommonModule,
     HttpClientModule,
     BrowserModule,
@@ -101,10 +105,11 @@ import { windowService } from './share/services/window.service';
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
+    MatAutocompleteModule
   ],
 
   schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-  
+
   providers: [{
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,

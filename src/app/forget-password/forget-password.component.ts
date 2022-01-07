@@ -74,4 +74,8 @@ export class ForgetPasswordComponent implements OnInit {
         this.color = "red"
       });
   }
+
+  goBack(){
+    this.authService.goback()
+  }
 }

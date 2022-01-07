@@ -1,10 +1,20 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { StepperSelectionEvent, STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MatStepper } from '@angular/material/stepper';
 import { Authservice } from '../share/services/auth.service';
+import { Constants } from '../constants';
+import { Observable } from 'rxjs/internal/Observable';
+import { map, startWith } from 'rxjs/operators';
 
-
+function autocompleteStringValidator(validOptions: Array<string>): ValidatorFn {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    if (validOptions.indexOf(control.value) !== -1) {
+      return null
+    }
+    return { 'invalidAutocompleteString': { value: control.value } }
+  }
+}
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
@@ -25,52 +35,33 @@ export class RegisterComponent implements OnInit {
   hide = true;
   disabled = true;
 
-  message = "";
-  email = ""
+  message: string;
+  email: string;
   userName = "";
-  firstName = "";
-  phoneNumber = "";
-  password = "";
-  repeatPassword = "";
-  gender = "";
-  blockNumber = "";
-  roleValue = "";
-  committeesValue = "";
-  registeredDate = "";
-  registeredTime = "";
+  firstName: string;
+  phoneNumber: string;
+  password ="";
+  repeatPassword: string;
+  gender: string;
+  blockNumberValue: any;
+  roleValue: string;
+  committeesValue: string;
+  registeredDate: string;
+  registeredTime: string;
   status = "Active";
-  messageColor = ""
+  messageColor: string;
 
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
   ThirdFormGroup: FormGroup;
 
-  roles: string[] = [
-    "Admin",
-    "CC staff",
-    "Key Ccc",
-    "RN Manager",
-    "Key RN Manager",
-    "Normal RN Manager"
-  ]
+  roles = Constants.roles;
+  committees = Constants.committees;
+  blockNumbers = Constants.blkNum;
 
-  committees: string[] = [
-    "Taman Jurong Zone A RN",
-    "Taman Jurong Zone B RC",
-    "Taman Jurong Zone C RN",
-    "Taman Jurong Zone D RC",
-    "Taman Jurong Zone E RC",
-    "Taman Jurong Zone F RC",
-    "Taman Jurong Zone G RN",
-    "9 @ Yuan Ching NC",
-    "Caspian NC",
-    "Lakefront Residences NC",
-    "Lakeholmz Condo NC",
-    "Lakelife RN",
-    "Lakepoint Condo NC",
-    "Lakeside Grove NC",
-  ]
+  myControl = new FormControl("",[autocompleteStringValidator(this.blockNumbers),Validators.required]);
 
+  filterdBlockNumbers: Observable<string[]>;
 
   constructor(private _formBuilder: FormBuilder, private authService: Authservice) { }
 
@@ -86,9 +77,11 @@ export class RegisterComponent implements OnInit {
     this.secondFormGroup = this._formBuilder.group({
       roleCtrl: ['', Validators.required],
     });
-    this.ThirdFormGroup = this._formBuilder.group({
-      blockCtrl: ['', Validators.required],
-    });
+
+    this.filterdBlockNumbers = this.myControl.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value)),
+    );
   }
 
   getErrorMessage() {
@@ -142,26 +135,27 @@ export class RegisterComponent implements OnInit {
   }
 
   createNewuser() {
-    if (this.firstFormGroup.invalid, this.secondFormGroup.invalid, this.ThirdFormGroup.invalid) {
+    if (this.firstFormGroup.invalid, this.secondFormGroup.invalid, this.myControl.invalid) {
       this.message = "There are still missing form fields"
     }
     else {
       this.registeredDate = new Date().toLocaleDateString();
       this.registeredTime = new Date().toLocaleTimeString();
 
-      let newUser:any = {}
+      let newUser: any = {}
       newUser['email'] = this.email;
-      newUser['userName']  = this.userName;
+      newUser['userName'] = this.userName;
       newUser['firstName'] = this.firstName;
-      newUser['phoneNumber']  = this.phoneNumber;
+      newUser['phoneNumber'] = this.phoneNumber;
       newUser['gender'] = this.gender;
       newUser['role'] = this.roleValue;
-      newUser['commiittee'] = this.committeesValue;
-      newUser['blockNumber'] = this.blockNumber;
+      newUser['committee'] = this.committeesValue;
+      newUser['blockNumber'] = this.blockNumberValue;
       newUser['regsitrationDate'] = this.registeredDate;
       newUser['registrationTime'] = this.registeredTime;
       newUser['status'] = this.status;
 
+      console.log(newUser)
       this.authService.register(this.email, this.password).then(res => {
         this.authService.createNewUser(newUser).then(res => {
           this.message = "User created successfully."
@@ -177,6 +171,14 @@ export class RegisterComponent implements OnInit {
         console.log(error)
       });
     }
+  }
+
+  _filter(value: string): string[] {
+    if (value === '') {
+      return this.blockNumbers.slice()
+    }
+    const filterValue = value.toLowerCase()
+    return this.blockNumbers.filter(option => option.toLowerCase().includes(filterValue))
   }
 
 }

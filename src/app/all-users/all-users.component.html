@@ -16,15 +16,21 @@
                 <mat-option *ngFor="let committee of committees" [value]="committee">{{committee}}</mat-option>
               </mat-select>
 
-              <mat-select class="select" placeholder="UserType" [(ngModel)]="userTypeValue"
+              <mat-select class="select" placeholder="UserType" [(ngModel)]="roleValue"
                 [ngModelOptions]="{standalone: true}">
-                <mat-option *ngFor="let userType of userTypes" [value]="userType">{{userType}}</mat-option>
+                <mat-option *ngFor="let role of roles" [value]="userType">{{role}}</mat-option>
               </mat-select>
 
               <mat-select class="select" placeholder="Status" [(ngModel)]="statusValue"
                 [ngModelOptions]="{standalone: true}">
-                <mat-option *ngFor="let status of statuss" [value]="status">{{status}}</mat-option>
+                <mat-option *ngFor="let status   of status" [value]="status">{{status}}</mat-option>
               </mat-select>
+
+              <mat-select class="select" placeholder="Status" [(ngModel)]="blockValue"
+              [ngModelOptions]="{standalone: true}">
+              <mat-option *ngFor="let status   of status" [value]="status">{{status}}</mat-option>
+
+            </mat-select>
 
             </div>
 
@@ -39,23 +45,22 @@
         <mat-divider></mat-divider>
 
         <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
-          <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
-            <th mat-header-cell *matHeaderCellDef> {{column}} </th>
-            <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+          <ng-container>
+            <div matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay;">
+              <th mat-header-cell *matHeaderCellDef > {{column}} </th>
+              <ng-container mat-cell *matCellDef="let element">
+                <td *ngIf="uid != element.uid">{{element[column]}}</td>
+              </ng-container>
+            </div>
           </ng-container>
 
-          <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-          <ng-container matColumnDef="expandedDetail">
+         <ng-container matColumnDef="expandedDetail">
             <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length" class="expended-cell">
-              <div class="example-element-detail"
-                [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
-                <div class="example-element-diagram">
-                  <div class="example-element-name">Email: {{element.name}} </div>
-                  <br>
-                  <div class="example-element-weight">Gender: {{element.weight}} </div>
-                </div>
-                  <button mat-button class="edit-btn">Edit</button>
-                  <button mat-button class="deactive-btn" (click)="active()">{{activate}}</button>
+              <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+
+                <button mat-button class="view-btn" (click)="userInfo(element.uid)" >View Details</button>
+                <!-- <button mat-button class="edit-btn" >Edit</button> -->
+                <button mat-button class="delete-btn" >Deactivate</button>
               </div>
             </td>
           </ng-container>

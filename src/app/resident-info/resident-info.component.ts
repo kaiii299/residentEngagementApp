@@ -76,6 +76,7 @@ export class ResidentInfoComponent implements AfterViewInit {
         this.dataSource.paginator.firstPage();
       }
   }
+  
   onClickViewDetails(obj: any){
     console.log(obj);
     console.log(obj.id);
@@ -83,11 +84,24 @@ export class ResidentInfoComponent implements AfterViewInit {
     let navigationExtras: NavigationExtras = {queryParams: {id: resid}};
     this.router.navigate(['residentdetail'], navigationExtras)
   }
-  onClickEdit(){
-    this.router.navigate(['updateresident']);
+  onClickEdit(obj : any){
+    console.log(obj);
+    console.log(obj.id);
+    let resid = obj.id;
+    let navigationExtras: NavigationExtras = {queryParams: {id: resid}};
+    this.router.navigate(['updateresident'], navigationExtras)
   }
-  onClickDelete(){
-    //this.residentService.deleteResident();
+  // openDeleteDialog() {
+  //   this.dialog.open(deleteConfirmationDialog, {
+  //     width: '300px',
+  //     height: '150px'
+  //   })
+  // }
+  onClickDelete(obj : any){
+    console.log(obj);
+    console.log(obj.id);
+    let resid = obj.id;
+    this.residentService.deleteResident(resid);
   }
 
 }

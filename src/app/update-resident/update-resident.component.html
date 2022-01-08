@@ -4,10 +4,9 @@
             <h1>Update Resident Details</h1>
             <form [formGroup]="updateResidentForm">
                 <label>Resident Name :</label>
-                <input title="residentName" class='form-control' type="text" formControlName="residentNameControl" required>
+                <input title="residentName" class='form-control' type="text" oninput="this.value = this.value.toUpperCase()" formControlName="residentNameControl">
                 <label>Committee :</label>
                 <select title="committee" class='form-control' formControlName="committeeControl">
-                    <option value="" disabled selected hidden>Select Committee</option>
                     <option *ngFor="let c of committees">
                         {{c}}
                     </option>
@@ -33,17 +32,17 @@
                     </option>
                 </select>
                 <label>Expertise :</label>
-                <input title="activity" class='form-control' type="text" formControlName="expertiseControl">
-                <label>Preferred Activity (Select All That Apply)</label>
+                <input title="expertise" class='form-control' type="text" formControlName="expertiseControl">
+                <!-- <label>Preferred Activity (Select All That Apply)</label>
                 <div *ngFor="let activity of activities; let i=index">
                     <label>
                         <input type="checkbox" [value]="activity" />
                         {{activity}}
                     </label>
-                </div>
+                </div> -->
             </form>
             <div class="button">
-                <button type="submit" class="btn-success" style="margin: 5px;">Update</button>
+                <button type="submit" class="btn-success" style="margin: 5px;" (click)="updateResidentInfo(updateResidentForm.value)">Update</button>
                 <button type="submit" class="btn-cancel" style="margin: 5px;">Cancel</button>
             </div>
         </div>

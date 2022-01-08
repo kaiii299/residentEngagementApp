@@ -18,6 +18,10 @@ export class ResidentService {
   getResidentById(id: string){
     return this.firestore.collection('residents').doc(id).valueChanges();
   }
+  updateResidentInfo(id: string, resident: Object){
+    console.log(resident)
+    return this.firestore.collection('residents').doc(id).update(resident);
+  }
   deleteResident(id: string){
     this.firestore.collection('residents').doc(id).delete().then(function () { 
         alert("Resident has been removed from the records!"); 

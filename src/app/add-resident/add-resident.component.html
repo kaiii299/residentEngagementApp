@@ -5,7 +5,7 @@
                 <h1>Add A New Resident</h1>
                 <form [formGroup]="addResidentForm">
                     <label>Resident Name :</label>
-                    <input title="residentName" class='form-control' type="text" oninput="this.value = this.value.toUpperCase()" formControlName="residentName" required>
+                    <input title="residentName" class='form-control' type="text" oninput="this.value = this.value.toUpperCase()" formControlName="residentName">
                     <div *ngIf="addResidentForm.controls['residentName'].invalid && (addResidentForm.controls['residentName'].dirty || addResidentForm.controls['residentName'].touched)"
                         class="alert alert-danger">
                         <div *ngIf="addResidentForm.controls['residentName'].errors.required">

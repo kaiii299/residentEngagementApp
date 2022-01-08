@@ -4,6 +4,7 @@ import { ResidentService } from '../resident.service';
 import { ActivatedRoute } from '@angular/router';
 import { Constants } from '../constants';
 import { Router, NavigationExtras } from '@angular/router';
+import { Authservice } from '../share/services/auth.service';
 
 @Component({
   selector: 'app-update-resident',

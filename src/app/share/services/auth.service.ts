@@ -10,8 +10,9 @@ import {
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
 import { userDataInterface } from './Users';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
+import { Location } from '@angular/common';
 
 @Injectable()
 export class Authservice {
@@ -32,6 +33,7 @@ export class Authservice {
     private firebaseAuth: AngularFireAuth,
     private db: AngularFirestore,
     private router: Router,
+    private location: Location,
   ) {
     this.firebaseAuth.onAuthStateChanged(user=>{
       if(user){
@@ -56,7 +58,6 @@ export class Authservice {
         console.log(error)
         throw error
       })
-
   }
 
   logout() {
@@ -70,8 +71,15 @@ export class Authservice {
       const userRef: AngularFirestoreDocument<userDataInterface> = this.db.doc(
         `Users/${user?.uid}`
       );
-      return userRef.set(data, { merge: true }); //allows users to keep existing data
+      return userRef.set(data, { merge: true });
     })
+  }
+
+  updateUserDataByQuery(data: any,uid: any) {
+      const userRef: AngularFirestoreDocument<userDataInterface> = this.db.doc(
+        `Users/${uid}`
+      );
+      return userRef.set(data, { merge: true });
   }
 
   async register(email: string, password: string) {
@@ -88,11 +96,15 @@ export class Authservice {
   }
 
   getAllUsers() {
-    return this.db.collection('Users').valueChanges();
+    return this.db.collection('Users').valueChanges({idField:"uid"});
   }
 
   getUserById(id: any) {
-    return this.db.doc(`Users/${this.currentLogedInUserId}`).valueChanges();
+      return this.db.doc(`Users/${this.currentLogedInUserId}`).valueChanges({idField:"uid"});
+  }
+
+  getUserByIdParam(id: any){
+    return this.db.doc(`Users/${id}`).valueChanges({idField:"uid"});
   }
 
   async forgetPassword(email: string) {
@@ -109,50 +121,7 @@ export class Authservice {
     return bytes.toString(CryptoJS.enc.Utf8);
   }
 
-  //   loadUserInfo() {
-  //     const userData = this.userInfo.getValue();
-  //     if (!userData) {
-  //       const accessToken = localStorage.getItem("access_token")
-  //       if (accessToken) {
-  //         const decryptedUser = this.jwtHelper.decodeToken(accessToken);
-  //         const data = {
-  //           access_token: accessToken,
-  //           refresh_token: localStorage.getItem("refresh_token"),
-  //           username: decryptedUser.username,
-  //           userid: decryptedUser.sub,
-  //           tokenExpiration: decryptedUser.exp
-  //         };
-  //         this.userInfo.next(data);
-  //       }
-  //     }
-  //   }
-
-  //   userLogin(userPayload: any): Observable<boolean> {
-
-  //     return this.http.post("http://localhost:3000/login/auth", userPayload).pipe(
-  //       map((value: any) => {
-  //         if (value) {
-  //           localStorage.setItem("access_token", value.access_token);
-  //           localStorage.setItem("refresh_token", value.refresh_token);
-  //           const decryptedUser = this.jwtHelper.decodeToken(value.access_token);
-
-  //           const data = {
-  //             access_token: value.access_token,
-  //             refresh_token: value.refresh_token,
-  //             username: decryptedUser.username,
-  //             userid: decryptedUser.sub,
-  //             tokenExpiration: decryptedUser.exp
-  //           };
-
-  //           this.userInfo.next(data);
-  //           return true;
-  //         }
-  //         return false;
-  //       })
-  //     );
-  //   }
-
-  //   callRefreshToken(tokenPayload: any): Observable<any> {
-  //     return this.http.post('http://localhost:3000/auth/login', tokenPayload);
-  //   }
+  goback(){
+    this.location.back();
+  }
 }

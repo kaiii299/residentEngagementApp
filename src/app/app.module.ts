@@ -1,7 +1,6 @@
-import { MbscModule } from '@mobiscroll/angular';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -45,6 +44,7 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 
 
+
 //firebase
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/database'
@@ -52,6 +52,9 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { windowService } from './share/services/window.service';
 import { confirmationDialog } from './share/confirmatonDialog';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { EditEventsComponent } from './edit-events/edit-events.component';
+
 
 
 
@@ -73,10 +76,10 @@ import { confirmationDialog } from './share/confirmatonDialog';
     UpdateResidentComponent,
     ResidentInfoComponent,
     ResidentDetailComponent,
-    confirmationDialog
+    confirmationDialog,
+    EditEventsComponent
   ],
   imports: [
-    MbscModule,
     CommonModule,
     HttpClientModule,
     BrowserModule,
@@ -106,10 +109,9 @@ import { confirmationDialog } from './share/confirmatonDialog';
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    NgbModule
   ],
-
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 
   providers: [{
     provide: HTTP_INTERCEPTORS,

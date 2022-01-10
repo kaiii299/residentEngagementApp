@@ -2,7 +2,14 @@
   <div class="title">Resident App</div>
   <ul class="open-menu">
     <li><a routerLink="/">Home</a></li>
-    <li><a routerLink="events" routerLinkActive="active">Events</a></li>
+    <li>
+      <div class="dropdown">
+      <a href="events" routerLinkActive="active">Events</a>
+      <div class="dropdown-content">
+        <a routerLink="list" routerLinkActive="active">Lists</a>
+      </div>
+      </div>
+    </li>
     <li>
       <div class="dropdown">
         <a *ngIf="displayName">Users</a>

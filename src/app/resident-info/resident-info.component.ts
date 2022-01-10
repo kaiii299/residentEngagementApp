@@ -1,12 +1,14 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import {MatDialog,MatDialogRef,MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { ResidentService } from '../resident.service';
 import { Constants } from '../constants';
 import { Router, NavigationExtras } from '@angular/router';
+import { DialogData } from "../user-profile/user-profile.component";
 
 
 @Component({
@@ -41,7 +43,8 @@ export class ResidentInfoComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private residentService: ResidentService, private formBuilder: FormBuilder, private router: Router) {
+  constructor(private residentService: ResidentService, private formBuilder: FormBuilder, private router: Router,
+    public dialog: MatDialog) {
 
     this.filter_form = this.formBuilder.group({
       committeeControl: new FormControl,
@@ -91,17 +94,47 @@ export class ResidentInfoComponent implements AfterViewInit {
     let navigationExtras: NavigationExtras = {queryParams: {id: resid}};
     this.router.navigate(['updateresident'], navigationExtras)
   }
-  // openDeleteDialog() {
-  //   this.dialog.open(deleteConfirmationDialog, {
-  //     width: '300px',
-  //     height: '150px'
-  //   })
-  // }
+  openDeleteDialog(obj: any) {
+    console.log("obj");
+    console.log(obj);
+    this.dialog.open(DeleteResidentConfirmationDialog, {
+      width: '300px',
+      height: '150px',
+      data: { deleteId : obj.id},
+    })
+  }
   onClickDelete(obj : any){
     console.log(obj);
     console.log(obj.id);
     let resid = obj.id;
     this.residentService.deleteResident(resid);
   }
+}
 
+@Component({
+  selector: 'delete-resident-confirmation-dialog',
+  templateUrl: './deleteResident-dialog.html',
+})
+export class DeleteResidentConfirmationDialog {
+  deleteId = '';
+  data:any;
+  constructor(public dialogRef: MatDialogRef<ResidentInfoComponent>, private residentService : ResidentService, @Inject(MAT_DIALOG_DATA) public dialogData: DialogData){
+    dialogRef.disableClose = true;
+  }
+
+  ngOnInit(): void { 
+    this.data = this.dialogData;
+  }
+
+  onNoClick(){
+    this.dialogRef.close();
+
+  }
+
+  delete(){
+    console.log("delete id ..");
+    console.log(this.data);
+    this.residentService.deleteResident(this.data.deleteId);
+  }
+  
 }

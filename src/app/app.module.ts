@@ -52,7 +52,6 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { windowService } from './share/services/window.service';
 import { confirmationDialog } from './share/confirmatonDialog';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { EditEventsComponent } from './edit-events/edit-events.component';
 
 
@@ -110,7 +109,6 @@ import { EditEventsComponent } from './edit-events/edit-events.component';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     MatAutocompleteModule,
-    NgbModule
   ],
 
   providers: [{

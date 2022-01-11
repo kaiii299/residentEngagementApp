@@ -36,6 +36,9 @@ export class ResidentInfoComponent implements AfterViewInit {
   panelOpenState = false;
   search = ""
 
+  totalCount : any
+  filterValue : any
+
   filter_form: FormGroup;
 
   dataSource = new MatTableDataSource();
@@ -52,7 +55,9 @@ export class ResidentInfoComponent implements AfterViewInit {
     });
 
     residentService.getAllResidents().subscribe((data) => {
-      //console.log(data);
+      console.log('data length..');
+      console.log(data.length);
+      this.totalCount = data.length;
       let residentData = data;
       console.log(residentData);
       this.dataSource.data = residentData;
@@ -103,11 +108,13 @@ export class ResidentInfoComponent implements AfterViewInit {
       data: { deleteId : obj.id},
     })
   }
-  onClickDelete(obj : any){
-    console.log(obj);
-    console.log(obj.id);
-    let resid = obj.id;
-    this.residentService.deleteResident(resid);
+  onClickFilter(value: any){
+    console.log(value);
+    let filterValue = value;
+    this.residentService.getResidentByFilter(filterValue.committeeControl, filterValue.ageGpcontrol).subscribe(info => {
+      console.log('info..')
+      console.log(info);
+    })
   }
 }
 

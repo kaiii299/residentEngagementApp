@@ -18,6 +18,15 @@ export class ResidentService {
   getResidentById(id: string){
     return this.firestore.collection('residents').doc(id).valueChanges();
   }
+  getResidentByFilter(commiittee: string, ageGp: string){
+    console.log("filter");
+    var residentRef = this.firestore.collection<any>('residents', tempRes => {
+      return tempRes
+                    .where('committee','==',commiittee)
+                    .where('ageGp','==',ageGp)
+    });
+    return residentRef.valueChanges({idField: 'id'});
+  }
   updateResidentInfo(id: string, resident: Object){
     console.log(resident)
     return this.firestore.collection('residents').doc(id).update(resident);

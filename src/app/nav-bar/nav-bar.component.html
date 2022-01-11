@@ -1,27 +1,30 @@
 <nav class="navbar fixed-top">
   <div class="title">Resident App</div>
   <ul class="open-menu">
-    <li><a routerLink="/">Home</a></li>
+    <li><a routerLink="/" class="headings">Home</a></li>
+    
     <li>
       <div class="dropdown">
-      <a href="events" routerLinkActive="active">Events</a>
+      <a routerLink="events" routerLinkActive="active" class="headings">Events</a>
       <div class="dropdown-content">
         <a routerLink="list" routerLinkActive="active">Lists</a>
       </div>
       </div>
     </li>
+
     <li>
       <div class="dropdown">
-        <a *ngIf="displayName">Users</a>
+        <a *ngIf="displayName" class="headings">Users</a>
         <div class="dropdown-content">
           <a routerLink="allusers" routerLinkActive="active">All Users</a>
           <a routerLink="register" routerLinkActive="active">Add New User</a>
         </div>
       </div>
     </li>
+
     <li>
       <div class="dropdown">
-        <a >Resident Info</a>
+        <a class="headings" >Resident Info</a>
         <div class="dropdown-content">
           <a href="#">Dashboard</a>
           <a routerLink="residentinfo" routerLinkActive="active">View All Residents</a>
@@ -29,6 +32,7 @@
         </div>
       </div>
     </li>
+
     <li>
       <div class="dropdown" *ngIf="displayName">
         <p class="dropdownbtn">{{displayName}}</p>
@@ -40,6 +44,7 @@
         </div>
       </div>
     </li>
+
   </ul>
 
   <div class="body">

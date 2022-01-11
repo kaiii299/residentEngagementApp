@@ -41,7 +41,7 @@ import { HasRoleGuard } from './share/services/guards/has-role.guard';
 import { environment } from 'src/environments/environment';
 import { Authservice } from './share/services/auth.service';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
-
+import {CdkTableModule} from '@angular/cdk/table';
 
 
 
@@ -111,6 +111,7 @@ import { excelPreviewDialog } from './share/excel-preview-dialog';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
     MatAutocompleteModule,
+    CdkTableModule,
   ],
 
   providers: [{

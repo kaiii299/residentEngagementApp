@@ -42,9 +42,9 @@ body {
 .welcome {
   position: relative;
   color: rgb(255, 255, 255);
-  font-size: clamp(7rem, 5vw, 5rem);
+  font-size: 6.5vw;
   height: 70px;
-  padding: 0px 0px 0px 0px;
+  padding: -30px 0px 0px 0px;
   display: flex;
   //border: 5px solid red;
 }
@@ -221,8 +221,6 @@ body {
     height: 130%;
     width: 80%;
   }
-
-  
 }
 
 

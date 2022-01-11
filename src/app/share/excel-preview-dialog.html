@@ -1,3 +1,16 @@
-<div class="container">
-  <button mat-button (click)="close()" >close</button>
+<div>
+
+  <ng-container cdkColumnDef="position">
+    <table>
+      <th></th>
+      <td *ngFor="let users of userList">{{users.userName}}</td>
+    </table>
+  </ng-container>
+
+
+<ng-container #residents></ng-container>
+  <div class="button">
+    <button mat-button (click)="exportexcel()">Export to Excel</button>
+    <button mat-button (click)="close()" >close</button>
+  </div>
 </div>

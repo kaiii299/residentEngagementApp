@@ -1,6 +1,36 @@
 <body>
   <div class="bigContainer">
     <div class="container">
+      <div class="filiterContainer">
+
+        <mat-select class="select" placeholder="Filiter" multiple [(ngModel)]="variableValue"
+        [ngModelOptions]="{standalone: true}">
+        <mat-select-trigger>
+          {{variableValue ? variableValue[0] : ''}}
+          <span *ngIf="variableValue.length > 1" class="example-additional-selection">
+            (+{{variableValue.length - 1}} {{variableValue?.length === 2 ? 'other' : 'others'}})
+          </span>
+        </mat-select-trigger>
+        <mat-option *ngFor="let variable of variables" [value]="variable">{{variable}}</mat-option>
+      </mat-select>
+
+        <mat-select class="select" placeholder="Committee" [(ngModel)]="committeesValue"
+          [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let committee of committees" [value]="committee">{{committee}}</mat-option>
+        </mat-select>
+
+        <mat-select class="select" placeholder="Role" [(ngModel)]="roleValue"
+          [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let role of roles" [value]="userType">{{role}}</mat-option>
+        </mat-select>
+
+        <mat-select class="select" placeholder="Status" [(ngModel)]="statusValue"
+          [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let status   of status" [value]="status">{{status}}</mat-option>
+        </mat-select>
+
+      </div>
+      <br>
       <div class="mat-elevation-z8">
         <mat-accordion class="accordion">
           <mat-expansion-panel hideToggle>
@@ -12,37 +42,6 @@
                   clear
                 </button>
             </mat-expansion-panel-header>
-
-            <div class="filiterContainer">
-              
-              <mat-select class="select" placeholder="Filiter" multiple [(ngModel)]="variableValue"
-              [ngModelOptions]="{standalone: true}">
-              <mat-select-trigger>
-                {{variableValue ? variableValue[0] : ''}}
-                <span *ngIf="variableValue.length > 1" class="example-additional-selection">
-                  (+{{variableValue.length - 1}} {{variableValue?.length === 2 ? 'other' : 'others'}})
-                </span>
-              </mat-select-trigger>
-              <mat-option *ngFor="let variable of variables" [value]="variable">{{variable}}</mat-option>
-            </mat-select>
-
-              <mat-select class="select" placeholder="committee" [(ngModel)]="committeesValue"
-                [ngModelOptions]="{standalone: true}">
-                <mat-option *ngFor="let committee of committees" [value]="committee">{{committee}}</mat-option>
-              </mat-select>
-
-              <mat-select class="select" placeholder="UserType" [(ngModel)]="roleValue"
-                [ngModelOptions]="{standalone: true}">
-                <mat-option *ngFor="let role of roles" [value]="userType">{{role}}</mat-option>
-              </mat-select>
-
-              <mat-select class="select" placeholder="Status" [(ngModel)]="statusValue"
-                [ngModelOptions]="{standalone: true}">
-                <mat-option *ngFor="let status   of status" [value]="status">{{status}}</mat-option>
-              </mat-select>
-
-
-            </div>
 
             <div class="buttonContainer">
               <p mat-button class="excel-btn" type="button">

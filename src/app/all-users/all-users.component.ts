@@ -44,6 +44,7 @@ export class AllUsersComponent implements AfterViewInit {
   searchValue: any;
   filiter_form: FormGroup
   uid = localStorage.getItem("uid");
+  userdata : any;
 
   dataSource = new MatTableDataSource();
 
@@ -53,8 +54,9 @@ export class AllUsersComponent implements AfterViewInit {
 
   constructor(private authService:Authservice,private formBuilder: FormBuilder, private router: Router,private dialog: MatDialog) {
     authService.getAllUsers().subscribe(data=>{
-      let userData = data
-      this.dataSource.data = userData
+      let _userData = data;
+      this.dataSource.data = _userData;
+      this.userdata = _userData;
     })
     this.uid = authService.decryptData(this.uid)
     console.log(this.variableValue)
@@ -91,7 +93,11 @@ export class AllUsersComponent implements AfterViewInit {
   }
 
   openExcelPreviewDialog(){
-    this.dialog.open(excelPreviewDialog)
+    this.dialog.open(excelPreviewDialog,{
+      width:'400px',
+      height:'500px',
+      data: this.userdata
+    })
   }
 
 }

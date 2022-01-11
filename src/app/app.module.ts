@@ -20,7 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule, } from '@angular/material/dialog';
-import { AllUsersComponent } from './all-users/all-users.component';
+import { AllUsersComponent} from './all-users/all-users.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
@@ -53,6 +53,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { windowService } from './share/services/window.service';
 import { confirmationDialog } from './share/confirmatonDialog';
 import { EditEventsComponent } from './edit-events/edit-events.component';
+import { excelPreviewDialog } from './share/excel-preview-dialog';
 
 
 
@@ -76,7 +77,8 @@ import { EditEventsComponent } from './edit-events/edit-events.component';
     ResidentInfoComponent,
     ResidentDetailComponent,
     confirmationDialog,
-    EditEventsComponent
+    EditEventsComponent,
+    excelPreviewDialog,
   ],
   imports: [
     CommonModule,

@@ -23,7 +23,7 @@ export class Authservice {
   currentUserObject: any;
   newUserId: any;
   userLoggedIn: boolean;
-  authState: any = null;
+  authState: any;
   secretKey = 'YourSecretKeyForEncryption&Descryption';
   eventCallback = new Subject<string>();//source
   eventCallback$ = this.eventCallback.asObservable();
@@ -52,6 +52,8 @@ export class Authservice {
        const _uid = this.decryptData(encryptedText);
         this.getUserById(this.currentLogedInUserId).subscribe(data=>{
           const _data: any = data
+          const encryptedRole = this.encryptData(_data.role)
+          localStorage.setItem("role",encryptedRole)
           this.eventCallback.next(_data.userName)
         })
       }).catch(error=>{

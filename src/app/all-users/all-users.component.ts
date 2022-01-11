@@ -8,6 +8,8 @@ import { Constants } from '../constants';
 import { Authservice } from '../share/services/auth.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router} from '@angular/router';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { excelPreviewDialog } from '../share/excel-preview-dialog';
 
 
 @Component({
@@ -24,16 +26,17 @@ import { NavigationExtras, Router} from '@angular/router';
 })
 
 export class AllUsersComponent implements AfterViewInit {
-  columnsToDisplay = ['firstName', 'email', 'committee', 'blockNumber','status'];
+  columnsToDisplay = ['userName', 'email', 'committee', 'blockNumber','role'];
   expandedElement:  null;
-
   committees = Constants.committees
   roles = Constants.roles
   status = Constants.status
   blockNumber = Constants.blkNum
-
+  variables = Constants.variables
+  variableValue: string ="";
+  variablesArray = Array()
   panelOpenState = false;
-  search = "";
+  search: any;
   committeesValue: string;
   roleValue: string;
   statusValue: string;
@@ -48,12 +51,13 @@ export class AllUsersComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private authService:Authservice,private formBuilder: FormBuilder, private router: Router) {
+  constructor(private authService:Authservice,private formBuilder: FormBuilder, private router: Router,private dialog: MatDialog) {
     authService.getAllUsers().subscribe(data=>{
       let userData = data
       this.dataSource.data = userData
     })
     this.uid = authService.decryptData(this.uid)
+    console.log(this.variableValue)
   }
 
   ngAfterViewInit() {
@@ -74,6 +78,20 @@ export class AllUsersComponent implements AfterViewInit {
   userInfo(uid: any){
     const navigationExtras: NavigationExtras = {queryParams:{id: uid}}
     this.router.navigate(['myprofile'],navigationExtras)
+  }
+
+  clear(event: Event){
+    const filterValue = (event.target as HTMLInputElement).value = " "
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.search = null;
+  }
+
+  refresh(){
+    location.reload()
+  }
+
+  openExcelPreviewDialog(){
+    this.dialog.open(excelPreviewDialog)
   }
 
 }

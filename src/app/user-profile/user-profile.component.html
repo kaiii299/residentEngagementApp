@@ -36,7 +36,7 @@
 
           <mat-label>Role</mat-label>
           <mat-select class="selection-input" placeholder="Role"
-          formControlName="roleCtrl" [disabled]="newRoleValue != 'Admin' "
+          formControlName="roleCtrl" [disabled]="_role != 'Admin' "
             [(ngModel)]="user.role" [value]="newRoleValue">
             <mat-option *ngFor="let userTypesArray of userTypesArrays" [value]="userTypesArray">{{userTypesArray}}
             </mat-option>
@@ -44,7 +44,7 @@
 
           <mat-label>Committee</mat-label>
           <mat-select class="selection-input" placeholder="Committee" value={{newCommitteeValue}}
-          formControlName="committeeCtrl" [disabled]="newRoleValue !=='Admin' "
+          formControlName="committeeCtrl" [disabled]="_role !=='Admin' "
             [(ngModel)]="newCommitteeValue">
             <mat-option *ngFor="let committeeArray of committeeArrays" [value]="committeeArray">{{committeeArray}}
             </mat-option>
@@ -52,7 +52,7 @@
 
           <mat-label>Block Number</mat-label>
 
-          <input type="text" placeholder="Block Number" aria-label="Number" [(ngModel)]="newBlockNumber" formControlName="blockNumberCtrl" class="search" [formControl]="myControl"
+          <input type="text" placeholder="Block Number" [disabled]="_role !=='Admin' " aria-label="Number" [(ngModel)]="newBlockNumber" formControlName="blockNumberCtrl" class="search" [formControl]="myControl"
             [matAutocomplete]="auto">
 
           <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">

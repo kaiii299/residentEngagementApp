@@ -21,13 +21,13 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent,
-    //canActivate: [AuthRouteGuard],
+    canActivate: [AuthRouteGuard],
     //data: { role: 'Admin' },
   },
   {
     path: 'allusers',
     component: AllUsersComponent,
-    //canActivate: [AuthRouteGuard, HasRoleGuard],
+    canActivate: [AuthRouteGuard],
     //data: { role: 'Admin' },
   },
   {
@@ -51,7 +51,7 @@ const routes: Routes = [
   {
     path: 'myprofile',
     component: UserProfileComponent,
-    //canActivate: [AuthRouteGuard],
+    canActivate: [AuthRouteGuard],
     //data: { role: 'Admin' },
   },
   { path: 'updateresident', component: UpdateResidentComponent },

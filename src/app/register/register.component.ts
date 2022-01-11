@@ -181,4 +181,8 @@ export class RegisterComponent implements OnInit {
     return this.blockNumbers.filter(option => option.toLowerCase().includes(filterValue))
   }
 
+  back(){
+    this.authService.goback();
+  }
+
 }

@@ -59,8 +59,8 @@ export class UserProfileComponent implements OnInit {
   committeeArrays = Constants.committees;
   myControl = new FormControl("",[autocompleteStringValidator(this.blockNumbersArray),Validators.required]);
   filterdBlockNumbers: Observable<string[]>;
-
   _uid = this.activatedRoute.snapshot.queryParams.id;
+  _role = localStorage.getItem("role")
 
   constructor(public dialog: MatDialog,
      public authService: Authservice,
@@ -113,6 +113,9 @@ export class UserProfileComponent implements OnInit {
       startWith(''),
       map(value => this._filter(value)),
     );
+
+    const _role = localStorage.getItem("role");
+    this._role = this.authService.decryptData(_role);
   }
 
   _filter(value: string): string[] {

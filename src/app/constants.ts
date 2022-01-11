@@ -28,6 +28,22 @@ export abstract class Constants {
     'Active',
     'Inactive'];
 
+  static readonly variables: string[] = [
+    'LastUpdatedDate',
+    'LastUpdatedTime',
+    'blockNumber',
+    'committee',
+    'email',
+    'firstName',
+    'gender',
+    'phoneNumber',
+    'registrationTime',
+    'registrationDate',
+    'role',
+    'status',
+    'userName',
+  ];
+
   static readonly roles: string[] = [
     "Admin",
     "CC staff",

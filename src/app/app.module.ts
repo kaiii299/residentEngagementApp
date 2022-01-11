@@ -1,7 +1,6 @@
-import { MbscModule } from '@mobiscroll/angular';
 import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -21,7 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule, } from '@angular/material/dialog';
-import { AllUsersComponent } from './all-users/all-users.component';
+import { AllUsersComponent} from './all-users/all-users.component';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
@@ -42,6 +41,7 @@ import { HasRoleGuard } from './share/services/guards/has-role.guard';
 import { environment } from 'src/environments/environment';
 import { Authservice } from './share/services/auth.service';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {CdkTableModule} from '@angular/cdk/table';
 
 
 
@@ -52,6 +52,9 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { windowService } from './share/services/window.service';
 import { confirmationDialog } from './share/confirmatonDialog';
+import { EditEventsComponent } from './edit-events/edit-events.component';
+import { excelPreviewDialog } from './share/excel-preview-dialog';
+
 
 
 
@@ -73,10 +76,11 @@ import { confirmationDialog } from './share/confirmatonDialog';
     UpdateResidentComponent,
     ResidentInfoComponent,
     ResidentDetailComponent,
-    confirmationDialog
+    confirmationDialog,
+    EditEventsComponent,
+    excelPreviewDialog,
   ],
   imports: [
-    MbscModule,
     CommonModule,
     HttpClientModule,
     BrowserModule,
@@ -106,10 +110,9 @@ import { confirmationDialog } from './share/confirmatonDialog';
     AngularFireDatabaseModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireAuthModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    CdkTableModule,
   ],
-
-  schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
 
   providers: [{
     provide: HTTP_INTERCEPTORS,

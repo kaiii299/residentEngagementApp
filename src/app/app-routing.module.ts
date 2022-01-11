@@ -13,6 +13,7 @@ import { UpdateResidentComponent } from './update-resident/update-resident.compo
 import { ResidentInfoComponent } from './resident-info/resident-info.component';
 import { ResidentDetailComponent } from './resident-detail/resident-detail.component';
 import { EventsPageComponent } from './events-page/events-page.component';
+import { ListComponent } from './list/list.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' }, //login
@@ -20,13 +21,13 @@ const routes: Routes = [
   {
     path: 'register',
     component: RegisterComponent,
-    //canActivate: [AuthRouteGuard],
+    canActivate: [AuthRouteGuard],
     //data: { role: 'Admin' },
   },
   {
     path: 'allusers',
     component: AllUsersComponent,
-    //canActivate: [AuthRouteGuard, HasRoleGuard],
+    canActivate: [AuthRouteGuard],
     //data: { role: 'Admin' },
   },
   {
@@ -42,9 +43,15 @@ const routes: Routes = [
     //data: { role: 'Admin' },
   },
   {
+    path: 'list',
+    component: ListComponent,
+    //canActivate: [AuthRouteGuard, HasRoleGuard],
+    //data: { role: 'Admin' },
+  },
+  {
     path: 'myprofile',
     component: UserProfileComponent,
-    //canActivate: [AuthRouteGuard],
+    canActivate: [AuthRouteGuard],
     //data: { role: 'Admin' },
   },
   { path: 'updateresident', component: UpdateResidentComponent },

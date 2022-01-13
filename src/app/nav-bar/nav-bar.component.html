@@ -2,13 +2,24 @@
   <div class="title">Resident App</div>
   <ul class="open-menu">
     <li><a routerLink="/" class="headings">Home</a></li>
-    
+
     <li>
       <div class="dropdown">
       <a routerLink="events" routerLinkActive="active" class="headings">Events</a>
       <div class="dropdown-content">
         <a routerLink="list" routerLinkActive="active">Lists</a>
       </div>
+      </div>
+    </li>
+
+    <li>
+      <div class="dropdown">
+        <a class="headings" >Resident Info</a>
+        <div class="dropdown-content">
+          <a href="#">Dashboard</a>
+          <a routerLink="residentinfo" routerLinkActive="active">All Residents</a>
+          <a routerLink="addresident" routerLinkActive="active">Add Resident</a>
+        </div>
       </div>
     </li>
 
@@ -22,22 +33,12 @@
       </div>
     </li>
 
-    <li>
-      <div class="dropdown">
-        <a class="headings" >Resident Info</a>
-        <div class="dropdown-content">
-          <a href="#">Dashboard</a>
-          <a routerLink="residentinfo" routerLinkActive="active">View All Residents</a>
-          <a routerLink="addresident" routerLinkActive="active">Add A New Resident</a>
-        </div>
-      </div>
-    </li>
 
     <li>
       <div class="dropdown" *ngIf="displayName">
         <p class="dropdownbtn">{{displayName}}</p>
         <div class="dropdown-content">
-          <a routerLink="myprofile" routerLinkActive="active">My Profile</a>
+          <a href="myprofile" routerLinkActive="active">My Profile</a>
           <a  class='logout' (click)="openLogoutDialog()">
               Log Out
           </a>
@@ -64,7 +65,7 @@
         <a>Resident Info</a>
         <a href="register" routerLinkActive="active">New Account</a>
         <a href="allusers" routerLinkActive="active">All users</a>
-        <a  class='logout' (click)="openLogoutDialog()">
+        <a  class='logout' *ngIf="displayName" (click)="openLogoutDialog()">
           Log Out
       </a>
         <a>

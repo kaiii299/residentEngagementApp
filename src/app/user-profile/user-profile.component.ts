@@ -71,30 +71,34 @@ export class UserProfileComponent implements OnInit {
     if (!this._uid) {
       var encryptedUid = localStorage.getItem('uid');
       this.uid = this.authService.decryptData(encryptedUid);
-      this.authService.getUserById(this.uid).subscribe((res) => {
-        this.user = res;
-        this.newUserName = this.user.userName;
-        this.newFirstName = this.user.firstName;
-        this.newGender = this.user.gender;
-        this.newEmail = this.user.email;
-        this.newPhoneNumber = this.user.phoneNumber;
-        this.newRoleValue = this.user.role;
-        this.newCommitteeValue = this.user.committee;
-        this.newBlockNumber = this.user.blockNumber;
+      this.authService.getUserById(this.uid).then((res) => {
+        res.subscribe(data=>{
+          this.user = data;
+          this.newUserName = this.user.userName;
+          this.newFirstName = this.user.firstName;
+          this.newGender = this.user.gender;
+          this.newEmail = this.user.email;
+          this.newPhoneNumber = this.user.phoneNumber;
+          this.newRoleValue = this.user.role;
+          this.newCommitteeValue = this.user.committee;
+          this.newBlockNumber = this.user.blockNumber;
+        })
       });
     }
     else if (this._uid) {
-      console.log(this._uid);
-      this.authService.getUserByIdParam(this._uid).subscribe(res => {
-        this.user = res;
-        this.newUserName = this.user.userName;
-        this.newFirstName = this.user.firstName;
-        this.newGender = this.user.gender;
-        this.newEmail = this.user.email;
-        this.newPhoneNumber = this.user.phoneNumber;
-        this.newRoleValue = this.user.role;
-        this.newCommitteeValue = this.user.committee;
-        this.newBlockNumber = this.user.blockNumber;
+      var decryptedUid = this.authService.decryptData(this._uid)
+      this.authService.getUserByIdParam(decryptedUid).then(res => {
+        res.subscribe(data=>{
+          this.user = data;
+          this.newUserName = this.user.userName;
+          this.newFirstName = this.user.firstName;
+          this.newGender = this.user.gender;
+          this.newEmail = this.user.email;
+          this.newPhoneNumber = this.user.phoneNumber;
+          this.newRoleValue = this.user.role;
+          this.newCommitteeValue = this.user.committee;
+          this.newBlockNumber = this.user.blockNumber;
+        })
       })
     }
     this.updateUserForm = this._formBuilder.group({
@@ -148,12 +152,12 @@ export class UserProfileComponent implements OnInit {
     committee = this.newCommitteeValue,
     blockNumber = this.newBlockNumber,
     LastUpdatedDate = new Date().toLocaleDateString(),
-    LastUpdtedTime = new Date().toLocaleTimeString(),
+    LastUpdatedTime = new Date().toLocaleTimeString(),
   ) {
     this.dialog.open(saveChangesDialog, {
       data: {
         userName,
-        email, firstName, gender, phoneNumber, role, committee, blockNumber, LastUpdatedDate, LastUpdtedTime
+        email, firstName, gender, phoneNumber, role, committee, blockNumber, LastUpdatedDate, LastUpdatedTime
       }
     })
     var encrypt = this.authService.encryptData(this.newUserName)
@@ -190,11 +194,12 @@ export class saveChangesDialog {
     console.log(this.data);
     this.dialogRef.close();
     var _uid = this.activatedRoute.snapshot.queryParams.id;
+    var decryptData = this.authService.decryptData(_uid);
     if (!_uid) {
       this.authService.updateUserData(this.data)
     }
     else if (_uid) {
-      this.authService.updateUserDataByQuery(this.data, _uid)
+      this.authService.updateUserDataByQuery(this.data, decryptData)
     }
     this.dialog.open(confirmationDialog, {
       data: {

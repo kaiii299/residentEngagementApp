@@ -35,31 +35,32 @@ export class Authservice {
     private router: Router,
     private location: Location,
   ) {
-    this.firebaseAuth.onAuthStateChanged(user=>{
-      if(user){
+    this.firebaseAuth.onAuthStateChanged(user => {
+      if (user) {
         this.getUserById(user.uid)
       }
-      else{
+      else {
         console.log("user not sign in")
       }
     })
   }
 
-  signIn(email: string, password: string){
-    return this.firebaseAuth.signInWithEmailAndPassword(email, password).then(res=>{
-       const encryptedText = this.encryptData(res.user?.uid)
-       localStorage.setItem("uid",encryptedText);
-       const _uid = this.decryptData(encryptedText);
-        this.getUserById(this.currentLogedInUserId).subscribe(data=>{
+  signIn(email: string, password: string) {
+    return this.firebaseAuth.signInWithEmailAndPassword(email, password).then(res => {
+      const encryptedText = this.encryptData(res.user?.uid)
+      localStorage.setItem("uid", encryptedText);
+      const _uid = this.decryptData(encryptedText);
+      this.getUserById(this.currentLogedInUserId).then(res => [
+        res.subscribe(data => {
           const _data: any = data
           const encryptedRole = this.encryptData(_data.role)
-          localStorage.setItem("role",encryptedRole)
+          localStorage.setItem("role", encryptedRole)
           this.eventCallback.next(_data.userName)
         })
-      }).catch(error=>{
+      ]).catch(error => {
         console.log(error)
-        throw error
       })
+    })
   }
 
   logout() {
@@ -69,7 +70,7 @@ export class Authservice {
   }
 
   updateUserData(data: any) {
-    this.firebaseAuth.onAuthStateChanged(user=>{
+    this.firebaseAuth.onAuthStateChanged(user => {
       const userRef: AngularFirestoreDocument<userDataInterface> = this.db.doc(
         `Users/${user?.uid}`
       );
@@ -77,11 +78,11 @@ export class Authservice {
     })
   }
 
-  updateUserDataByQuery(data: any,uid: any) {
-      const userRef: AngularFirestoreDocument<userDataInterface> = this.db.doc(
-        `Users/${uid}`
-      );
-      return userRef.set(data, { merge: true });
+  updateUserDataByQuery(data: any, uid: any) {
+    const userRef: AngularFirestoreDocument<userDataInterface> = this.db.doc(
+      `Users/${uid}`
+    );
+    return userRef.set(data, { merge: true });
   }
 
   async register(email: string, password: string) {
@@ -97,20 +98,20 @@ export class Authservice {
     return this.db.collection('Users').doc(this.newUserId).set(UserData);
   }
 
-  getAllUsers() {
-    return this.db.collection('Users').valueChanges({idField:"uid"});
+  async getAllUsers() {
+    return this.db.collection('Users').valueChanges({ idField: "uid" });
   }
 
-  getUserById(id: any) {
-      return this.db.doc(`Users/${this.currentLogedInUserId}`).valueChanges({idField:"uid"});
+  async getUserById(id: any) {
+    return this.db.doc(`Users/${this.currentLogedInUserId}`).valueChanges({ idField: "uid" });
   }
 
-  getUserByIdParam(id: any){
-    return this.db.doc(`Users/${id}`).valueChanges({idField:"uid"});
+  async getUserByIdParam(id: any) {
+    return this.db.doc(`Users/${id}`).valueChanges({ idField: "uid" });
   }
 
   async forgetPassword(email: string) {
-    await this.firebaseAuth.sendPasswordResetEmail(email).then((res) => {});
+    await this.firebaseAuth.sendPasswordResetEmail(email).then((res) => { });
   }
 
   encryptData(value: any) {
@@ -123,7 +124,7 @@ export class Authservice {
     return bytes.toString(CryptoJS.enc.Utf8);
   }
 
-  goback(){
+  goback() {
     this.location.back();
   }
 }

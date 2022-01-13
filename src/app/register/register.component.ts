@@ -151,7 +151,7 @@ export class RegisterComponent implements OnInit {
       newUser['role'] = this.roleValue;
       newUser['committee'] = this.committeesValue;
       newUser['blockNumber'] = this.blockNumberValue;
-      newUser['regsitrationDate'] = this.registeredDate;
+      newUser['registrationDate'] = this.registeredDate;
       newUser['registrationTime'] = this.registeredTime;
       newUser['status'] = this.status;
 

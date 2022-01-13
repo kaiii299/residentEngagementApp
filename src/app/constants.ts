@@ -29,19 +29,19 @@ export abstract class Constants {
     'Inactive'];
 
   static readonly variables: string[] = [
-    'LastUpdatedDate',
-    'LastUpdatedTime',
-    'blockNumber',
-    'committee',
+    'userName',
+    'status',
     'email',
     'firstName',
     'gender',
+    'role',
+    'blockNumber',
+    'committee',
     'phoneNumber',
     'registrationTime',
     'registrationDate',
-    'role',
-    'status',
-    'userName',
+    'LastUpdatedDate',
+    'LastUpdatedTime',
   ];
 
   static readonly roles: string[] = [

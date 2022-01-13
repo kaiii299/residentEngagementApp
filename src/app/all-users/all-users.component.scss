@@ -1,70 +1,81 @@
-.mat-pseudo-checkbox-checked{
-background:#4b6cb7 !important;
+.mat-pseudo-checkbox-checked {
+  background: #4b6cb7 !important;
 }
 
-body{
-  background-color: #EB9C5C;
+body {
+  background-color: #eb9c5c;
   height: 100vh;
   overflow: auto;
 }
 
-.container{
+.container {
   position: relative;
   top: 120px;
 }
 
-.search{
+.search {
   margin: 0px 0 0 0;
 }
 
-.filiterContainer{
-  margin: 10px 0px 0px 0px ;
+.filterContainer {
+  margin: 10px 0px 0px 0px;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: white;
   height: 40px;
   padding-left: 10px;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
-.mat-select-placeholder{
+.mat-select-placeholder {
   color: black !important;
 }
 
-
-.select ,.select::placeholder{
+.select,
+.select::placeholder {
   color: black;
 }
 
-.buttonContainer{
-  display: flex;
+.total {
+  margin-top: 10px;
+  padding: 5px 10px 5px 10px;
+  background-color: #f2d9c5;
 }
 
-.filiter-btn, .excel-btn {
+.buttonContainer {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin: 20px 15px 0 0px;
-  text-transform: uppercase;
-  outline: 0;
-  background: #4b6cb7;
-  width: auto;
-  border: 0;
-  border-radius: 5px;
-  padding: 5px 15px 5px 15px ;
-  color: #FFFFFF;
-  font-size: 15px;
-  -webkit-transition: all 0.3 ease;
-  transition: all 0.3 ease;
+  justify-content: flex-end;
+  position: relative;
+  margin-bottom: -30px;
+}
+
+.filter-btn {
   cursor: pointer;
 }
 
-.excel-btn{
-  background-color: #EB9C5C;
+.upload{
+  
 }
 
-.edit-btn{
+.excel-btn {
+  position: relative;
+  bottom: 40px;
+  background-color: #eb9c5c;
+  display: flex;
+  justify-content: flex-start;
+  text-align: center;
+  align-items: center;
+  margin: 20px 15px 0 0px;
+  text-transform: uppercase;
+  color: #ffffff;
+  border-radius: 5px;
+  font-size: 13px;
+  padding: 0px 10px 0px ;
+  cursor: pointer;
+}
+
+.edit-btn {
   margin: 0px 0px 0px 0xp;
 }
 
@@ -74,13 +85,13 @@ table {
   width: 100%;
 }
 
-mat-paginator  {
+mat-paginator {
   position: relative;
   background-color: #f2d9c5;
   width: 100%;
 }
 
-mat-accordion{
+mat-accordion {
   position: relative;
   width: 100%;
 }
@@ -95,21 +106,22 @@ mat-accordion{
   padding: 15px;
   box-sizing: border-box;
   font-size: 14px;
-  &:hover{
-    box-shadow: 0 9px 18px rgba(0,0,0,0.10), 0 5px 12px rgba(0,0,0,0.22);
+  &:hover {
+    box-shadow: 0 9px 18px rgba(0, 0, 0, 0.1), 0 5px 12px rgba(0, 0, 0, 0.22);
   }
 }
 
-mat-label{
+mat-label {
   font-size: 15px;
   color: black;
 }
 
-td, th {
+td,
+th {
   width: 0%;
 }
 
-input::placeholder{
+input::placeholder {
   color: rgb(119, 119, 119);
 }
 
@@ -120,7 +132,6 @@ input::placeholder{
 }
 
 //Expended collumn
-
 
 tr.example-detail-row {
   height: 0;
@@ -135,7 +146,7 @@ tr.example-detail-row {
   display: flex;
 }
 
-.expended-cell:hover{
+.expended-cell:hover {
   background-color: tra;
 }
 
@@ -153,7 +164,7 @@ tr.example-detail-row {
   opacity: 0.5;
 }
 
-@media(max-width: 1000px){
+@media (max-width: 1000px) {
   table {
     display: block;
     background-color: #f2d9c5;
@@ -161,11 +172,11 @@ tr.example-detail-row {
     overflow: auto;
   }
 
-  .container{
+  .container {
     position: relative;
     top: 80px;
   }
   .mat-header-cell {
     padding: 50px;
-   }
+  }
 }

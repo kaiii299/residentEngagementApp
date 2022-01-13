@@ -1,5 +1,5 @@
 <div>
-
+  <input type="file" title="file" #input>
   <ng-container cdkColumnDef="position">
     <table *ngFor="let users of userList">
       <tr>
@@ -11,7 +11,7 @@
 
 <ng-container #residents></ng-container>
   <div class="button">
-    <button mat-button (click)="exportexcel()">Export to Excel</button>
+    <button mat-button (click)="exportexcel()" [disabled]="!input">Upload File</button>
     <button mat-button (click)="close()" >close</button>
   </div>
 </div>

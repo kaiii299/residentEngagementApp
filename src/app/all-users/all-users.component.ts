@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router} from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { excelPreviewDialog } from '../share/excel-preview-dialog';
+import { uploadFileDialog } from '../share/upload-file';
 
 
 @Component({
@@ -26,26 +27,27 @@ import { excelPreviewDialog } from '../share/excel-preview-dialog';
 })
 
 export class AllUsersComponent implements AfterViewInit {
-  columnsToDisplay = ['userName', 'email', 'committee', 'blockNumber','role'];
+  columnsToDisplay = Array();
   expandedElement:  null;
   committees = Constants.committees
   roles = Constants.roles
   status = Constants.status
   blockNumber = Constants.blkNum
   variables = Constants.variables
-  variableValue: string ="";
-  variablesArray = Array()
   panelOpenState = false;
   search: any;
-  committeesValue: string;
-  roleValue: string;
-  statusValue: string;
-  blockValue:string
+  variableValue: any = '';
+  committeesValue: string ='';
+  roleValue: string ='' ;
+  statusValue: string ='';
+  blockValue:string;
   searchValue: any;
-  filiter_form: FormGroup
+  filter_form: FormGroup
   uid = localStorage.getItem("uid");
   userdata : any;
-
+  totalCount: any;
+  filterValue: any;
+  defaultValue:any =  ['userName','committee', 'blockNumber','role'];
   dataSource = new MatTableDataSource();
 
 
@@ -53,13 +55,25 @@ export class AllUsersComponent implements AfterViewInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private authService:Authservice,private formBuilder: FormBuilder, private router: Router,private dialog: MatDialog) {
-    authService.getAllUsers().subscribe(data=>{
-      let _userData = data;
-      this.dataSource.data = _userData;
-      this.userdata = _userData;
+     authService.getAllUsers().then(res=>{
+        res.subscribe(data=>{
+        this.dataSource.data = data;
+        this.userdata = data;
+        this.totalCount = data.length
+      })
     })
     this.uid = authService.decryptData(this.uid)
-    console.log(this.variableValue)
+
+    if(localStorage.getItem("filterValue")){
+      const stringValue = JSON.stringify(localStorage.getItem("filterValue"));
+      const parseValue = JSON.parse(JSON.parse(stringValue))
+      this.columnsToDisplay = parseValue;
+      this.variableValue = parseValue;
+    }
+    else if(!localStorage.getItem("filterValue") || this.variableValue ==''){
+      this.variableValue = this.defaultValue;
+      this.columnsToDisplay = this.defaultValue;
+    }
   }
 
   ngAfterViewInit() {
@@ -68,9 +82,8 @@ export class AllUsersComponent implements AfterViewInit {
   }
 
   applyFilter(event: Event) {
-    // (event.target as HTMLInputElement).value = "home"
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = this.filterValue.trim().toLowerCase();
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
@@ -78,14 +91,38 @@ export class AllUsersComponent implements AfterViewInit {
   }
 
   userInfo(uid: any){
-    const navigationExtras: NavigationExtras = {queryParams:{id: uid}}
+    var encryptedUid = this.authService.encryptData(uid)
+    const navigationExtras: NavigationExtras = {queryParams:{id: encryptedUid}}
     this.router.navigate(['myprofile'],navigationExtras)
   }
 
-  clear(event: Event){
+  filter(event: KeyboardEvent){
+    if(this.committeesValue){
+      this.dataSource.filter  = this.committeesValue;
+    }
+    if(this.roleValue){
+      this.dataSource.filter  = this.roleValue;
+    }
+    if(this.statusValue){
+      this.dataSource.filter  = this.statusValue;
+    }
+    if(this.variableValue !='' && this.variableValue !=undefined){
+      localStorage.setItem("filterValue",JSON.stringify(this.variableValue))
+      this.columnsToDisplay = this.variableValue
+    }
+  }
+
+  clearFilter(event: Event){
     const filterValue = (event.target as HTMLInputElement).value = " "
     this.dataSource.filter = filterValue.trim().toLowerCase();
+    this.committeesValue ="";
+    this.roleValue = '';
+    this.statusValue ='';
     this.search = null;
+    this.variableValue = this.defaultValue;
+    this.columnsToDisplay = this.defaultValue;
+    localStorage.removeItem("filterValue")
+    this.searchValue = ""
   }
 
   refresh(){
@@ -94,11 +131,16 @@ export class AllUsersComponent implements AfterViewInit {
 
   openExcelPreviewDialog(){
     this.dialog.open(excelPreviewDialog,{
-      width:'400px',
-      height:'500px',
+      width:'600px',
+      height:'700px',
       data: this.userdata
     })
   }
 
+  uploadFile(){
+    this.dialog.open(uploadFileDialog),{
+
+    }
+  }
 }
 

@@ -26,6 +26,7 @@
   box-shadow: 0 9px 18px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(49, 49, 49, 0.22);
   color: white;
   height: 60px;
+  z-index: 1;
 }
 
 #sidebarMenu {
@@ -199,7 +200,7 @@ li a:hover {
   text-align: center;
   justify-content: center;
   align-items: center;
-  margin: 0px 30px 10px 50px;
+  margin: 0px 30px 10px 60px;
   padding: 20px 15px 25px 15px;
   width: auto;
   height: 40px;

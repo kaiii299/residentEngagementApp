@@ -42,7 +42,7 @@ import { environment } from 'src/environments/environment';
 import { Authservice } from './share/services/auth.service';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {CdkTableModule} from '@angular/cdk/table';
-
+import {MatCardModule} from '@angular/material/card';
 
 
 //firebase
@@ -54,6 +54,7 @@ import { windowService } from './share/services/window.service';
 import { confirmationDialog } from './share/confirmatonDialog';
 import { EditEventsComponent } from './edit-events/edit-events.component';
 import { excelPreviewDialog } from './share/excel-preview-dialog';
+import { uploadFileDialog } from './share/upload-file';
 
 
 
@@ -79,6 +80,7 @@ import { excelPreviewDialog } from './share/excel-preview-dialog';
     confirmationDialog,
     EditEventsComponent,
     excelPreviewDialog,
+    uploadFileDialog,
   ],
   imports: [
     CommonModule,
@@ -112,6 +114,7 @@ import { excelPreviewDialog } from './share/excel-preview-dialog';
     AngularFireAuthModule,
     MatAutocompleteModule,
     CdkTableModule,
+    MatCardModule
   ],
 
   providers: [{

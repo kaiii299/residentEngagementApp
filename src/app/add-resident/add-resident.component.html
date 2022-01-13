@@ -13,7 +13,7 @@
                         </div>
                     </div>
                     <label>Committee :</label>
-                    <select title="committee" class='form-control' formControlName="committee">
+                    <select title="committee" class='form-control' formControlName="committee" (change)="onChange($event.target.value)">
                         <option value="" disabled selected hidden>Select Committee</option>
                         <option *ngFor="let c of committees">
                             {{c}}
@@ -26,7 +26,13 @@
                         </div>
                     </div>
                     <label>Block Number :</label>
-                    <input title="blockNum" class='form-control' type="text" formControlName="blkNum" required>
+                    <select title="blkNum" class='form-control' formControlName="blkNum">
+                        <option value="" disabled selected hidden>Select Block</option>
+                        <option *ngFor="let c of availableBlocks" >
+                            {{c}}
+                        </option>
+                    </select>
+                    <!-- <input title="blockNum" class='form-control' type="text" formControlName="blkNum" required> -->
                     <div *ngIf="addResidentForm.controls['blkNum'].invalid && (addResidentForm.controls['blkNum'].dirty || addResidentForm.controls['blkNum'].touched)"
                         class="alert alert-danger">
                         <div *ngIf="addResidentForm.controls['blkNum'].errors.required">

@@ -12,16 +12,24 @@ import { Router, NavigationExtras } from '@angular/router';
 })
 export class AddResidentComponent implements OnInit {
   addResidentForm: FormGroup;
-  committees = Constants.committees;
+  //committees = Constants.committees;
   genders = Constants.genders;
   ageGps = Constants.ageGps;
   activitiesList = Constants.activities;
+  zonesInfo = Constants.zones;
+
+  committees = Array.from(this.zonesInfo.keys());
+  selectedZone: string;
+  availableBlocks :any = [];
 
 
   constructor(private formBuilder: FormBuilder, private residentService: ResidentService, private router: Router) {
   }
 
   ngOnInit(): void {
+    console.log(Array.from(this.zonesInfo.keys()));
+    //this.zones = this.zonesInfo.keys;
+
     this.addResidentForm = this.formBuilder.group({
       residentName: new FormControl('', [Validators.required]),
       committee: new FormControl('', [Validators.required]),
@@ -32,6 +40,7 @@ export class AddResidentComponent implements OnInit {
       ageGp: new FormControl('', [Validators.required]),
       expertise: new FormControl('', [Validators.required]),
       activities: new FormArray([], [Validators.required]),
+      noblk: new FormControl()
     });
 
     //console.log(this.addResidentForm.controls.activities);
@@ -40,6 +49,13 @@ export class AddResidentComponent implements OnInit {
 
   get activitiesFormArray() {
     return this.addResidentForm.controls.activities as FormArray;
+  }
+
+  onChange(value: any) {
+    console.log(value);
+    this.selectedZone = value;
+    this.availableBlocks =this.zonesInfo.get(this.selectedZone);
+    //console.log(this.zonesInfo.get(this.selectedZone));
   }
 
   add(value: any) {

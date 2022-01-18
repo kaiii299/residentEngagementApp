@@ -1,7 +1,7 @@
 import { DoBootstrap, Injectable, Input, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { HttpClient, JsonpClientBackend } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
 import { map, retry, switchMap, take } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/auth';
 import {
@@ -10,7 +10,7 @@ import {
   AngularFirestoreDocument,
 } from '@angular/fire/firestore';
 import { userDataInterface } from './Users';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import * as CryptoJS from 'crypto-js';
 import { Location } from '@angular/common';
 
@@ -27,6 +27,7 @@ export class Authservice {
   secretKey = 'YourSecretKeyForEncryption&Descryption';
   eventCallback = new Subject<string>();//source
   eventCallback$ = this.eventCallback.asObservable();
+  baseUrl = "https://us-central1-residentappv2-affc6.cloudfunctions.net/api"
 
   constructor(
     private http: HttpClient,
@@ -93,9 +94,13 @@ export class Authservice {
       });
   }
 
-  createNewUser(UserData: any) {
+  createNewUser(_userData: any) {
     console.log(this.newUserId);
-    return this.db.collection('Users').doc(this.newUserId).set(UserData);
+    return this.http.post(this.baseUrl+ "/createUser",{userData: _userData}).toPromise().then(()=>{
+      console.log("User Created successfully");
+    }).catch(err=>{
+      console.log("error creating User",err);
+    });
   }
 
   async getAllUsers() {
@@ -109,6 +114,7 @@ export class Authservice {
   async getUserByIdParam(id: any) {
     return this.db.doc(`Users/${id}`).valueChanges({ idField: "uid" });
   }
+
 
   async forgetPassword(email: string) {
     await this.firebaseAuth.sendPasswordResetEmail(email).then((res) => { });
@@ -126,5 +132,17 @@ export class Authservice {
 
   goback() {
     this.location.back();
+  }
+
+  deleteUserbyId(uid: any){
+    const httpHeaders = new HttpHeaders();
+    httpHeaders.append('content-type', 'application/json')
+    console.log(uid);
+    this.http.post(this.baseUrl + "/deleteUser",{uid}).toPromise().then(() =>{
+      console.log("User DELETED");
+    }).catch(err=>[
+      console.log("There is an error", err)
+    ]);
+    localStorage.clear();
   }
 }

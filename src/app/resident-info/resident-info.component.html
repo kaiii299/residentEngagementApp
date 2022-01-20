@@ -6,22 +6,24 @@
           <mat-expansion-panel hideToggle>
             <mat-expansion-panel-header>
               <mat-label>Click for more</mat-label>
-              <input matInput [(ngModel)]="search" (keyup)="applyFilter($event)" placeholder="Search" #input class="search">
+              <input matInput [(ngModel)]="search" (keyup)="applyFilter($event.target.value)" placeholder="Search" #input class="search">
             </mat-expansion-panel-header>
 
             <form class="filterContainer" [formGroup]="filter_form">
-              <mat-select class="select" placeholder="Committee" formControlName="committeeControl">
+              <mat-select class="select" placeholder="Committee" [(ngModel)]="committeeControl" (selectionChange)=onChange($event.value) formControlName="committeeControl">
                 <mat-option *ngFor="let committee of committees" [value]="committee">{{committee}}</mat-option>
               </mat-select>
-
-              <mat-select class="select" placeholder="Age Group" formControlName="ageGpcontrol">
+              <mat-select class="select" placeholder="Block Number" [(ngModel)]="blkNumControl" formControlName="blkNumControl">
+                <mat-option *ngFor="let blk of availableBlocks" [value]="blk">{{blk}}</mat-option>
+              </mat-select>
+              <mat-select class="select" placeholder="Age Group" [(ngModel)]="ageGpControl" formControlName="ageGpControl">
                 <mat-option *ngFor="let ageGp of ageGps" [value]="ageGp">{{ageGp}}</mat-option>
               </mat-select>
             </form>
 
             <div class="buttonContainer">
-              <button mat-button class="excel-btn">Export to Excel</button>
               <button mat-button class="filter-btn" (click)="onClickFilter(filter_form.value)">filter</button>
+              <button mat-button class="refresh-btn" (click)="refresh()">Refresh</button>
             </div>
           </mat-expansion-panel>
 
@@ -30,13 +32,22 @@
         <mat-divider></mat-divider>
         <div class="mat-elevation-z8">
           <div class="total">
-            <mat-label>Total Number of Residents: </mat-label>
-            <b>{{totalCount}}</b>
+            <mat-label>Total Number of Residents: <b>{{totalCount}}</b> </mat-label>
+            <div class="button_Container">
+              <span mat-button class="excel-btn" type="button">
+                <mat-icon>attachment</mat-icon> UPLOAD
+              </span>
+              <button mat-button class="excel-btn">
+                <mat-icon>cloud_download</mat-icon>EXPORT
+              </button>
+            </div>
           </div>
         </div>
-        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+
+
+        <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8" matSort>
           <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
-            <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{column}} </th>
             <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
           </ng-container>
 

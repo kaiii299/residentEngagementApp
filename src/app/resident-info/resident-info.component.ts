@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import {MatDialog,MatDialogRef,MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ResidentService } from '../resident.service';
 import { Constants } from '../constants';
 import { Router, NavigationExtras } from '@angular/router';
@@ -28,20 +28,28 @@ export class ResidentInfoComponent implements AfterViewInit {
   columnsToDisplay = ['residentName', 'committee'];
   expandedElement: null;
 
-  committees = Constants.committees;
+  filter_form: FormGroup;
+  zonesInfo = Constants.zones;
+  committees = Array.from(this.zonesInfo.keys());
+  selectedZone: string;
+  availableBlocks: any = [];
   genders = Constants.genders;
   ageGps = Constants.ageGps;
-  activities = Constants.activities;
+
+  committeeControl: string = ''
+  blkNumControl: string = ' '
+  ageGpControl: string = ''
+
 
   panelOpenState = false;
   search = ""
 
-  totalCount : any
-  filterValue : any
-
-  filter_form: FormGroup;
+  totalCount: any
+  filterValue: any
 
   dataSource = new MatTableDataSource();
+
+  residentData:any; 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -51,52 +59,50 @@ export class ResidentInfoComponent implements AfterViewInit {
 
     this.filter_form = this.formBuilder.group({
       committeeControl: new FormControl,
-      ageGpcontrol: new FormControl,
+      blkNumControl: new FormControl,
+      ageGpControl: new FormControl,
     });
 
     residentService.getAllResidents().subscribe((data) => {
-      console.log('data length..');
-      console.log(data.length);
+      //console.log('data length..');
+      //console.log(data.length);
       this.totalCount = data.length;
-      let residentData = data;
-      console.log(residentData);
-      this.dataSource.data = residentData;
-      console.log(this.dataSource.data);
-      
+      this.residentData = data;
+      //console.log(residentData);
+      this.dataSource.data = this.residentData;
+      //console.log(this.dataSource.data);
+
     })
 
   }
 
 
   ngAfterViewInit() {
-
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-
-    
   }
-  applyFilter(event: Event) {
-     // (event.target as HTMLInputElement).value = "home"
-      const filterValue = (event.target as HTMLInputElement).value;
-      this.dataSource.filter = filterValue.trim().toLowerCase();
 
-      if (this.dataSource.paginator) {
-        this.dataSource.paginator.firstPage();
-      }
+  applyFilter(value: string) {
+    //event.stopPropagation();
+    this.dataSource.filter = value.trim().toLocaleLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
-  
-  onClickViewDetails(obj: any){
+
+  onClickViewDetails(obj: any) {
     console.log(obj);
     console.log(obj.id);
     let resid = obj.id;
-    let navigationExtras: NavigationExtras = {queryParams: {id: resid}};
+    let navigationExtras: NavigationExtras = { queryParams: { id: resid } };
     this.router.navigate(['residentdetail'], navigationExtras)
   }
-  onClickEdit(obj : any){
+  onClickEdit(obj: any) {
     console.log(obj);
     console.log(obj.id);
     let resid = obj.id;
-    let navigationExtras: NavigationExtras = {queryParams: {id: resid}};
+    let navigationExtras: NavigationExtras = { queryParams: { id: resid } };
     this.router.navigate(['updateresident'], navigationExtras)
   }
   openDeleteDialog(obj: any) {
@@ -105,17 +111,51 @@ export class ResidentInfoComponent implements AfterViewInit {
     this.dialog.open(DeleteResidentConfirmationDialog, {
       width: '300px',
       height: '150px',
-      data: { deleteId : obj.id},
+      data: { deleteId: obj.id },
     })
   }
-  onClickFilter(value: any){
-    console.log(value);
-    let filterValue = value;
-    this.residentService.getResidentByFilter(filterValue.committeeControl, filterValue.ageGpcontrol).subscribe(info => {
-      console.log('info..')
-      console.log(info);
-    })
+  onClickFilter(event: any) {
+    console.log(event);
+    event.blkNumControl = event.blkNumControl.trim();
+    if(event.committeeControl && event.blkNumControl && event.ageGpControl){
+      this.dataSource.data = this.residentData.filter(function(resident :any) {
+        return resident.committee == event.committeeControl &&
+        resident.blkNum == event.blkNumControl &&
+        resident.ageGp == event.ageGpControl
+      });
+    }
+    if(event.committeeControl && event.blkNumControl && !event.ageGpControl){
+      this.dataSource.data = this.residentData.filter(function(resident :any) {
+        return resident.committee == event.committeeControl &&
+        resident.blkNum == event.blkNumControl 
+      });
+    }
+    if(event.committeeControl && !event.blkNumControl && event.ageGpControl){
+      this.dataSource.data = this.residentData.filter(function(resident :any) {
+        return resident.committee == event.committeeControl &&
+        resident.ageGp == event.ageGpControl 
+      });
+    }
+    if(!event.committeeControl &&! event.blkNumControl && event.ageGpControl){
+      this.dataSource.data = this.residentData.filter(function(resident :any) {
+        return resident.ageGp == event.ageGpControl
+      });
+    }
+    if(event.committeeControl && !event.blkNumControl && !event.ageGpControl){
+      this.dataSource.data = this.residentData.filter(function(resident :any) {
+        return resident.committee == event.committeeControl 
+      });
+    }
   }
+
+  onChange(value: any) {
+    this.selectedZone = value;
+    this.availableBlocks = this.zonesInfo.get(this.selectedZone);
+  }
+  refresh(){
+    location.reload()
+  }
+
 }
 
 @Component({
@@ -124,24 +164,25 @@ export class ResidentInfoComponent implements AfterViewInit {
 })
 export class DeleteResidentConfirmationDialog {
   deleteId = '';
-  data:any;
-  constructor(public dialogRef: MatDialogRef<ResidentInfoComponent>, private residentService : ResidentService, @Inject(MAT_DIALOG_DATA) public dialogData: DialogData){
+  data: any;
+  constructor(public dialogRef: MatDialogRef<ResidentInfoComponent>, private residentService: ResidentService, @Inject(MAT_DIALOG_DATA) public dialogData: DialogData) {
     dialogRef.disableClose = true;
   }
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.data = this.dialogData;
   }
 
-  onNoClick(){
+  onNoClick() {
     this.dialogRef.close();
 
   }
 
-  delete(){
+  delete() {
     console.log("delete id ..");
     console.log(this.data);
     this.residentService.deleteResident(this.data.deleteId);
+    this.dialogRef.close();
   }
-  
+
 }

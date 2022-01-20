@@ -28,7 +28,7 @@ body{
   display: flex;
 }
 
-.filter-btn, .refresh-btn{
+.filter-btn{
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -47,12 +47,21 @@ body{
   cursor: pointer;
 }
 .refresh-btn{
-  background-color: #EB9C5C;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: center;
+  align-items: center;
+  padding: 0px 10px 0px ;
+  margin: 20px 15px 0 0px;
+  background-color: #eb9c5c;
+  color: #ffffff;
+  border-radius: 5px;
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
 }
 
-.excel-btn{
-  background-color: #EB9C5C;
-}
 
 table {
   background-color: #f2d9c5;

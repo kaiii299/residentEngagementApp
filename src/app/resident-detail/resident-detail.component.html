@@ -5,7 +5,7 @@
             <form *ngIf="residentDetail">
                 <div class="info">
                     <label class="top">Resident Name : </label>
-                    <label class="bottom">{{residentDetail.residentName}}</label>
+                    <label class="bottom">{{residentDetail.residentName | titlecase}}</label>
                 </div>
                 <div>
                     <label class="top">Committee : </label>
@@ -27,7 +27,7 @@
                 </div>
                 <div>
                     <label class="top">Race : </label>
-                    <label class="bottom">{{residentDetail.race}}</label>
+                    <label class="bottom">{{residentDetail.race | titlecase}}</label>
 
                 </div>
                 <div>
@@ -37,7 +37,7 @@
                 </div>
                 <div>
                     <label class="top">Expertise : </label>
-                    <label class="bottom">{{residentDetail.expertise}}</label>
+                    <label class="bottom">{{residentDetail.expertise | titlecase}}</label>
                 </div>
                 <div class="activity">
                     <label>Preferred Activities</label>

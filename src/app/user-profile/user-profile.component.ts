@@ -13,6 +13,7 @@ import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Vali
 import { Observable } from 'rxjs/internal/Observable';
 import { map, startWith } from 'rxjs/operators';
 
+
 function autocompleteStringValidator(validOptions: Array<string>): ValidatorFn { //validatorFn returns validation errors else null
   return (control: AbstractControl): { [key: string]: any } | null => {
     if (validOptions.indexOf(control.value) !== -1) {
@@ -177,6 +178,7 @@ export class UserProfileComponent implements OnInit {
 export class saveChangesDialog {
   message = '';
   uid: any
+
   constructor(
     public dialogRef: MatDialogRef<UserProfileComponent>, public authService: Authservice,
     @Inject(MAT_DIALOG_DATA) public data: DialogData, public dialog: MatDialog, private activatedRoute: ActivatedRoute
@@ -203,7 +205,7 @@ export class saveChangesDialog {
     }
     this.dialog.open(confirmationDialog, {
       data: {
-        message: "User profile updated"
+        message: "User profile updated",
       }
     })
   }
@@ -218,9 +220,11 @@ export class DeleteUserConfirmationDialog {
   message = '';
   text: any;
 
-  constructor(public dialogRef: MatDialogRef<UserProfileComponent>, private dialog: MatDialog) {
+  constructor(private authService: Authservice ,public dialogRef: MatDialogRef<UserProfileComponent>, private dialog: MatDialog) {
     dialogRef.disableClose = true;
   }
+
+  uid = this.authService.decryptData(localStorage.getItem("uid"))
 
   ngOnInit(): void { }
 
@@ -230,6 +234,7 @@ export class DeleteUserConfirmationDialog {
 
   confirmDelete() {
     if (this.deleteConfirmation == 'DELETE') {
+      this.authService.deleteUserbyId(this.uid);
       this.dialog.open(confirmationDialog, {
         data: {
           message: "User deleted"

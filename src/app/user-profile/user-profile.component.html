@@ -63,8 +63,8 @@
             <br>
             <button class="edit-btn" type="button" [disabled]="updateUserForm.pristine"
             (click)="openEditDialog()">Save changes</button>
-            <button  class="forget-btn" type="button" routerLink="/forgetpassword" *ngIf="this.user.uid">Change Password?</button>
-            <button mat-button class="delete-btn" type="button" (click)="delete()"  *ngIf="this.user.uid" >Delete Account</button>
+            <button  class="forget-btn" type="button" routerLink="/forgetpassword" *ngIf="this.uid">Change Password?</button>
+            <button mat-button class="delete-btn" type="button" (click)="delete()"  *ngIf="this.uid" >Delete Account</button>
             <button mat-button type="button" class="cancel-button" (click)="goBack()" routerLink="/">Back</button>
           </div>
         </form>

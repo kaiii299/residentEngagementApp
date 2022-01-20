@@ -117,11 +117,12 @@ import { uploadFileDialog } from './share/upload-file';
     MatCardModule
   ],
 
-  providers: [{
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true,
-  },
+  providers: [
+  //   {
+  //   provide: HTTP_INTERCEPTORS,
+  //   useClass: AuthInterceptor,
+  //   multi: true,
+  // },
     HasRoleGuard,
     Authservice,
     AuthRouteGuard,

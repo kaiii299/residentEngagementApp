@@ -70,17 +70,6 @@ export abstract class Constants {
     'Art and Craft',
     'Overseas Trip'];
 
-    static readonly zoneBblocks: string[] =[
-      'block 4',
-      'block 5',
-      'block 6',
-    ];
-    static readonly zoneCblocks: string[] =[
-      'block 7',
-      'block 8',
-      'block 9',
-    ];
-
     static readonly zones = new Map<string, string[]>([
       ["9 @ Yuan Ching NC", ['9A','9B','9C','9D','9E','9F','9G','9H']],
       ["Caspian NC", ['50','52','54','56','58','60']],

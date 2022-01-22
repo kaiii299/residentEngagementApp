@@ -12,7 +12,6 @@ import { Router, NavigationExtras } from '@angular/router';
 })
 export class AddResidentComponent implements OnInit {
   addResidentForm: FormGroup;
-  //committees = Constants.committees;
   genders = Constants.genders;
   ageGps = Constants.ageGps;
   activitiesList = Constants.activities;
@@ -27,8 +26,6 @@ export class AddResidentComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(Array.from(this.zonesInfo.keys()));
-    //this.zones = this.zonesInfo.keys;
 
     this.addResidentForm = this.formBuilder.group({
       residentName: new FormControl('', [Validators.required]),

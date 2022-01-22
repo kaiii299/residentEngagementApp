@@ -28,8 +28,8 @@
                     <label>Block Number :</label>
                     <select title="blkNum" class='form-control' formControlName="blkNum">
                         <option value="" disabled selected hidden>Select Block</option>
-                        <option *ngFor="let c of availableBlocks" >
-                            {{c}}
+                        <option *ngFor="let blk of availableBlocks" >
+                            {{blk}}
                         </option>
                     </select>
                     <!-- <input title="blockNum" class='form-control' type="text" formControlName="blkNum" required> -->

@@ -28,7 +28,7 @@ body{
   display: flex;
 }
 
-.filter-btn, .excel-btn{
+.filter-btn{
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -46,10 +46,22 @@ body{
   transition: all 0.3 ease;
   cursor: pointer;
 }
-
-.excel-btn{
-  background-color: #EB9C5C;
+.refresh-btn{
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  text-align: center;
+  align-items: center;
+  padding: 0px 10px 0px ;
+  margin: 20px 15px 0 0px;
+  background-color: #eb9c5c;
+  color: #ffffff;
+  border-radius: 5px;
+  font-size: 13px;
+  text-transform: uppercase;
+  cursor: pointer;
 }
+
 
 table {
   background-color: #f2d9c5;
@@ -87,16 +99,32 @@ mat-label{
   font-size: 15px;
   color: black;
 }
-.total{
-  width: 100%;
-  margin-top: 4px;
+.total {
+  margin-top: 10px;
   padding: 5px 10px 5px 10px;
   background-color: #f2d9c5;
 }
-b{
-  //background-color: #FFFFFF;
-  padding: 5px 5px 5px 5px;
+.button_Container {
+  display: flex;
+  justify-content: flex-end;
+  position: relative;
+  margin-bottom: -30px;
+}
+.excel-btn {
+  position: relative;
+  bottom: 40px;
+  background-color: #eb9c5c;
+  display: flex;
+  justify-content: flex-start;
+  text-align: center;
+  align-items: center;
+  margin: 20px 15px 0 0px;
+  text-transform: uppercase;
+  color: #ffffff;
   border-radius: 5px;
+  font-size: 13px;
+  padding: 0px 10px 0px ;
+  cursor: pointer;
 }
 
 td, th {

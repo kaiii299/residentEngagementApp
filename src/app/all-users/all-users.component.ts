@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -11,6 +11,7 @@ import { NavigationExtras, Router} from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { excelPreviewDialog } from '../share/excel-preview-dialog';
 import { uploadFileDialog } from '../share/upload-file';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -26,7 +27,7 @@ import { uploadFileDialog } from '../share/upload-file';
   ],
 })
 
-export class AllUsersComponent implements AfterViewInit {
+export class AllUsersComponent implements AfterViewInit, OnInit {
   columnsToDisplay = Array();
   expandedElement:  null;
   committees = Constants.committees
@@ -48,20 +49,16 @@ export class AllUsersComponent implements AfterViewInit {
   totalCount: any;
   filterValue: any;
   defaultValue:any =  ['userName','committee', 'blockNumber','role'];
-  dataSource = new MatTableDataSource();
+  dataSource:any = new MatTableDataSource();
+  baseUrl = "https://us-central1-residentappv2-affc6.cloudfunctions.net/api";
+  encryptedUserData = localStorage.getItem("userData");
 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private authService:Authservice,private formBuilder: FormBuilder, private router: Router,private dialog: MatDialog) {
-     authService.getAllUsers().then(res=>{
-        res.subscribe(data=>{
-        this.dataSource.data = data;
-        this.userdata = data;
-        this.totalCount = data.length
-      })
-    })
+  constructor(private authService:Authservice,private formBuilder: FormBuilder, private router: Router,private dialog: MatDialog, private http: HttpClient) {
+
     this.uid = authService.decryptData(this.uid)
 
     if(localStorage.getItem("filterValue")){
@@ -74,6 +71,27 @@ export class AllUsersComponent implements AfterViewInit {
       this.variableValue = this.defaultValue;
       this.columnsToDisplay = this.defaultValue;
     }
+  }
+  async ngOnInit(){
+
+    // this.authService.eventcbAllUserData$.subscribe((data) => {
+    //   this.userdata = data
+    //   this.dataSource.data = data
+    //   console.log(data);
+    // });
+
+    const decryptedUserData = this.authService.decryptData(this.encryptedUserData)
+    const userData = JSON.parse(decryptedUserData)
+    this.dataSource.data = userData;
+    this.totalCount = userData.length
+    console.log(userData)
+
+
+    // const data = this.http.get(this.baseUrl + "/getAllUsers").toPromise();
+    // console.log(data);
+    // this.dataSource.data = await data
+    // this.userdata = await data;
+
   }
 
   ngAfterViewInit() {
@@ -94,6 +112,11 @@ export class AllUsersComponent implements AfterViewInit {
     var encryptedUid = this.authService.encryptData(uid)
     const navigationExtras: NavigationExtras = {queryParams:{id: encryptedUid}}
     this.router.navigate(['myprofile'],navigationExtras)
+  }
+
+  getData(data: any){
+    console.log(data);
+
   }
 
   filter(event: KeyboardEvent){

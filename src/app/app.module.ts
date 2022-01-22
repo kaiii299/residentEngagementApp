@@ -57,8 +57,6 @@ import { excelPreviewDialog } from './share/excel-preview-dialog';
 import { uploadFileDialog } from './share/upload-file';
 
 
-
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -114,15 +112,15 @@ import { uploadFileDialog } from './share/upload-file';
     AngularFireAuthModule,
     MatAutocompleteModule,
     CdkTableModule,
-    MatCardModule
+    MatCardModule,
   ],
 
   providers: [
-  //   {
-  //   provide: HTTP_INTERCEPTORS,
-  //   useClass: AuthInterceptor,
-  //   multi: true,
-  // },
+    {
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true,
+  },
     HasRoleGuard,
     Authservice,
     AuthRouteGuard,

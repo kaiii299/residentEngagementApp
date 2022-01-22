@@ -4,13 +4,13 @@
     <img src="/assets/images/people/View Profile.png" alt="" class="img-web">
 
     <div class="welcome-container">
-      <h1 class="welcome">Hello <p class="user-name">{{user.userName}}</p></h1>
+      <h1 class="welcome">Hello <p class="user-name">{{oldUserName}}</p></h1>
       <h6 class="login-text">Click to edit info</h6>
     </div>
     <div class="login">
       <div class="form">
         <form class="edit-form" [formGroup]="updateUserForm">
-          <mat-label>User name<p *ngIf="newUserName.length == 10" class="limit"> (limit reach)</p></mat-label>
+          <mat-label>Username<p *ngIf="newUserName.length == 10" class="limit"> (limit reach)</p></mat-label>
           <input type="text" title="username" placeholder="Username" maxlength="10" formControlName="usernameCtrl"
             [(ngModel)]="newUserName" required>
 
@@ -37,16 +37,16 @@
           <mat-label>Role</mat-label>
           <mat-select class="selection-input" placeholder="Role"
           formControlName="roleCtrl" [disabled]="_role != 'Admin' "
-            [(ngModel)]="user.role" [value]="newRoleValue">
+            [(ngModel)]="newRoleValue" [value]="newRoleValue">
             <mat-option *ngFor="let userTypesArray of userTypesArrays" [value]="userTypesArray">{{userTypesArray}}
             </mat-option>
           </mat-select>
 
           <mat-label>Committee</mat-label>
-          <mat-select class="selection-input" placeholder="Committee" value={{newCommitteeValue}}
+          <mat-select class="selection-input" placeholder="Committee" (ngModelChange)="onChange($event)"
           formControlName="committeeCtrl" [disabled]="_role !=='Admin' "
             [(ngModel)]="newCommitteeValue">
-            <mat-option *ngFor="let committeeArray of committeeArrays" [value]="committeeArray">{{committeeArray}}
+            <mat-option  *ngFor="let committeeArray of committeeArrays" [value]="committeeArray">{{committeeArray}}
             </mat-option>
           </mat-select>
 
@@ -56,15 +56,15 @@
             [matAutocomplete]="auto">
 
           <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-            <mat-option *ngFor="let blockNumber of filterdBlockNumbers | async"[value]="blockNumber">{{blockNumber}}</mat-option>
+            <mat-option *ngFor="let blockNumber of availableBlocks "[value]="blockNumber">{{blockNumber}}</mat-option>
           </mat-autocomplete>
 
           <div class="button">
             <br>
             <button class="edit-btn" type="button" [disabled]="updateUserForm.pristine"
             (click)="openEditDialog()">Save changes</button>
-            <button  class="forget-btn" type="button" routerLink="/forgetpassword" *ngIf="this.uid">Change Password?</button>
-            <button mat-button class="delete-btn" type="button" (click)="delete()"  *ngIf="this.uid" >Delete Account</button>
+            <button  class="forget-btn" type="button" routerLink="/forgetpassword" >Change Password?</button>
+            <button mat-button class="delete-btn" type="button" (click)="delete()"  *ngIf="_role =='Admin' || _role =='CC staff' || _role =='RN Manager' " >Delete Account</button>
             <button mat-button type="button" class="cancel-button" (click)="goBack()" routerLink="/">Back</button>
           </div>
         </form>

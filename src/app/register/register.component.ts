@@ -46,6 +46,10 @@ export class RegisterComponent implements OnInit {
   blockNumberValue: any;
   roleValue: string;
   committeesValue: string;
+  zonesInfo = Constants.zones;
+  committeeArrays = Array.from(this.zonesInfo.keys());
+  selectedZone: string;
+  availableBlocks: any = [];
   registeredDate: string;
   registeredTime: string;
   status = "Active";
@@ -100,8 +104,11 @@ export class RegisterComponent implements OnInit {
     if (this.password != this.repeatPassword) {
       this.message = "Password does not match"
     }
+    if (this.phoneNumber.length < 8){
+      this.message = "Phone Number Invalid"
+    }
     else if (this.strengthColor == "red") {
-      this.message = "Password too weak"
+      this.message = "Password too weak."
     }
     else {
       this.message = ""
@@ -171,6 +178,13 @@ export class RegisterComponent implements OnInit {
         console.log(error)
       });
     }
+  }
+
+  onChange(event: any) {
+    this.committeesValue = event;
+    console.log(this.committeesValue);
+    this.availableBlocks = this.zonesInfo.get(this.committeesValue);
+    console.log(this.zonesInfo.get(this.committeesValue));
   }
 
   _filter(value: string): string[] {

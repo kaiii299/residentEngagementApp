@@ -1,14 +1,13 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Input } from '@angular/core';
 import {
   MatDialog,
   MatDialogRef,
   MAT_DIALOG_DATA,
 } from '@angular/material/dialog';
 import { Authservice } from '../share/services/auth.service';
-import { userDataInterface } from 'src/app/share/services/Users';
 import { Constants } from '../constants';
 import { confirmationDialog } from '../share/confirmatonDialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
 import { map, startWith } from 'rxjs/operators';
@@ -22,6 +21,7 @@ function autocompleteStringValidator(validOptions: Array<string>): ValidatorFn {
     return { 'invalidAutocompleteString': { value: control.value } }
   }
 }
+
 export interface DialogData {
   password: string;
 }
@@ -41,7 +41,8 @@ export class UserProfileComponent implements OnInit {
   currentUsername: string;
 
   newEmail: any;
-  newUserName: any;
+  oldUserName: any;
+  newUserName = "";
   newFirstName: any;
   newPassword: any;
   newGender: any;
@@ -57,78 +58,72 @@ export class UserProfileComponent implements OnInit {
   hasChange = false;
   userTypesArrays = Constants.roles;
   blockNumbersArray = Constants.blkNum;
-  committeeArrays = Constants.committees;
-  myControl = new FormControl("",[autocompleteStringValidator(this.blockNumbersArray),Validators.required]);
+  zonesInfo = Constants.zones;
+  committeeArrays = Array.from(this.zonesInfo.keys());
+  selectedZone: string;
+  availableBlocks: any = [];
+
+  myControl = new FormControl("", [autocompleteStringValidator(this.availableBlocks), Validators.required]);
+
   filterdBlockNumbers: Observable<string[]>;
+
   _uid = this.activatedRoute.snapshot.queryParams.id;
   _role = localStorage.getItem("role")
 
   constructor(public dialog: MatDialog,
-     public authService: Authservice,
-      private activatedRoute: ActivatedRoute,
-      private _formBuilder: FormBuilder) { }
+    public authService: Authservice,
+    private activatedRoute: ActivatedRoute,
+    private _formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    if (!this._uid) {
-      var encryptedUid = localStorage.getItem('uid');
-      this.uid = this.authService.decryptData(encryptedUid);
-      this.authService.getUserById(this.uid).then((res) => {
-        res.subscribe(data=>{
-          this.user = data;
-          this.newUserName = this.user.userName;
-          this.newFirstName = this.user.firstName;
-          this.newGender = this.user.gender;
-          this.newEmail = this.user.email;
-          this.newPhoneNumber = this.user.phoneNumber;
-          this.newRoleValue = this.user.role;
-          this.newCommitteeValue = this.user.committee;
-          this.newBlockNumber = this.user.blockNumber;
-        })
-      });
-    }
-    else if (this._uid) {
-      var decryptedUid = this.authService.decryptData(this._uid)
-      this.authService.getUserByIdParam(decryptedUid).then(res => {
-        res.subscribe(data=>{
-          this.user = data;
-          this.newUserName = this.user.userName;
-          this.newFirstName = this.user.firstName;
-          this.newGender = this.user.gender;
-          this.newEmail = this.user.email;
-          this.newPhoneNumber = this.user.phoneNumber;
-          this.newRoleValue = this.user.role;
-          this.newCommitteeValue = this.user.committee;
-          this.newBlockNumber = this.user.blockNumber;
-        })
-      })
-    }
+    var decryptedUid = this.authService.decryptData(this._uid)
+    this.authService.getUserByIdParam(decryptedUid).subscribe(data => {
+      this.user = data;
+      this.oldUserName = this.user.userName;
+      this.newUserName = this.user.userName;
+      this.newFirstName = this.user.firstName;
+      this.newGender = this.user.gender;
+      this.newEmail = this.user.email;
+      this.newPhoneNumber = this.user.phoneNumber;
+      this.newRoleValue = this.user.role;
+      this.newCommitteeValue = this.user.committee;
+      this.newBlockNumber = this.user.blockNumber;
+    })
+
     this.updateUserForm = this._formBuilder.group({
       usernameCtrl: ['', Validators.required,],
-      emailCtrl: ['', Validators.required,Validators.email],
+      emailCtrl: ['', Validators.required, Validators.email],
       genderCtrl: ['', Validators.required,],
       firstNameCtrl: ['', Validators.required,],
       phoneNumberCtrl: ['', Validators.required,],
       roleCtrl: ['', Validators.required,],
       committeeCtrl: ['', Validators.required,],
-      //blockNumberCtrl : ['', Validators.required,],
-      blockNumberCtrl : ["",[autocompleteStringValidator(this.blockNumbersArray),Validators.required]]
+      blockNumberCtrl: ["", [autocompleteStringValidator(this.availableBlocks), Validators.required]]
     });
 
     this.filterdBlockNumbers = this.myControl.valueChanges.pipe(
       startWith(''),
-      map(value => this._filter(value)),
+      map(event => this._filter(event)),
     );
+
 
     const _role = localStorage.getItem("role");
     this._role = this.authService.decryptData(_role);
   }
 
-  _filter(value: string): string[] {
-    if (value === '') {
-      return this.blockNumbersArray.slice()
+  onChange(event: any) {
+    this.newCommitteeValue = event;
+    console.log(this.newCommitteeValue);
+    this.availableBlocks = this.zonesInfo.get(this.newCommitteeValue);
+    console.log(this.zonesInfo.get(this.newCommitteeValue));
+  }
+
+  _filter(event: string): string[] {
+    if (event === '') {
+      return this.availableBlocks.slice()
     }
-    const filterValue = value.toLowerCase()
-    return this.blockNumbersArray.filter(option => option.toLowerCase().includes(filterValue))
+    const filterValue = event.toLowerCase()
+    return this.availableBlocks.filter((option: string) => option.toLowerCase().includes(filterValue))
   }
 
 
@@ -161,12 +156,12 @@ export class UserProfileComponent implements OnInit {
         email, firstName, gender, phoneNumber, role, committee, blockNumber, LastUpdatedDate, LastUpdatedTime
       }
     })
-    var encrypt = this.authService.encryptData(this.newUserName)
-    if (!this._uid) {
-      localStorage.setItem("username", encrypt)
-    }
+    const encrypt = this.authService.encryptData(this.newUserName)
+    this.authService.eventCallbackuserName.next(this.newUserName)
+    localStorage.setItem("username", encrypt)
   }
-  goBack(){
+
+  goBack() {
     this.authService.goback()
   }
 }
@@ -197,12 +192,7 @@ export class saveChangesDialog {
     this.dialogRef.close();
     var _uid = this.activatedRoute.snapshot.queryParams.id;
     var decryptData = this.authService.decryptData(_uid);
-    if (!_uid) {
-      this.authService.updateUserData(this.data)
-    }
-    else if (_uid) {
-      this.authService.updateUserDataByQuery(this.data, decryptData)
-    }
+    this.authService.updateUserDataByQuery(this.data, decryptData)
     this.dialog.open(confirmationDialog, {
       data: {
         message: "User profile updated",
@@ -218,13 +208,16 @@ export class saveChangesDialog {
 export class DeleteUserConfirmationDialog {
   deleteConfirmation = '';
   message = '';
+  reload = true;
+
   text: any;
 
-  constructor(private authService: Authservice ,public dialogRef: MatDialogRef<UserProfileComponent>, private dialog: MatDialog) {
+  constructor(private authService: Authservice, public dialogRef: MatDialogRef<UserProfileComponent>, private dialog: MatDialog, private activatedRoute: ActivatedRoute) {
     dialogRef.disableClose = true;
   }
 
-  uid = this.authService.decryptData(localStorage.getItem("uid"))
+  uid = this.activatedRoute.snapshot.queryParams.id;
+  _uid = this.authService.decryptData(this.uid);
 
   ngOnInit(): void { }
 
@@ -234,7 +227,7 @@ export class DeleteUserConfirmationDialog {
 
   confirmDelete() {
     if (this.deleteConfirmation == 'DELETE') {
-      this.authService.deleteUserbyId(this.uid);
+      this.authService.deleteUserbyId(this._uid);
       this.dialog.open(confirmationDialog, {
         data: {
           message: "User deleted"
@@ -247,3 +240,5 @@ export class DeleteUserConfirmationDialog {
     }
   }
 }
+
+

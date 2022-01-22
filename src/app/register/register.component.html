@@ -39,15 +39,17 @@
                 formControlName="phoneNumberCtrl" required>
 
               <mat-label>Password<mat-icon *ngIf="this.strengthColor =='red'" aria-hidden="false"
-                  matTooltip="Please include uppercase, numbers and special characters" matTooltipClass="tooltip-class"
-                  class="warning-icon">warning</mat-icon>
+                  class="warning-icon" >warning</mat-icon>
               </mat-label>
-              <input matInput placeholder="Password" [(ngModel)]="password" (keyup)="checkPasswordStrength($event)"
+              <input matInput placeholder="Password"  [(ngModel)]="password" (keyup)="checkPasswordStrength($event)"
                 [type]="hide ? 'password' : 'text'" formControlName="passwordCtrl" required>
 
               <mat-progress-bar mode="determinate" Class="progress-bar" [value]="strength" [color]="strengthColor"
                 *ngIf="this.password.length > 0"></mat-progress-bar>
-              <p class="password-strenght" [style.color]="strengthColor" *ngIf="this.password.length > 0">Strength:
+                
+              <p class="password-strenght" [style.color]="strengthColor" *ngIf="this.password.length > 0"
+                matTooltip="Minium 8 character. Include uppercase, numbers and special characters"
+                 matTooltipPosition="below" matTooltipClass="tooltip-class" #tooltip="matTooltip">Strength:
                 {{strengthMessage}}</p>
 
               <mat-label>Repeat Password</mat-label>
@@ -59,7 +61,7 @@
                 {{hide ? 'Show Password' : 'Hide Password'}}
               </button>
 
-              <p class="message" [style.color]="messageColor">{{message}}</p>
+              <p class="message" [style.color]="messageColor" >{{message}}</p>
               <button class="next-btn" mat-button type="button" (click)=" getErrorMessage()"
                 [disabled]="!this.firstFormGroup.valid">Next</button>
             </form>
@@ -85,7 +87,7 @@
           <mat-step label="Committee and block number" errorMessage="Committe and block is required">
             <form [formGroup]="ThirdFormGroup">
               <mat-label>Committee</mat-label>
-              <mat-select class="select" placeholder="committee" [(ngModel)]="committeesValue"
+              <mat-select class="select" placeholder="committee" [(ngModel)]="committeesValue" (ngModelChange)="onChange($event)"
                 [ngModelOptions]="{standalone: true}">
                 <mat-option *ngFor="let committee of committees" [value]="committee">{{committee}}</mat-option>
               </mat-select>
@@ -95,7 +97,7 @@
                   [matAutocomplete]="auto">
 
                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                  <mat-option *ngFor="let blockNumber of filterdBlockNumbers | async"[value]="blockNumber" >{{blockNumber}}</mat-option>
+                  <mat-option *ngFor="let blockNumber of availableBlocks"[value]="blockNumber" >{{blockNumber}}</mat-option>
                 </mat-autocomplete>
             </form>
             <p class="message" [style.color]="messageColor">{{message}}</p>

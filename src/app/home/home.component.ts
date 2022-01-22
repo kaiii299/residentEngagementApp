@@ -19,7 +19,7 @@ hide = true
 
   ngOnInit(): void {
   }
-  
+
    Login(){
     if(this.loginData.email == ""){
       this.message ="Please provide email"
@@ -32,9 +32,9 @@ hide = true
     else{
       this.authService.signIn(this.loginData.email, this.loginData.password).then(userInfo=>{
 
-       this.route.navigate(['allusers']);
+       this.route.navigate(['list']);
      }).catch(error=>{
-       this.message = "Wrong password"
+       this.message = "Wrong username or password"
      })
     }
 

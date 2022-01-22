@@ -10,7 +10,7 @@
 
 .title {
   font-size: 50px;
-  margin: -20px 0 0px 30px;
+  margin: -15px 0 0px 30px;
 }
 
 .container{
@@ -272,7 +272,7 @@ li a:hover {
 
   .title {
     font-size: 2rem;
-    margin: -10px 0 0px 10px;
+    margin: 10px 0 0px 10px;
   }
 
   .main-content-wrapper{
@@ -347,10 +347,6 @@ li a:hover {
 }
 
 @media screen and (max-width: 1200px){
-  .title{
-    position: relative;
-    top: 3vh;
-  }
 
   li{
     //background-color: red;

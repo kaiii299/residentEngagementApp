@@ -7,11 +7,17 @@ import { Authservice } from '../auth.service';
 
 @Injectable()
 export class AuthRouteGuard implements CanActivate {
+
+  jwt: any;
+
   constructor(private authService: Authservice, private router: Router,private dialog: MatDialog) {}
 
   canActivate(next :ActivatedRouteSnapshot, state:any): Observable<boolean> | Promise<boolean> | boolean {
     const permission = next.data["permission"];
-    if(localStorage.getItem("uid")){
+    const encryptJWT = this.authService.eventcbJWT$.subscribe(jwt=>{
+      this.jwt = jwt
+    })
+    if(localStorage.getItem("token")){
       return true;
     }
     else{
@@ -21,7 +27,7 @@ export class AuthRouteGuard implements CanActivate {
         }
       })
     }
-    this.router.navigate(["/"])
+    this.router.navigate(['/'])
     return false;
   }
 

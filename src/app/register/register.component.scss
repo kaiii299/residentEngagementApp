@@ -9,7 +9,7 @@ font-size: 15px;
   top: -1px;
   left: 5px;
   font-size: 20px;
-  color: #ff9318;
+  color: #fc4141;
 }
 
 ::ng-deep .tooltip-class{
@@ -45,6 +45,7 @@ mat-label{
   justify-content: flex-start;
   align-items: flex-start;
   margin: 0px 0px 0px 5px;
+  color: #3f51b5;
   &:hover{
     text-decoration: underline;
   }
@@ -157,22 +158,25 @@ body{
   margin: 50px 134px 0 0px;
   text-transform: uppercase;
   outline: 0;
-  background: #F26C00;
+  background: transparent;
   width: 100%;
   border: 0;
   border-radius: 5px;
   padding: 10px 25px 10px 25px ;
-  color: #FFFFFF;
+  color: #000000;
   font-size: 20px;
   -webkit-transition: all 0.3 ease;
   transition: all 0.3 ease;
   cursor: pointer;
   text-align: center;
+  &:hover{
+    text-decoration: underline;
+  }
 }
 
-.cancel-button:active{
-  background: #f39c55;
-}
+// .cancel-button:active{
+//   background: #f39c55;
+// }
 
 .form span {
   font-size: 75px;

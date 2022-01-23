@@ -1,7 +1,7 @@
 import { DoBootstrap, Injectable, Input, OnInit } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { map, retry, switchMap, take } from 'rxjs/operators';
 import { AngularFireAuth } from '@angular/fire/auth';
 import {
@@ -25,8 +25,18 @@ export class Authservice {
   userLoggedIn: boolean;
   authState: any;
   secretKey = 'YourSecretKeyForEncryption&Descryption';
-  eventCallback = new Subject<string>();//source
-  eventCallback$ = this.eventCallback.asObservable();
+
+  eventCallbackuserName = new Subject<string>();//source
+  eventCallbackuserName$ = this.eventCallbackuserName.asObservable();
+
+  eventcbAllUserData = new Subject<Object>();
+  eventcbAllUserData$ = this.eventcbAllUserData.asObservable();
+
+  eventcbJWT = new Subject<any>();
+  eventcbJWT$ = this.eventcbJWT.asObservable();
+
+  encryptedToken = localStorage.getItem("token");
+
   baseUrl = "https://us-central1-residentappv2-affc6.cloudfunctions.net/api"
 
   constructor(
@@ -38,7 +48,22 @@ export class Authservice {
   ) {
     this.firebaseAuth.onAuthStateChanged(user => {
       if (user) {
-        this.getUserById(user.uid)
+        user.getIdToken().then((jwtToken)=>{
+          return fetch(this.baseUrl + "/sessionLogin", {
+            method: "POST",
+            headers:{
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              "CSRF-Token": jwtToken,
+            },
+            body: JSON.stringify({jwtToken})
+          })
+          // const encryptJwt = this.encryptData(jwtToken);
+          // localStorage.setItem("token",encryptJwt)
+          // this.eventcbJWT.next(encryptJwt);
+          // this.getUserById(user.uid);
+          // this.getAllUsers(jwtToken);
+        })
       }
       else {
         console.log("user not sign in")
@@ -51,18 +76,35 @@ export class Authservice {
       const encryptedText = this.encryptData(res.user?.uid)
       localStorage.setItem("uid", encryptedText);
       const _uid = this.decryptData(encryptedText);
-      this.getUserById(this.currentLogedInUserId).then(res => [
-        res.subscribe(data => {
-          const _data: any = data
-          const encryptedRole = this.encryptData(_data.role)
-          localStorage.setItem("role", encryptedRole)
-          this.eventCallback.next(_data.userName)
-        })
-      ]).catch(error => {
-        console.log(error)
-      })
-    })
+      this.getUserById(this.currentLogedInUserId).subscribe(data => {
+        const _data: any = data
+        const encryptedRole = this.encryptData(_data.role)
+        localStorage.setItem("role", encryptedRole)
+        this.eventCallbackuserName.next(_data.userName)
+      });
+    });
   }
+
+  getAllUsers(jwtToken: any) {
+      this.http.get(this.baseUrl + "/getAllUsers").toPromise().then(data=>{
+        const encrypt = this.encryptData(JSON.stringify(data));
+        localStorage.setItem("userData", encrypt);
+        // this.eventcbAllUserData.next(data); // pass all user data
+        console.log();
+   }).catch(err=>{
+     if (err instanceof HttpErrorResponse){
+       if(err){
+         console.log(err);
+
+        //  this.router.navigate(['/'])
+        //  localStorage.clear()
+        //  console.log("user not loged in");
+
+       }
+     }
+   })
+   //return this.db.collection('Users').valueChanges({ idField: "uid" });
+ }
 
   logout() {
     this.firebaseAuth.signOut();
@@ -95,23 +137,15 @@ export class Authservice {
   }
 
   createNewUser(_userData: any) {
-    console.log(this.newUserId);
-    return this.http.post(this.baseUrl+ "/createUser",{userData: _userData}).toPromise().then(()=>{
-      console.log("User Created successfully");
-    }).catch(err=>{
-      console.log("error creating User",err);
-    });
+   return this.db.collection("Users").doc(this.newUserId).set(_userData);
   }
 
-  async getAllUsers() {
-    return this.db.collection('Users').valueChanges({ idField: "uid" });
-  }
 
-  async getUserById(id: any) {
+  getUserById(id: any) {
     return this.db.doc(`Users/${this.currentLogedInUserId}`).valueChanges({ idField: "uid" });
   }
 
-  async getUserByIdParam(id: any) {
+   getUserByIdParam(id: any) {
     return this.db.doc(`Users/${id}`).valueChanges({ idField: "uid" });
   }
 
@@ -135,14 +169,17 @@ export class Authservice {
   }
 
   deleteUserbyId(uid: any){
-    const httpHeaders = new HttpHeaders();
-    httpHeaders.append('content-type', 'application/json')
     console.log(uid);
-    this.http.post(this.baseUrl + "/deleteUser",{uid}).toPromise().then(() =>{
+    this.http.delete(this.baseUrl + "/deleteUser/" + uid).toPromise().then(() =>{
       console.log("User DELETED");
-    }).catch(err=>[
+    }).catch(err=>{
       console.log("There is an error", err)
-    ]);
-    localStorage.clear();
+  });
+    if(uid != this.currentLogedInUserId){
+      this.goback
+    }
+    else{
+      localStorage.clear()
+    }
   }
 }

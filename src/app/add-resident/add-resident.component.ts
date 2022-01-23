@@ -52,7 +52,7 @@ export class AddResidentComponent implements OnInit {
     console.log(value);
     this.selectedZone = value;
     this.availableBlocks =this.zonesInfo.get(this.selectedZone);
-    //console.log(this.zonesInfo.get(this.selectedZone));
+    console.log(this.zonesInfo.get(this.selectedZone));
   }
 
   add(value: any) {
@@ -85,7 +85,7 @@ export class AddResidentComponent implements OnInit {
         //console.log(results.id);
         this.router.navigate(['residentinfo']);
       });
-      
+
     } else {
       alert("Missing information !");
     }

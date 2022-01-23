@@ -26,19 +26,15 @@ export class ForgetPasswordComponent implements OnInit {
     //firebase.default.auth().settings.appVerificationDisabledForTesting = true
     var encryptedUid = localStorage.getItem('uid');
     var uid = this.authService.decryptData(encryptedUid);
-    this.authService.getUserById(uid).then((res) => {
-      res.subscribe(data => {
+    this.authService.getUserById(uid).subscribe((data) => {
         this.user = data
         if (this.user.phoneNumber) {
           this.email = this.user.email;
           this.phoneNumber = this.user.phoneNumber;
-          console.log("1sfad",this.phoneNumber);
         }
         else {
           this.phoneNumber = this.phoneNumber
-          console.log(this.phoneNumber);
         }
-      })
     });
 
 

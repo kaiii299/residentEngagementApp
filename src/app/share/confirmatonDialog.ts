@@ -11,6 +11,7 @@ export class confirmationDialog {
   message :any;
   text: any;
   data:any;
+  reload: boolean;
 
   constructor(public dialogRef: MatDialogRef<confirmationDialog>, @Inject(MAT_DIALOG_DATA) public dialogData: DialogData) {
     dialogRef.disableClose = true;
@@ -19,11 +20,13 @@ export class confirmationDialog {
   ngOnInit(): void {
     this.data = this.dialogData
     this.message = this.data.message
+    if(this.reload == true){
+      location.reload(),80000;
+    }
   }
 
   close(){
     this.dialogRef.close();
-    location.reload(),80000;
   }
 
 }

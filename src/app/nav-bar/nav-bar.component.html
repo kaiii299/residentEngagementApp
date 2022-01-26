@@ -28,7 +28,7 @@
         <a *ngIf="displayName" class="headings">Users</a>
         <div class="dropdown-content">
           <a routerLink="allusers" routerLinkActive="active" >All Users</a>
-          <a routerLink="register" routerLinkActive="active">Add New User</a>
+          <a routerLink="createnewuser" routerLinkActive="active">Add New User</a>
         </div>
       </div>
     </li>
@@ -60,10 +60,10 @@
         <div class="sidebar-container">
         <a *ngIf="displayName" class="name"><strong>{{displayName}}</strong></a>
         <a href="/"  *ngIf="!displayName" >Home</a>
-        <a href="myprofile" routerLinkActive="active">My profile</a>
+        <a  routerLinkActive="active" (click)="userProfile()">My Profile</a>
         <a href="events">Events</a>
         <a>Resident Info</a>
-        <a href="register" routerLinkActive="active">New Account</a>
+        <a href="createnewuser" routerLinkActive="active">New Account</a>
         <a href="allusers" routerLinkActive="active">All users</a>
         <a  class='logout' *ngIf="displayName" (click)="openLogoutDialog()">
           Log Out

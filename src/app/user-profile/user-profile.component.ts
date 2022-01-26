@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import {
   MatDialog,
   MatDialogRef,
@@ -8,19 +8,9 @@ import { Authservice } from '../share/services/auth.service';
 import { Constants } from '../constants';
 import { confirmationDialog } from '../share/confirmatonDialog';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs/internal/Observable';
 import { map, startWith } from 'rxjs/operators';
-
-
-function autocompleteStringValidator(validOptions: Array<string>): ValidatorFn { //validatorFn returns validation errors else null
-  return (control: AbstractControl): { [key: string]: any } | null => {
-    if (validOptions.indexOf(control.value) !== -1) {
-      return null
-    }
-    return { 'invalidAutocompleteString': { value: control.value } }
-  }
-}
 
 export interface DialogData {
   password: string;
@@ -52,7 +42,6 @@ export class UserProfileComponent implements OnInit {
   newCommitteeValue: any;
   newStatus: any;
   newPhoneNumber: string;
-  uid: any;
   user: any;
   userObj: any
   hasChange = false;
@@ -62,12 +51,11 @@ export class UserProfileComponent implements OnInit {
   committeeArrays = Array.from(this.zonesInfo.keys());
   selectedZone: string;
   availableBlocks: any = [];
-
-  myControl = new FormControl("", [autocompleteStringValidator(this.availableBlocks), Validators.required]);
-
+  getUser: Observable<any>
   filterdBlockNumbers: Observable<string[]>;
 
   _uid = this.activatedRoute.snapshot.queryParams.id;
+  uid = localStorage.getItem("uid")
   _role = localStorage.getItem("role")
 
   constructor(public dialog: MatDialog,
@@ -75,10 +63,11 @@ export class UserProfileComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private _formBuilder: FormBuilder) { }
 
-  ngOnInit(): void {
-    var decryptedUid = this.authService.decryptData(this._uid)
-    this.authService.getUserByIdParam(decryptedUid).subscribe(data => {
-      this.user = data;
+  async ngOnInit() {
+    const decryptedUid = this.authService.decryptData(this._uid)
+    await this.authService.getUserById(decryptedUid).toPromise().then((data) => {
+      //console.log(data);
+      this.user = data.userData
       this.oldUserName = this.user.userName;
       this.newUserName = this.user.userName;
       this.newFirstName = this.user.firstName;
@@ -91,21 +80,15 @@ export class UserProfileComponent implements OnInit {
     })
 
     this.updateUserForm = this._formBuilder.group({
-      usernameCtrl: ['', Validators.required,],
-      emailCtrl: ['', Validators.required, Validators.email],
-      genderCtrl: ['', Validators.required,],
+      usernameCtrl: ['', Validators.required],
+      emailCtrl: ['', Validators.required],
+      genderCtrl: ['', Validators.required],
       firstNameCtrl: ['', Validators.required,],
       phoneNumberCtrl: ['', Validators.required,],
-      roleCtrl: ['', Validators.required,],
-      committeeCtrl: ['', Validators.required,],
-      blockNumberCtrl: ["", [autocompleteStringValidator(this.availableBlocks), Validators.required]]
+      roleCtrl: ['', Validators.required],
+      committeeCtrl: ['', Validators.required],
+      blockNumberCtrl: ['', Validators.required],
     });
-
-    this.filterdBlockNumbers = this.myControl.valueChanges.pipe(
-      startWith(''),
-      map(event => this._filter(event)),
-    );
-
 
     const _role = localStorage.getItem("role");
     this._role = this.authService.decryptData(_role);
@@ -113,19 +96,8 @@ export class UserProfileComponent implements OnInit {
 
   onChange(event: any) {
     this.newCommitteeValue = event;
-    console.log(this.newCommitteeValue);
     this.availableBlocks = this.zonesInfo.get(this.newCommitteeValue);
-    console.log(this.zonesInfo.get(this.newCommitteeValue));
   }
-
-  _filter(event: string): string[] {
-    if (event === '') {
-      return this.availableBlocks.slice()
-    }
-    const filterValue = event.toLowerCase()
-    return this.availableBlocks.filter((option: string) => option.toLowerCase().includes(filterValue))
-  }
-
 
   delete() {
     const dialogRef = this.dialog.open(DeleteUserConfirmationDialog, {
@@ -133,8 +105,9 @@ export class UserProfileComponent implements OnInit {
       data: { delete: this.deleteConfirmation },
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
+    dialogRef.afterClosed().toPromise().then((result) => {
       this.deleteConfirmation = result;
+      console.log(result);
     });
   }
 
@@ -153,12 +126,12 @@ export class UserProfileComponent implements OnInit {
     this.dialog.open(saveChangesDialog, {
       data: {
         userName,
-        email, firstName, gender, phoneNumber, role, committee, blockNumber, LastUpdatedDate, LastUpdatedTime
+        email, firstName, gender, phoneNumber, role, committee, blockNumber, LastUpdatedDate, LastUpdatedTime,
       }
     })
-    const encrypt = this.authService.encryptData(this.newUserName)
-    this.authService.eventCallbackuserName.next(this.newUserName)
-    localStorage.setItem("username", encrypt)
+    if (this.newEmail != this.user.email) {
+      alert("Email has been changed");
+    }
   }
 
   goBack() {
@@ -172,15 +145,15 @@ export class UserProfileComponent implements OnInit {
 })
 export class saveChangesDialog {
   message = '';
-  uid: any
+  uid = localStorage.getItem("uid")
+  _uid = this.activatedRoute.snapshot.queryParams.id;
+  _data: any;
 
   constructor(
     public dialogRef: MatDialogRef<UserProfileComponent>, public authService: Authservice,
     @Inject(MAT_DIALOG_DATA) public data: DialogData, public dialog: MatDialog, private activatedRoute: ActivatedRoute
   ) {
     dialogRef.disableClose = true;
-    var encryptedUid = localStorage.getItem('uid');
-    this.uid = this.authService.decryptData(encryptedUid);
   }
 
   onNoClick(): void {
@@ -188,15 +161,31 @@ export class saveChangesDialog {
   }
 
   update() {
-    console.log(this.data);
     this.dialogRef.close();
-    var _uid = this.activatedRoute.snapshot.queryParams.id;
-    var decryptData = this.authService.decryptData(_uid);
-    this.authService.updateUserDataByQuery(this.data, decryptData)
-    this.dialog.open(confirmationDialog, {
-      data: {
-        message: "User profile updated",
+    var decryptData = this.authService.decryptData(this._uid);
+    this.authService.updateUserData(decryptData, this.data).then(() => {
+      this._data = this.data;
+      const uid = this.authService.decryptData(this.uid);
+      const _uid = this.authService.decryptData(this._uid);
+
+      if (uid == _uid) {
+        this.authService.eventCallbackuserName.next(this._data.userName);
+        const encrypt = this.authService.encryptData(this._data.userName);
+        localStorage.setItem("username", encrypt)
       }
+      this.dialog.open(confirmationDialog, {
+        data: {
+          message: "User profile updated",
+          reload: true
+        }
+      })
+    }).catch((err) => {
+      console.log(err);
+      this.dialog.open(confirmationDialog, {
+        data: {
+          message: "Failed to update user profile",
+        }
+      })
     })
   }
 }
@@ -234,6 +223,7 @@ export class DeleteUserConfirmationDialog {
         }
       })
       this.dialogRef.close();
+      this.authService.goback();
     } else {
       this.message = 'Try again';
       this.deleteConfirmation = '';

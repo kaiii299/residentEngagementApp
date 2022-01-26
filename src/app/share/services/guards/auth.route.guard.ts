@@ -21,6 +21,7 @@ export class AuthRouteGuard implements CanActivate {
       return true;
     }
     else{
+      localStorage.clear();
       this.dialog.open(confirmationDialog,{
         data:{
           message: "Please Login"

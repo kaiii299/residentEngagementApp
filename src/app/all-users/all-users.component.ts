@@ -45,12 +45,12 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   searchValue: any;
   filter_form: FormGroup
   uid = localStorage.getItem("uid");
-  userdata : any;
+  userdata = Array();
+  filterData = Array();
   totalCount: any;
   filterValue: any;
   defaultValue:any =  ['userName','committee', 'blockNumber','role'];
   dataSource:any = new MatTableDataSource();
-  baseUrl = "https://us-central1-residentappv2-affc6.cloudfunctions.net/api";
   encryptedUserData = localStorage.getItem("userData");
 
 
@@ -73,39 +73,19 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     }
   }
   async ngOnInit(){
-
-    // this.authService.eventcbAllUserData$.subscribe((data) => {
-    //   this.userdata = data
-    //   this.dataSource.data = data
-    //   console.log(data);
-    // });
-
-    const decryptedUserData = this.authService.decryptData(this.encryptedUserData)
-    const userData = JSON.parse(decryptedUserData)
-    this.dataSource.data = userData;
-    this.totalCount = userData.length
-    console.log(userData)
-
-
-    // const data = this.http.get(this.baseUrl + "/getAllUsers").toPromise();
-    // console.log(data);
-    // this.dataSource.data = await data
-    // this.userdata = await data;
-
+    this.authService.getAllUsers();
+    this.authService.eventcbUserData$.subscribe((data)=>{
+      // console.log(data);
+      localStorage.setItem("userData", data)
+      this.dataSource.data = data;
+      this.userdata = data;
+      this.totalCount = this.userdata.length
+    })
   }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-  }
-
-  applyFilter(event: Event) {
-    this.filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = this.filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
   }
 
   userInfo(uid: any){
@@ -119,25 +99,35 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
 
   }
 
-  filter(event: KeyboardEvent){
+  filter(){
+    if(this.searchValue){
+      this.authService.getUserbyFilter("", this.searchValue);
+    }
     if(this.committeesValue){
-      this.dataSource.filter  = this.committeesValue;
+      this.authService.getUserbyFilter("committee", this.committeesValue);
     }
     if(this.roleValue){
-      this.dataSource.filter  = this.roleValue;
+      this.authService.getUserbyFilter("role", this.roleValue);
     }
     if(this.statusValue){
-      this.dataSource.filter  = this.statusValue;
+      this.authService.getUserbyFilter("status", this.statusValue);
     }
     if(this.variableValue !='' && this.variableValue !=undefined){
       localStorage.setItem("filterValue",JSON.stringify(this.variableValue))
       this.columnsToDisplay = this.variableValue
     }
+    this.authService.eventcbFilterData$.subscribe((filterdata)=>{
+      this.dataSource.data = filterdata;
+      if(Object.keys(filterdata).length > 0){
+        console.log("filterdata");
+        const encryptedData = this.authService.encryptData(JSON.stringify(filterdata));
+        localStorage.setItem("filterData", encryptedData);
+      }
+    })
   }
 
-  clearFilter(event: Event){
-    const filterValue = (event.target as HTMLInputElement).value = " "
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  clearFilter(){
+    this.dataSource.data = this.userdata;
     this.committeesValue ="";
     this.roleValue = '';
     this.statusValue ='';
@@ -145,6 +135,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     this.variableValue = this.defaultValue;
     this.columnsToDisplay = this.defaultValue;
     localStorage.removeItem("filterValue")
+    localStorage.removeItem("filterData")
     this.searchValue = ""
   }
 

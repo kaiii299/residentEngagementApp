@@ -8,8 +8,6 @@ const sgMail = require('@sendgrid/mail');
 const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
-const cookieParser = require("cookie-parser");
-const csrf = require("csurf");
 
 admin.initializeApp(functions.config().firebase);
 // eslint-disable-next-line camelcase
@@ -18,13 +16,13 @@ sgMail.setApiKey(SENDGRID_API_KEy);
 
 const userDb = admin.firestore().collection("Users");
 const _authMiddleware = require('./authMiddleware.js');
-const csrfMiddleware = csrf({cookie: true});
 
 // Middleware
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
+// app.use(_authMiddleware);
 app.use(morgan('tiny'));
 app.options('*', cors());
 app.options('/deleteUser/:id', cors());
@@ -35,6 +33,7 @@ app.all('/*', function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
 
 app.get("/getAllUsers", async (req, res) => {
   const users = [];
@@ -55,18 +54,19 @@ app.get("/getUsers/:id", async (req, res) => {
   res.status(200).send({id: uid, userData});
 });
 
-// app.get("/search/:category/:keyword", (req, res)=>{
-//   const _user = [];
-//   const category = req.params.category;
-//   const keyword = req.params.keyword;
-//   const _data = userDb.where(category, '==', keyword).get();
-//   _data.forEach((doc)=>{
-//     const data = doc.data();
-//     _user.push(data);
-//   });
-//   res.status(200).send(_user);
-//   console.log(`data found ${_user}`);
-// });
+app.get("/search/:category/:keyword", async (req, res)=>{
+  const _users = [];
+  const category = req.params.category;
+  const keyword = req.params.keyword;
+  const snapshot = await userDb.where(category, '==', keyword).get();
+  // if not == to empty
+  snapshot.forEach((doc) => {
+    const id = doc.id;
+    const data = doc.data();
+    _users.push({id, data});
+  });
+  res.status(200).send( _users);
+});
 
 app.post("/createUser", async (req, res) => {
   res.header("Access-Control-Allow-Origin", 'http://localhost:4200');
@@ -76,13 +76,12 @@ app.post("/createUser", async (req, res) => {
   res.status(201).send("User created successfully", userData);
 });
 
-app.put("/updateUser/:id", async (req, res) => {
-  const body = req.body;
-  await userDb.doc(req.params.id).update(body);
-
-  res.status(200).send("User successfully updataed");
+app.put("/updateUser/:uid", async (req, res) => {
+  const userData = req.body.userData;
+  const uid = req.params.uid;
+  await userDb.doc(uid).update(userData);
+  res.status(200).send("User successfully updated");
 });
-
 
 app.delete("/deleteUser/:id", async (req, res) => {
   await admin.auth().deleteUser(req.params.id).then(()=>{
@@ -137,5 +136,3 @@ exports.onUserDeletedSendEmail = functions.firestore.document("Users/{userId}").
     console.log("There is an error sending Email" + err);
   });
 });
-
-

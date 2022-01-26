@@ -55,6 +55,8 @@ import { confirmationDialog } from './share/confirmatonDialog';
 import { EditEventsComponent } from './edit-events/edit-events.component';
 import { excelPreviewDialog } from './share/excel-preview-dialog';
 import { uploadFileDialog } from './share/upload-file';
+import { SpinnerComponent } from './share/spinner/spinner.component';
+import { RequestComponent } from './request/request.component';
 
 
 @NgModule({
@@ -79,6 +81,8 @@ import { uploadFileDialog } from './share/upload-file';
     EditEventsComponent,
     excelPreviewDialog,
     uploadFileDialog,
+    SpinnerComponent,
+    RequestComponent,
   ],
   imports: [
     CommonModule,

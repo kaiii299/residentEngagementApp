@@ -31,8 +31,6 @@ hide = true
 
     else{
       this.authService.signIn(this.loginData.email, this.loginData.password).then(userInfo=>{
-
-       this.route.navigate(['list']);
      }).catch(error=>{
        this.message = "Wrong username or password"
      })

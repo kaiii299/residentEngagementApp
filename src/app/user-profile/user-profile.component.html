@@ -10,6 +10,7 @@
     <div class="login">
       <div class="form">
         <form class="edit-form" [formGroup]="updateUserForm">
+
           <mat-label>Username<p *ngIf="newUserName.length == 10" class="limit"> (limit reach)</p></mat-label>
           <input type="text" title="username" placeholder="Username" maxlength="10" formControlName="usernameCtrl"
             [(ngModel)]="newUserName" required>
@@ -26,11 +27,11 @@
           </mat-select>
 
           <mat-label>Email</mat-label>
-          <input type="text" title="Email" placeholder="Email" value={{newEmail}} formControlName="emailCtrl"
-            [(ngModel)]="newEmail"  required>
+          <input type="email" title="Email" placeholder="Email" value={{newEmail}} formControlName="emailCtrl"
+            [(ngModel)]="newEmail" required>
 
           <mat-label>Phone Number</mat-label>
-          <input type="text" title="Email" placeholder="Phone Number" value={{newPhoneNumber}} formControlName="phoneNumberCtrl"
+          <input type="text" title="phoneNumber" placeholder="Phone Number" value={{newPhoneNumber}} formControlName="phoneNumberCtrl"
             [(ngModel)]="newPhoneNumber" maxlength="8" required>
 
 
@@ -51,13 +52,9 @@
           </mat-select>
 
           <mat-label>Block Number</mat-label>
-
-          <input type="text" placeholder="Block Number" [disabled]="_role !=='Admin' " aria-label="Number" [(ngModel)]="newBlockNumber" formControlName="blockNumberCtrl" class="search" [formControl]="myControl"
-            [matAutocomplete]="auto">
-
-          <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+          <mat-select placeholder="Block Number" [disabled]="_role !=='Admin' " aria-label="Number" [(ngModel)]="newBlockNumber" formControlName="blockNumberCtrl" class="selection-input">
             <mat-option *ngFor="let blockNumber of availableBlocks "[value]="blockNumber">{{blockNumber}}</mat-option>
-          </mat-autocomplete>
+          </mat-select>
 
           <div class="button">
             <br>

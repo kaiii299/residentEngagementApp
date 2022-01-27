@@ -24,7 +24,10 @@
             class="forget">Forget?
           </a>
           <p class="message">{{message}}</p>
-          <button class="login-btn" type="submit" (click)="Login()" >login</button>
+          <div class="buttons">
+            <button class="login-btn" type="submit" (click)="Login()" >login</button>
+            <button class="request-btn" routerLink="requestaccount" type="submit" >Request</button>
+          </div>
         </form>
         <img src="/assets/images/people/Login-mobile.png" alt="" class="img-phone">
       </div>

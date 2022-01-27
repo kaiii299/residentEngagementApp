@@ -1,6 +1,6 @@
 OPTIONS  https://us-central1-residentappv2-affc6.cloudfunctions.net/corsEnabledFunction
 ###
-DELETE https://us-central1-residentappv2-affc6.cloudfunctions.net/api
+GET https://us-central1-residentappv2-affc6.cloudfunctions.net/api/test
 
 ###
 POST https://us-central1-residentappv2-affc6.cloudfunctions.net/deleteUserByEmail

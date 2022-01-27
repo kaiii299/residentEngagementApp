@@ -1,0 +1,77 @@
+@keyframes bouncing {
+  0% {
+    top: 25%;
+  }
+  100% {
+    top: 23%;
+  }
+}
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.page-overlay-wrapper {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  z-index: 1009;
+  background: #f5ab6e36;
+
+  .bee-spinner {
+    width: 20%;
+    height: 100%;
+    position: fixed;
+    top: 0%;
+    left: calc(50% - 10%);
+    z-index: 100;
+    background-image: url("../../../assets/images/people/loadingYellow.svg");
+    background-repeat: no-repeat;
+    background-size: 97%;
+    animation: bouncing 0.4s cubic-bezier(0.1, 0.25, 0.1, 1) 0s infinite
+      alternate both;
+  }
+}
+.text{
+  top: 58%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  font-size: 4em;
+  color: rgb(255, 255, 255);
+  z-index: 1009;
+}
+
+@media (max-width: 1000px) {
+  .page-overlay-wrapper {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    z-index: 1009;
+    background: #f5ab6e36;
+
+    .bee-spinner {
+      width: 80%;
+      height: 100%;
+      position: fixed;
+      top: 0%;
+      left: 10%;
+      z-index: 100;
+      background-image: url("../../../assets/images/people/loadingBlue.svg");
+      background-repeat: no-repeat;
+      background-size: 97%;
+      animation: bouncing 0.4s cubic-bezier(0.1, 0.25, 0.1, 1) 0s infinite
+        alternate both;
+    }
+  }
+}
+
+

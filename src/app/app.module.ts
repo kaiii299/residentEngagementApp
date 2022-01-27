@@ -56,6 +56,8 @@ import { confirmationDialog } from './share/confirmatonDialog';
 import { EditEventsComponent } from './edit-events/edit-events.component';
 import { excelPreviewDialog } from './share/excel-preview-dialog';
 import { uploadFileDialog } from './share/upload-file';
+import { SpinnerComponent } from './share/spinner/spinner.component';
+import { RequestComponent } from './request/request.component';
 
 
 
@@ -82,6 +84,8 @@ import { uploadFileDialog } from './share/upload-file';
     excelPreviewDialog,
     uploadFileDialog,
     InputSurveyComponent,
+    SpinnerComponent,
+    RequestComponent,
   ],
   imports: [
     CommonModule,

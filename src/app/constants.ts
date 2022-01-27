@@ -91,4 +91,8 @@ export abstract class Constants {
     ["Taman Jurong Zone F RC", ['177', '178', '179', '180', '181', '182', '183', '184', '175A', '175B', '175C']],
     ["Taman Jurong Zone G RN", ['138A', '138B', '138C', '138D', '140A', '140B', '140C', '140D', '150A']],
   ]);
+
+  static readonly baseURL: string = "https://us-central1-residentappv2-affc6.cloudfunctions.net/api"
+
+  static readonly secretKey: string = 'YourSecretKeyForEncryption&Descryption'
 }

@@ -14,14 +14,20 @@ import { ResidentInfoComponent } from './resident-info/resident-info.component';
 import { ResidentDetailComponent } from './resident-detail/resident-detail.component';
 import { EventsPageComponent } from './events-page/events-page.component';
 import { ListComponent } from './list/list.component';
+import { RequestComponent } from './request/request.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' }, //login
   { path: 'forgetpassword', component: ForgetPasswordComponent },
   {
-    path: 'register',
+    path: 'createnewuser',
     component: RegisterComponent,
     canActivate: [AuthRouteGuard],
+    //data: { role: 'Admin' },
+  },
+  {
+    path: 'requestaccount',
+    component: RequestComponent,
     //data: { role: 'Admin' },
   },
   {

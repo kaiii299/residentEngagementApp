@@ -8,9 +8,9 @@ import { Observable } from 'rxjs/internal/Observable';
 import { map, startWith } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss'],
+  selector: 'app-request',
+  templateUrl: './request.component.html',
+  styleUrls: ['./request.component.scss'],
   providers: [
     {
       provide: STEPPER_GLOBAL_OPTIONS,
@@ -18,7 +18,7 @@ import { map, startWith } from 'rxjs/operators';
     },
   ],
 })
-export class RegisterComponent implements OnInit {
+export class RequestComponent  implements OnInit {
   @ViewChild('stepper') private myStepper: MatStepper;
 
   strength = "0"
@@ -129,7 +129,7 @@ export class RegisterComponent implements OnInit {
     }
   }
 
-  createNewuser() {
+  createNewRequestuser() {
     if (this.firstFormGroup.invalid, this.secondFormGroup.invalid, this.myControl.invalid) {
       this.message = "There are still missing form fields"
     }
@@ -152,11 +152,11 @@ export class RegisterComponent implements OnInit {
 
       console.log(newUser)
       this.authService.register(this.email, this.password).then(res => {
-        this.authService.createNewUser(newUser).then(res => {
-          this.message = "User created successfully."
+        this.authService.createNewRequestUser(newUser).then(res => {
+          this.message = "Request sent successfully."
           this.messageColor = "Green"
         }).catch(error => {
-          this.message = "Failed to create user. Try again"
+          this.message = "Failed to send request. Try again"
           this.messageColor = "red"
           console.log(error)
         })

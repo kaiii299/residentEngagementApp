@@ -25,7 +25,7 @@ import { DialogData } from "../user-profile/user-profile.component";
 })
 export class ResidentInfoComponent implements AfterViewInit {
 
-  columnsToDisplay = ['residentName', 'committee'];
+  columnsToDisplay = ['residentName', 'committee','blkNum'];
   expandedElement: null;
 
   filter_form: FormGroup;
@@ -82,9 +82,9 @@ export class ResidentInfoComponent implements AfterViewInit {
     this.dataSource.sort = this.sort;
   }
 
-  applyFilter(value: string) {
-    //event.stopPropagation();
-    this.dataSource.filter = value.trim().toLocaleLowerCase();
+  applyFilter(event : KeyboardEvent) {
+    event.stopPropagation();
+    this.dataSource.filter = this.search.trim().toLocaleLowerCase();
 
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();

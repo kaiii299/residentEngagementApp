@@ -9,6 +9,7 @@ import { ResidentService } from '../resident.service';
 import { Constants } from '../constants';
 import { Router, NavigationExtras } from '@angular/router';
 import { DialogData } from "../user-profile/user-profile.component";
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -23,9 +24,9 @@ import { DialogData } from "../user-profile/user-profile.component";
     ]),
   ],
 })
-export class ResidentInfoComponent implements AfterViewInit {
+export class ResidentInfoComponent implements AfterViewInit, OnInit {
 
-  columnsToDisplay = ['residentName', 'committee','blkNum'];
+  columnsToDisplay = ['residentName', 'committee', 'blkNum'];
   expandedElement: null;
 
   filter_form: FormGroup;
@@ -46,16 +47,16 @@ export class ResidentInfoComponent implements AfterViewInit {
 
   totalCount: any
   filterValue: any
+  residentdata = Array();
+  dataSource: any = new MatTableDataSource();
 
-  dataSource = new MatTableDataSource();
-
-  residentData:any; 
+  residentData: any;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private residentService: ResidentService, private formBuilder: FormBuilder, private router: Router,
-    public dialog: MatDialog) {
+    public dialog: MatDialog, private http: HttpClient) {
 
     this.filter_form = this.formBuilder.group({
       committeeControl: new FormControl,
@@ -63,26 +64,33 @@ export class ResidentInfoComponent implements AfterViewInit {
       ageGpControl: new FormControl,
     });
 
-    residentService.getAllResidents().subscribe((data) => {
-      //console.log('data length..');
-      //console.log(data.length);
-      this.totalCount = data.length;
-      this.residentData = data;
-      //console.log(residentData);
-      this.dataSource.data = this.residentData;
-      //console.log(this.dataSource.data);
+    // residentService.getAllResidents().subscribe((data) => {
+    //   //console.log('data length..');
+    //   //console.log(data.length);
+    //   this.totalCount = data.length;
+    //   this.residentData = data;
+    //   //console.log(residentData);
+    //   this.dataSource.data = this.residentData;
+    //   //console.log(this.dataSource.data);
 
-    })
-
+    // })
   }
-
+  async ngOnInit(){
+    this.residentService.getAllResidents();
+    this.residentService.eventcbResidentData$.subscribe((data)=>{
+      localStorage.setItem("residentData", data)
+      this.dataSource.data = data;
+      this.residentdata = data;
+      this.totalCount = this.residentdata.length;
+    })
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
 
-  applyFilter(event : KeyboardEvent) {
+  applyFilter(event: KeyboardEvent) {
     event.stopPropagation();
     this.dataSource.filter = this.search.trim().toLocaleLowerCase();
 
@@ -117,33 +125,33 @@ export class ResidentInfoComponent implements AfterViewInit {
   onClickFilter(event: any) {
     console.log(event);
     event.blkNumControl = event.blkNumControl.trim();
-    if(event.committeeControl && event.blkNumControl && event.ageGpControl){
-      this.dataSource.data = this.residentData.filter(function(resident :any) {
+    if (event.committeeControl && event.blkNumControl && event.ageGpControl) {
+      this.dataSource.data = this.residentData.filter(function (resident: any) {
         return resident.committee == event.committeeControl &&
-        resident.blkNum == event.blkNumControl &&
-        resident.ageGp == event.ageGpControl
+          resident.blkNum == event.blkNumControl &&
+          resident.ageGp == event.ageGpControl
       });
     }
-    if(event.committeeControl && event.blkNumControl && !event.ageGpControl){
-      this.dataSource.data = this.residentData.filter(function(resident :any) {
+    if (event.committeeControl && event.blkNumControl && !event.ageGpControl) {
+      this.dataSource.data = this.residentData.filter(function (resident: any) {
         return resident.committee == event.committeeControl &&
-        resident.blkNum == event.blkNumControl 
+          resident.blkNum == event.blkNumControl
       });
     }
-    if(event.committeeControl && !event.blkNumControl && event.ageGpControl){
-      this.dataSource.data = this.residentData.filter(function(resident :any) {
+    if (event.committeeControl && !event.blkNumControl && event.ageGpControl) {
+      this.dataSource.data = this.residentData.filter(function (resident: any) {
         return resident.committee == event.committeeControl &&
-        resident.ageGp == event.ageGpControl 
+          resident.ageGp == event.ageGpControl
       });
     }
-    if(!event.committeeControl &&! event.blkNumControl && event.ageGpControl){
-      this.dataSource.data = this.residentData.filter(function(resident :any) {
+    if (!event.committeeControl && !event.blkNumControl && event.ageGpControl) {
+      this.dataSource.data = this.residentData.filter(function (resident: any) {
         return resident.ageGp == event.ageGpControl
       });
     }
-    if(event.committeeControl && !event.blkNumControl && !event.ageGpControl){
-      this.dataSource.data = this.residentData.filter(function(resident :any) {
-        return resident.committee == event.committeeControl 
+    if (event.committeeControl && !event.blkNumControl && !event.ageGpControl) {
+      this.dataSource.data = this.residentData.filter(function (resident: any) {
+        return resident.committee == event.committeeControl
       });
     }
   }
@@ -152,7 +160,7 @@ export class ResidentInfoComponent implements AfterViewInit {
     this.selectedZone = value;
     this.availableBlocks = this.zonesInfo.get(this.selectedZone);
   }
-  refresh(){
+  refresh() {
     location.reload()
   }
 

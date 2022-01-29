@@ -54,15 +54,15 @@
         <table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8" matSort>
           <ng-container matColumnDef="residentName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Resident Name</th>
-            <td mat-cell *matCellDef="let element">{{element.residentName}}</td>
+            <td mat-cell *matCellDef="let element">{{element.data.residentName | titlecase}}</td>
           </ng-container>
           <ng-container matColumnDef="committee">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>Committee</th>
-            <td mat-cell *matCellDef="let element">{{element.committee}}</td>
+            <td mat-cell *matCellDef="let element">{{element.data.committee | titlecase}}</td>
           </ng-container>
           <ng-container matColumnDef="blkNum">
             <th mat-header-cell *matHeaderCellDef>Block Number</th>
-            <td mat-cell *matCellDef="let element">{{element.blkNum}}</td>
+            <td mat-cell *matCellDef="let element">{{element.data.blkNum | titlecase}}</td>
           </ng-container>
 
           <ng-container matColumnDef="expandedDetail">

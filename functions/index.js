@@ -15,6 +15,7 @@ const SENDGRID_API_KEy = functions.config().sendgrid.key;
 sgMail.setApiKey(SENDGRID_API_KEy);
 
 const userDb = admin.firestore().collection("Users");
+const residentDb = admin.firestore().collection("residents");
 const _authMiddleware = require('./authMiddleware.js');
 
 // Middleware
@@ -44,6 +45,17 @@ app.get("/getAllUsers", async (req, res) => {
     users.push({id, data});
   });
   res.status(200).send(users);
+});
+
+app.get("/getAllResidents", async (req, res) => {
+  const residents = [];
+  const snapshot = await residentDb.get();
+  snapshot.forEach((doc) => {
+    const id = doc.id;
+    const data = doc.data();
+    residents.push({id, data});
+  });
+  res.status(200).send(residents);
 });
 
 app.get("/getUsers/:id", async (req, res) => {

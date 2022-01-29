@@ -75,7 +75,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   async ngOnInit(){
     this.authService.getAllUsers();
     this.authService.eventcbUserData$.subscribe((data)=>{
-      // console.log(data);
+      //console.log(data);
       localStorage.setItem("userData", data)
       this.dataSource.data = data;
       this.userdata = data;

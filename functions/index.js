@@ -47,17 +47,6 @@ app.get("/getAllUsers", async (req, res) => {
   res.status(200).send(users);
 });
 
-app.get("/getAllResidents", async (req, res) => {
-  const residents = [];
-  const snapshot = await residentDb.get();
-  snapshot.forEach((doc) => {
-    const id = doc.id;
-    const data = doc.data();
-    residents.push({id, data});
-  });
-  res.status(200).send(residents);
-});
-
 app.get("/getUsers/:id", async (req, res) => {
   const snapshot = await userDb.doc(req.params.id).get();
   const uid = snapshot.id;
@@ -110,6 +99,91 @@ app.delete("/deleteUser/:id", async (req, res) => {
     });
   });
 });
+
+app.get("/getAllResidents", async (req, res) => {
+  const residents = [];
+  const snapshot = await residentDb.get();
+  snapshot.forEach((doc) => {
+    const id = doc.id;
+    const data = doc.data();
+    residents.push({id, data});
+  });
+  res.status(200).send(residents);
+});
+
+app.get("/getResident/:id", async (req, res) => {
+  const snapshot = await residentDb.doc(req.params.id).get();
+  const resid = snapshot.id;
+  const residentData = snapshot.data();
+
+  res.status(200).send({id: resid, residentData});
+});
+
+app.put("/updateResident/:id", async (req, res) => {
+  const residentData = req.body;
+  const snapshot = residentDb.doc(req.params.id);
+  await snapshot.update(residentData);
+  res.status(200).send("Resident data has been successfully updated");
+});
+
+app.post("/searchResidentByName", async (req, res) => {
+  const residents = [];
+  const searchKeyword = req.body.keyword;
+  const snapshot = await residentDb.where('residentName', '>=', searchKeyword).where('residentName', '<=', searchKeyword+ '~').get();
+  snapshot.forEach((doc) => {
+    const id = doc.id;
+    const data = doc.data();
+    residents.push({id, data});
+  });
+  res.status(200).send(residents);
+});
+
+app.post("/filterResident", async (req, res) => {
+  const residents = [];
+  const reqBody = req.body;
+  if ( reqBody.committee && reqBody.blkNum && reqBody.ageGp ) {
+    const snapshot = await residentDb.where('committee', '==', reqBody.committee).where('blkNum', '==', reqBody.blkNum).where('ageGp', '==', reqBody.ageGp).get();
+    snapshot.forEach((doc) => {
+      const id = doc.id;
+      const data = doc.data();
+      residents.push({id, data});
+    });
+  }
+  if ( reqBody.committee && reqBody.blkNum && !reqBody.ageGp ) {
+    const snapshot = await residentDb.where('committee', '==', reqBody.committee).where('blkNum', '==', reqBody.blkNum).get();
+    snapshot.forEach((doc) => {
+      const id = doc.id;
+      const data = doc.data();
+      residents.push({id, data});
+    });
+  }
+  if ( reqBody.committee && !reqBody.blkNum && reqBody.ageGp ) {
+    const snapshot = await residentDb.where('committee', '==', reqBody.committee).where('ageGp', '==', reqBody.ageGp).get();
+    snapshot.forEach((doc) => {
+      const id = doc.id;
+      const data = doc.data();
+      residents.push({id, data});
+    });
+  }
+  if ( !reqBody.committee && !reqBody.blkNum && reqBody.ageGp ) {
+    const snapshot = await residentDb.where('ageGp', '==', reqBody.ageGp).get();
+    snapshot.forEach((doc) => {
+      const id = doc.id;
+      const data = doc.data();
+      residents.push({id, data});
+    });
+  }
+  if ( reqBody.committee && !reqBody.blkNum && !reqBody.ageGp ) {
+    const snapshot = await residentDb.where('committee', '==', reqBody.committee).get();
+    snapshot.forEach((doc) => {
+      const id = doc.id;
+      const data = doc.data();
+      residents.push({id, data});
+    });
+  }
+  res.status(200).send(residents);
+});
+
 
 exports.api = functions.https.onRequest(app);
 

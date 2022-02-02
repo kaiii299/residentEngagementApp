@@ -1,54 +1,35 @@
 <body>
     <div class="main-container">
         <div class="container">
-            <h1>Details of the Resident</h1>
-            <form *ngIf="residentDetail">
-                <div class="info">
-                    <label class="top">Resident Name : </label>
-                    <label class="bottom">{{residentDetail.residentName | titlecase}}</label>
-                </div>
-                <div>
-                    <label class="top">Committee : </label>
-                    <label class="bottom">{{residentDetail.committee}}</label>
-                </div>
-                <div>
-                    <label class="top">Block Number : </label>
-                    <label class="bottom">{{residentDetail.blkNum}}</label>
-                </div>
-                <div>
-                    <label class="top">Unit Number : </label>
-                    <label class="bottom">{{residentDetail.unitNum}}</label>
-
-                </div>
-                <div>
-                    <label class="top">Gender : </label>
-                    <label class="bottom">{{residentDetail.gender}}</label>
-
-                </div>
-                <div>
-                    <label class="top">Race : </label>
-                    <label class="bottom">{{residentDetail.race | titlecase}}</label>
-
-                </div>
-                <div>
-                    <label class="top">Age Group : </label>
-                    <label class="bottom">{{residentDetail.ageGp}}</label>
-
-                </div>
-                <div>
-                    <label class="top">Expertise : </label>
-                    <label class="bottom">{{residentDetail.expertise | titlecase}}</label>
-                </div>
-                <div class="activity">
-                    <label>Preferred Activities</label>
-                    <div class="acti">
-                        <div class="item" *ngFor=" let act of residentDetail.activities">
-                            {{act}}
-                        </div>
-                    </div>
-                </div>
+            <h1>Resident Details</h1>
+            <form [formGroup]="residentDetailsForm">
+                <label>Resident Name :</label>
+                <input title="residentName" class='form-control' type="text" formControlName="residentNameControl" readonly>
+                <label>Committee :</label>
+                <input title="committee" class='form-control' type="text" formControlName="committeeControl" readonly>
+                <label>Block Number :</label>
+                <input title="blkNumber" class='form-control' type="text" formControlName="blkNumControl" readonly>
+                <label>Unit Number :</label>
+                <input title="unit" class='form-control' formControlName="unitNumControl" readonly>
+                <label>Gender :</label>
+                <input title="gender" class='form-control' formControlName="genderControl" readonly>
+                <label>Race :</label>
+                <input title="race" class='form-control' formControlName="raceControl" readonly>
+                <label>Age Group :</label>
+                <input title="Age" class='form-control' formControlName="ageGpControl" readonly>
+                <label>Expertise :</label>
+                <input title="expertise" class='form-control' type="text" formControlName="expertiseControl" readonly>
+                <!-- <label>Preferred Activity (Select All That Apply)</label>
+                <div *ngFor="let activity of activities; let i=index">
+                    <label>
+                        <input type="checkbox" [value]="activity" />
+                        {{activity}}
+                    </label>
+                </div> -->
             </form>
-            <button type="submit" class="btn-survey" (click)="openSurveyDialog()">Input Survey</button>
+            <div class="button">
+                <button type="submit" class="btn-survey" (click)="openSurveyDialog()">Input Survey</button>
+            </div>
         </div>
     </div>
 </body>

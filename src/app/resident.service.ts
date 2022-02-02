@@ -5,6 +5,7 @@ import { Constants } from 'src/app/constants';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import * as CryptoJS from 'crypto-js';
+import { Resident } from '././resident';
 
 
 @Injectable({
@@ -18,13 +19,19 @@ export class ResidentService {
   eventcbResidentData = new Subject<any>();
   eventcbResidentData$ = this.eventcbResidentData.asObservable();
 
+  searchOption= []
+  public residentsData : Resident[]
+
   constructor(private firestore: AngularFirestore, private http: HttpClient, private router: Router) { }
 
   encryptData(value: any) {
     return CryptoJS.AES.encrypt(value, this.secretKey.trim()).toString();
   }
   decryptData(textToDecrypt: any) {
+    console.log("decrpt");
+    console.log(textToDecrypt);
     var bytes = CryptoJS.AES.decrypt(textToDecrypt, this.secretKey.trim());
+    console.log(bytes);
     return bytes.toString(CryptoJS.enc.Utf8);
   }
 
@@ -46,8 +53,9 @@ export class ResidentService {
       }
     })
   }
-  getResidentById(id: string) {
-    return this.firestore.collection('residents').doc(id).valueChanges();
+  getResidentById(id: any){
+    // return this.firestore.collection('residents').doc(id).valueChanges();
+    return this.http.get(this.baseUrl + "/getResident/" + id) as Observable<any>
   }
   getResidentByFilter(commiittee: string, ageGp: string) {
     console.log("filter");
@@ -58,9 +66,12 @@ export class ResidentService {
     });
     return residentRef.valueChanges({ idField: 'id' });
   }
-  updateResidentInfo(id: string, resident: Object) {
-    console.log(resident)
-    return this.firestore.collection('residents').doc(id).update(resident);
+  async updateResidentInfo(id: string, resident: Object) {
+    //return this.firestore.collection('residents').doc(id).update(resident);
+    return await this.http.put(this.baseUrl + "/updateResident/" + id,resident, {responseType: 'text'}).toPromise().then((data)=>{
+      console.log(resident)
+    })
+
   }
   deleteResident(id: string) {
     this.firestore.collection('residents').doc(id).delete().then(function () {
@@ -71,4 +82,34 @@ export class ResidentService {
       });
   }
 
+
+  async searchResidentData(body: any) {
+    return await this.http.post(this.baseUrl +"/searchResidentByName ", body).toPromise().then((data) => {
+      this.eventcbResidentData.next(data);
+      const encryptResidentData = this.encryptData(JSON.stringify(data));
+      localStorage.setItem("residentData", encryptResidentData);
+    }).catch(err => {
+      if (err instanceof HttpErrorResponse) {
+        if (err) {
+          console.log(err);
+          console.log("user not loged in");
+        }
+      }
+    })
+  }
+
+  async filterResident(body: any) {
+    return await this.http.post(this.baseUrl +"/filterResident ", body).toPromise().then((data) => {
+      this.eventcbResidentData.next(data);
+      const encryptResidentData = this.encryptData(JSON.stringify(data));
+      localStorage.setItem("residentData", encryptResidentData);
+    }).catch(err => {
+      if (err instanceof HttpErrorResponse) {
+        if (err) {
+          console.log(err);
+          console.log("user not loged in");
+        }
+      }
+    })
+  }
 }

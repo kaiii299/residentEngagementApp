@@ -39,8 +39,8 @@ const routes: Routes = [
   {
     path: 'addresident',
     component: AddResidentComponent,
-    //canActivate: [AuthRouteGuard, HasRoleGuard],
-    //data: { role: 'Admin' },
+    // canActivate: [AuthRouteGuard, HasRoleGuard],
+    // data: { role: 'Admin' },
   },
   {
     path: 'events',

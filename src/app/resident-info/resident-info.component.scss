@@ -10,7 +10,14 @@ body{
 }
 
 .search{
-  margin: 0px 0 0 0;
+  padding: 10px 20px 10px 20px;
+  border-radius: 10px;
+  background-color: #FFFFFF;
+}
+.filter{
+  margin-top:5px;
+  padding: 5px 10px 5px 10px;
+  background-color: #f2d9c5;
 }
 
 .filterContainer{
@@ -39,7 +46,7 @@ body{
   width: auto;
   border: 0;
   border-radius: 5px;
-  padding: 5px 15px 5px 15px ;
+  padding: 0px 10px 0px ;
   color: #FFFFFF;
   font-size: 15px;
   -webkit-transition: all 0.3 ease;
@@ -75,11 +82,6 @@ mat-paginator  {
   width: 100%;
 }
 
-mat-accordion{
-  position: relative;
-  width: 100%;
-}
-
 .mat-form-field {
   margin: 0px 0px 10px 0px;
   outline: 0;
@@ -100,7 +102,7 @@ mat-label{
   color: black;
 }
 .total {
-  margin-top: 10px;
+  margin-top: 5px;
   padding: 5px 10px 5px 10px;
   background-color: #f2d9c5;
 }

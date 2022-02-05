@@ -28,6 +28,12 @@ export abstract class Constants {
     'Active',
     'Inactive'];
 
+  static readonly requestStatus: string[] = [
+    'Pending',
+    'Accepted',
+    'Rejected',
+  ]
+
   static readonly variables: string[] = [
     'userName',
     'status',
@@ -88,7 +94,9 @@ export abstract class Constants {
       ["Taman Jurong Zone G RN", ['138A','138B','138C','138D','140A','140B','140C','140D','150A']],
   ]);
 
-  static readonly baseURL: string = "https://us-central1-residentappv2-affc6.cloudfunctions.net/api"
+  static readonly baseURL: string = "https://us-central1-residentappv2-affc6.cloudfunctions.net/api";
 
-  static readonly secretKey: string = 'YourSecretKeyForEncryption&Descryption'
+  static readonly secretKey: string = 'YourSecretKeyForEncryption&Descryption';
+
+  static readonly allowDeleteUser = ['Admin', 'CC staff', 'RN Manager'];
 }

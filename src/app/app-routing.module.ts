@@ -55,7 +55,7 @@ const routes: Routes = [
     //data: { role: 'Admin' },
   },
   {
-    path: 'myprofile',
+    path: 'userprofile',
     component: UserProfileComponent,
     canActivate: [AuthRouteGuard],
     //data: { role: 'Admin' },

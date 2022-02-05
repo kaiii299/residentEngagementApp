@@ -80,7 +80,7 @@ export class AddResidentComponent implements OnInit {
         activities: value.activities,
       }
       this.residentService.addResident(resident).then(results => {
-        alert("Resident has been successfully added")
+        alert("Resident has been added to database")
         //console.log(results);
         //console.log(results.id);
         this.router.navigate(['residentinfo']);

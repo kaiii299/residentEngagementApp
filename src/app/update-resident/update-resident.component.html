@@ -12,7 +12,12 @@
                     </option>
                 </select>
                 <label>Block Number :</label>
-                <input title="blkNumber" class='form-control' type="text" formControlName="blkNumControl">
+                <select title="blkNum" class='form-control' formControlName="blkNumControl">
+                    <option value="" disabled selected hidden>Select Block</option>
+                    <option *ngFor="let blk of availableBlocks" >
+                        {{blk}}
+                    </option>
+                </select>
                 <label>Unit Number :</label>
                 <input title="unit" class='form-control' formControlName="unitNumControl">
                 <label>Gender :</label>

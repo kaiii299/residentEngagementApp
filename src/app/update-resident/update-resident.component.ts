@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators,FormArray } from '@angular/forms';
 import { ResidentService } from '../resident.service';
 import { ActivatedRoute } from '@angular/router';
 import { Constants } from '../constants';
@@ -13,12 +13,16 @@ import { Authservice } from '../share/services/auth.service';
 })
 export class UpdateResidentComponent implements OnInit {
   updateResidentForm:any;
-  committees = Constants.committees;
+  zonesInfo = Constants.zones;
   genders = Constants.genders;
   ageGps = Constants.ageGps;
-  activities = Constants.activities;
+  activitiesList = Constants.activities;
+  committees = Array.from(this.zonesInfo.keys());
+  selectedZone: string;
+  availableBlocks :any = [];
 
-  residentId: string;
+  resid = this.activatedRoute.snapshot.queryParams.id;
+  
 
   constructor(private formBuilder: FormBuilder, private residentService: ResidentService,private activatedRoute: ActivatedRoute, private router: Router) {
     this.updateResidentForm = new FormGroup({
@@ -34,28 +38,56 @@ export class UpdateResidentComponent implements OnInit {
     
    }
 
-  ngOnInit(): void {
-    this.residentId = this.activatedRoute.snapshot.queryParams.id;
-    console.log(this.residentId);
-    if(this.residentId){
-      this.residentService.getResidentById(this.residentId).subscribe(residentInfo =>{
-        let residentDetail:any = residentInfo;
-         console.log(residentDetail);
-        this.updateResidentForm.patchValue({
-          residentNameControl: residentDetail.residentName,
-          committeeControl: residentDetail.committee,
-          blkNumControl: residentDetail.blkNum,
-          unitNumControl: residentDetail.unitNum,
-          genderControl: residentDetail.gender,
-          raceControl: residentDetail.race,
-          ageGpControl: residentDetail.ageGp,
-          expertiseControl: residentDetail.expertise,
-        });
-       })
-    }
+  // ngOnInit(): void {
+  //   this.residentId = this.activatedRoute.snapshot.queryParams.id;
+  //   console.log(this.residentId);
+  //   if(this.residentId){
+  //     this.residentService.getResidentById(this.residentId).subscribe(residentInfo =>{
+  //       let residentDetail:any = residentInfo;
+  //        console.log(residentDetail);
+  //       this.updateResidentForm.patchValue({
+  //         residentNameControl: residentDetail.residentName,
+  //         committeeControl: residentDetail.committee,
+  //         blkNumControl: residentDetail.blkNum,
+  //         unitNumControl: residentDetail.unitNum,
+  //         genderControl: residentDetail.gender,
+  //         raceControl: residentDetail.race,
+  //         ageGpControl: residentDetail.ageGp,
+  //         expertiseControl: residentDetail.expertise,
+  //       });
+  //      })
+  //   }
+  // }
+  async ngOnInit() {
+    const decryptedResid = this.residentService.decryptData(this.resid);
+    await this.residentService.getResidentById(decryptedResid).toPromise().then((data) => {
+      console.log("update resident data");
+      console.log(data);
+      let residentDetail: any = data.residentData;
+      this.updateResidentForm.patchValue({
+        residentNameControl: residentDetail.residentName,
+        committeeControl: residentDetail.committee,
+        blkNumControl: residentDetail.blkNum,
+        unitNumControl: residentDetail.unitNum,
+        genderControl: residentDetail.gender,
+        raceControl: residentDetail.race,
+        ageGpControl: residentDetail.ageGp,
+        expertiseControl: residentDetail.expertise,
+      });
+    })
+    this.activitiesList.forEach(() => this.activitiesFormArray.push(new FormControl(false)));
   }
-  updateResidentInfo(value : any){
+  get activitiesFormArray() {
+    return this.updateResidentForm.controls.activities as FormArray;
+  }
+  onChange(value: any) {
     console.log(value);
+    this.selectedZone = value;
+    this.availableBlocks =this.zonesInfo.get(this.selectedZone);
+    console.log(this.zonesInfo.get(this.selectedZone));
+  }
+
+  updateResidentInfo(value : any){
     if (this.updateResidentForm.valid){
       let resident = {
         residentName: value.residentNameControl,
@@ -67,8 +99,8 @@ export class UpdateResidentComponent implements OnInit {
         ageGp: value.ageGpControl,
         expertise: value.expertiseControl,
       }
-      console.log(resident)
-      this.residentService.updateResidentInfo(this.residentId,resident).then(res => {
+      const decryptedResid = this.residentService.decryptData(this.resid);
+      this.residentService.updateResidentInfo(decryptedResid,resident).then(res => {
         alert("The resident's information hase been successfully updated")
         this.router.navigate(['residentinfo']);
       })

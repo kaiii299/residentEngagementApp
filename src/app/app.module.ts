@@ -32,6 +32,7 @@ import { ResidentInfoComponent } from './resident-info/resident-info.component';
 import { ResidentDetailComponent } from './resident-detail/resident-detail.component';
 import { EventsPageComponent } from './events-page/events-page.component';
 import { DeleteUserConfirmationDialog, saveChangesDialog, UserProfileComponent } from './user-profile/user-profile.component';
+import { InputSurveyComponent } from './input-survey/input-survey.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthRouteGuard } from './share/services/guards/auth.route.guard';
@@ -61,6 +62,7 @@ import { RequestNewUserService } from './share/services/request-new-user.service
 import { userService } from './share/services/user.service';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -82,6 +84,7 @@ import { userService } from './share/services/user.service';
     EditEventsComponent,
     excelPreviewDialog,
     uploadFileDialog,
+    InputSurveyComponent,
     SpinnerComponent,
     RequestComponent,
   ],

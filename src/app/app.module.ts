@@ -44,6 +44,7 @@ import { Authservice } from './share/services/auth.service';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {CdkTableModule} from '@angular/cdk/table';
 import {MatCardModule} from '@angular/material/card';
+import { ScheduleModule } from '@syncfusion/ej2-angular-schedule';
 
 
 //firebase
@@ -86,6 +87,8 @@ import { RequestComponent } from './request/request.component';
     InputSurveyComponent,
     SpinnerComponent,
     RequestComponent,
+   
+
   ],
   imports: [
     CommonModule,
@@ -120,6 +123,7 @@ import { RequestComponent } from './request/request.component';
     MatAutocompleteModule,
     CdkTableModule,
     MatCardModule,
+    ScheduleModule,
   ],
 
   providers: [

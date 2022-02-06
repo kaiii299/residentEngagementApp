@@ -12,6 +12,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { excelPreviewDialog } from '../share/excel-preview-dialog';
 import { uploadFileDialog } from '../share/upload-file';
 import { HttpClient } from '@angular/common/http';
+import { userService } from '../share/services/user.service';
 
 
 @Component({
@@ -30,26 +31,28 @@ import { HttpClient } from '@angular/common/http';
 export class AllUsersComponent implements AfterViewInit, OnInit {
   columnsToDisplay = Array();
   expandedElement:  null;
-  committees = Constants.committees
-  roles = Constants.roles
-  status = Constants.status
-  blockNumber = Constants.blkNum
-  variables = Constants.variables
+  committees = Constants.committees;
+  roles = Constants.roles;
+  status = Constants.status;
+  blockNumber = Constants.blkNum;
+  variables = Constants.variables;
+  requestStatus = Constants.requestStatus;
   panelOpenState = false;
   search: any;
   variableValue: any = '';
   committeesValue: string ='';
   roleValue: string ='' ;
   statusValue: string ='';
+  requestStatusValue:string = '';
   blockValue:string;
   searchValue: any;
-  filter_form: FormGroup
+  filter_form: FormGroup;
   uid = localStorage.getItem("uid");
   userdata = Array();
   filterData = Array();
   totalCount: any;
   filterValue: any;
-  defaultValue:any =  ['userName','committee', 'blockNumber','role'];
+  defaultValue = ['userName','committee', 'blockNumber','role'];
   dataSource:any = new MatTableDataSource();
   encryptedUserData = localStorage.getItem("userData");
 
@@ -57,7 +60,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private authService:Authservice,private formBuilder: FormBuilder, private router: Router,private dialog: MatDialog, private http: HttpClient) {
+  constructor(private userService: userService,private authService:Authservice,private formBuilder: FormBuilder, private router: Router,private dialog: MatDialog, private http: HttpClient) {
 
     this.uid = authService.decryptData(this.uid)
 
@@ -75,8 +78,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   async ngOnInit(){
     this.authService.getAllUsers();
     this.authService.eventcbUserData$.subscribe((data)=>{
-      //console.log(data);
-      localStorage.setItem("userData", data)
+      // console.log(data);
       this.dataSource.data = data;
       this.userdata = data;
       this.totalCount = this.userdata.length
@@ -88,35 +90,42 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     this.dataSource.sort = this.sort;
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
   userInfo(uid: any){
     var encryptedUid = this.authService.encryptData(uid)
     const navigationExtras: NavigationExtras = {queryParams:{id: encryptedUid}}
-    this.router.navigate(['myprofile'],navigationExtras)
+    this.router.navigate(['userprofile'],navigationExtras)
   }
 
   getData(data: any){
     console.log(data);
-
   }
 
   filter(){
     if(this.searchValue){
-      this.authService.getUserbyFilter("", this.searchValue);
+      this.userService.getUserbyFilter("", this.searchValue);
     }
     if(this.committeesValue){
-      this.authService.getUserbyFilter("committee", this.committeesValue);
+      this.userService.getUserbyFilter("committee", this.committeesValue);
     }
     if(this.roleValue){
-      this.authService.getUserbyFilter("role", this.roleValue);
+      this.userService.getUserbyFilter("role", this.roleValue);
     }
     if(this.statusValue){
-      this.authService.getUserbyFilter("status", this.statusValue);
+      this.userService.getUserbyFilter("status", this.statusValue);
+    }
+    if(this.requestStatusValue){
+      this.userService.getUserbyFilter('requestStatus', this.requestStatusValue)
     }
     if(this.variableValue !='' && this.variableValue !=undefined){
       localStorage.setItem("filterValue",JSON.stringify(this.variableValue))
       this.columnsToDisplay = this.variableValue
     }
-    this.authService.eventcbFilterData$.subscribe((filterdata)=>{
+    this.userService.eventcbFilterData$.subscribe((filterdata)=>{
       this.dataSource.data = filterdata;
       if(Object.keys(filterdata).length > 0){
         console.log("filterdata");
@@ -131,6 +140,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     this.committeesValue ="";
     this.roleValue = '';
     this.statusValue ='';
+    this.requestStatusValue = '';
     this.search = null;
     this.variableValue = this.defaultValue;
     this.columnsToDisplay = this.defaultValue;

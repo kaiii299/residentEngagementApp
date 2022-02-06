@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Authservice } from '../share/services/auth.service';
 import { windowService } from '../share/services/window.service';
 import * as firebase from 'firebase';
+import { userService } from '../share/services/user.service';
 @Component({
   selector: 'app-forget-password',
   templateUrl: './forget-password.component.html',
@@ -20,13 +21,13 @@ export class ForgetPasswordComponent implements OnInit {
   phoneNumber: string;
   verificationCode: string;
 
-  constructor(private authService: Authservice, private win: windowService) { }
+  constructor(private userService : userService,private authService: Authservice, private win: windowService) { }
 
   ngOnInit(): void {
     //firebase.default.auth().settings.appVerificationDisabledForTesting = true
     var encryptedUid = localStorage.getItem('uid');
     var uid = this.authService.decryptData(encryptedUid);
-    this.authService.getUserById(uid)
+    this.userService.getUserById(uid)
     this.authService.eventcbUserData$.subscribe((data)=>{
       this.user = data.userData
       if (this.user.phoneNumber) {
@@ -66,7 +67,7 @@ export class ForgetPasswordComponent implements OnInit {
     this.windowRef.confirmationResult
       .confirm(this.verificationCode)
       .then((): any => {
-        this.authService
+        this.userService
           .forgetPassword(this.email)
           .then((res) => {
             this.message = 'Email sent successfully.Please check email';

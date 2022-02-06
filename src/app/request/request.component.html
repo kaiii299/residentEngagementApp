@@ -1,7 +1,6 @@
 <body>
   <div class="container">
-
-    <img src="/assets/images/people/request.svg" alt="" class="img-web">
+    <img src="/assets/images/people/request.svg" alt="" class="img-web" />
 
     <div class="welcome-container">
       <h1 class="welcome">Request For Account</h1>
@@ -12,110 +11,245 @@
       <div class="form">
         <mat-vertical-stepper [linear]="true" #stepper>
           <!-- first block -->
-          <mat-step [stepControl]="firstFormGroup" label="Username and Password" errorMessage="There are empty fields">
+          <mat-step
+            [stepControl]="firstFormGroup"
+            label="Username and Password"
+            errorMessage="There are empty fields"
+          >
             <form [formGroup]="firstFormGroup">
-
-              <mat-label>Email</mat-label>
-              <input matInput placeholder="Email" [(ngModel)]="email" type="text" formControlName="emailCtrl" required>
-
-              <mat-label>User Name<p *ngIf="userName.length == 10" class="limit"> (limit reached)</p>
+              <mat-label
+                >Email
+                <p *ngIf="isExistEmail == true" class="limit">
+                  (Email is taken)
+                </p>
               </mat-label>
-              <input matInput placeholder="Username" [(ngModel)]="userName" maxlength="10" type="text"
-                formControlName="usernameCtrl" required>
+              <input
+                matInput
+                placeholder="Email"
+                [(ngModel)]="email"
+                (change)="checkUserExist()"
+                type="text"
+                formControlName="emailCtrl"
+                required
+              />
+
+              <mat-label
+                >Username
+                <p *ngIf="isExistUserName == true" class="limit">
+                  (Username is taken)
+                </p>
+              </mat-label>
+              <input
+                matInput
+                placeholder="Username"
+                [(ngModel)]="userName"
+                (change)="checkUserExist()"
+                maxlength="10"
+                type="text"
+                formControlName="usernameCtrl"
+                required
+              />
 
               <mat-label>First Name</mat-label>
-              <input matInput placeholder="First name" [(ngModel)]="firstName" type="text"
-                formControlName="firstNameCtrl" required>
+              <input
+                matInput
+                placeholder="First name"
+                [(ngModel)]="firstName"
+                type="text"
+                formControlName="firstNameCtrl"
+                required
+              />
 
               <mat-label>Gender</mat-label>
-              <mat-select class="select" placeholder="Gender" [(ngModel)]="gender"
-                [ngModelOptions]="{standalone: true}">
+              <mat-select
+                class="select"
+                placeholder="Gender"
+                [(ngModel)]="gender"
+                [ngModelOptions]="{ standalone: true }"
+              >
                 <mat-option value="M">M</mat-option>
                 <mat-option value="F">F</mat-option>
               </mat-select>
 
               <mat-label>Phone Number</mat-label>
-              <input matInput placeholder="Phone Number" [(ngModel)]="phoneNumber" type="tel" maxlength="8"
+              <input
+                matInput
+                placeholder="Phone Number"
+                [(ngModel)]="phoneNumber"
+                type="tel"
+                maxlength="8"
                 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');"
-                formControlName="phoneNumberCtrl" required>
+                formControlName="phoneNumberCtrl"
+                required
+              />
 
-              <mat-label>Password<mat-icon *ngIf="this.strengthColor =='red'" aria-hidden="false" class="warning-icon">
-                  warning</mat-icon>
+              <mat-label
+                >Password<mat-icon
+                  *ngIf="this.strengthColor == 'red'"
+                  aria-hidden="false"
+                  class="warning-icon"
+                >
+                  warning</mat-icon
+                >
               </mat-label>
-              <input matInput placeholder="Password" [(ngModel)]="password" (keyup)="checkPasswordStrength($event)"
-                [type]="hide ? 'password' : 'text'" formControlName="passwordCtrl" required>
+              <input
+                matInput
+                placeholder="Password"
+                [(ngModel)]="password"
+                (keyup)="checkPasswordStrength($event)"
+                [type]="hide ? 'password' : 'text'"
+                formControlName="passwordCtrl"
+                required
+              />
 
-              <mat-progress-bar mode="determinate" Class="progress-bar" [value]="strength" [color]="strengthColor"
-                *ngIf="this.password.length > 0"></mat-progress-bar>
+              <mat-progress-bar
+                mode="determinate"
+                Class="progress-bar"
+                [value]="strength"
+                [color]="strengthColor"
+                *ngIf="this.password.length > 0"
+              ></mat-progress-bar>
 
-              <p class="password-strenght" [style.color]="strengthColor" *ngIf="this.password.length > 0"
+              <p
+                class="password-strenght"
+                [style.color]="strengthColor"
+                *ngIf="this.password.length > 0"
                 matTooltip="Minium 8 character. Include uppercase, numbers and special characters"
-                matTooltipPosition="below" matTooltipClass="tooltip-class" #tooltip="matTooltip">Strength:
-                {{strengthMessage}}</p>
+                matTooltipPosition="below"
+                matTooltipClass="tooltip-class"
+                #tooltip="matTooltip"
+              >
+                Strength: {{ strengthMessage }}
+              </p>
 
               <mat-label>Repeat Password</mat-label>
-              <input matInput placeholder="Repeat Password" [(ngModel)]="repeatPassword"
-                [type]="hide ? 'password' : 'text'" type="password" formControlName="repeatPasswordCtrl" required>
+              <input
+                matInput
+                placeholder="Repeat Password"
+                [(ngModel)]="repeatPassword"
+                [type]="hide ? 'password' : 'text'"
+                type="password"
+                formControlName="repeatPasswordCtrl"
+                required
+              />
 
-              <button class="show" disableRipple="true" mat-icon-button matSuffix type="button" (click)="hide = !hide"
-                [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                {{hide ? 'Show Password' : 'Hide Password'}}
+              <button
+                class="show"
+                disableRipple="true"
+                mat-icon-button
+                matSuffix
+                type="button"
+                (click)="hide = !hide"
+                [attr.aria-label]="'Hide password'"
+                [attr.aria-pressed]="hide"
+              >
+                {{ hide ? "Show Password" : "Hide Password" }}
               </button>
 
-              <p class="message" [style.color]="messageColor">{{message}}</p>
-              <button class="next-btn" mat-button type="button" (click)=" getErrorMessage()"
-                [disabled]="!this.firstFormGroup.valid">Next</button>
+              <p class="message" [style.color]="messageColor">{{ message }}</p>
+              <button
+                class="next-btn"
+                mat-button
+                type="button"
+                (click)="getErrorMessage()"
+                [disabled]="!this.firstFormGroup.valid"
+              >
+                Next
+              </button>
             </form>
 
             <!-- second block -->
           </mat-step>
 
           <mat-label>Role</mat-label>
-          <mat-step label="Role" errorMessage="User type is required" [stepControl]="secondFormGroup">
+          <mat-step
+            label="Role"
+            errorMessage="User type is required"
+            [stepControl]="secondFormGroup"
+          >
             <form [formGroup]="secondFormGroup">
-              <mat-select class="select" placeholder="Role" [(ngModel)]="roleValue" formControlName="roleCtrl">
-                <mat-option *ngFor="let role of roles" [value]="role">{{role}}</mat-option>
+              <mat-select
+                class="select"
+                placeholder="Role"
+                [(ngModel)]="roleValue"
+                formControlName="roleCtrl"
+              >
+                <mat-option *ngFor="let role of roles" [value]="role">{{
+                  role
+                }}</mat-option>
               </mat-select>
 
               <div>
-                <button mat-button matStepperPrevious type="button">Previous</button>
-                <button mat-button matStepperNext type="button" class="next" (click)=" getErrorMessage()">Next</button>
+                <button mat-button matStepperPrevious type="button">
+                  Previous
+                </button>
+                <button
+                  mat-button
+                  matStepperNext
+                  type="button"
+                  class="next"
+                  (click)="getErrorMessage()"
+                >
+                  Next
+                </button>
               </div>
             </form>
           </mat-step>
 
           <!-- Third block -->
-          <mat-step label="Committee and block number" errorMessage="Committe and block is required">
+          <mat-step
+            label="Committee and block number"
+            errorMessage="Committe and block is required"
+          >
             <form [formGroup]="ThirdFormGroup">
               <mat-label>Committee</mat-label>
-              <mat-select class="select" placeholder="committee" [(ngModel)]="committeesValue"
-                (ngModelChange)="onChange($event)" [ngModelOptions]="{standalone: true}">
-                <mat-option *ngFor="let committee of committees" [value]="committee">{{committee}}</mat-option>
+              <mat-select
+                class="select"
+                placeholder="committee"
+                [(ngModel)]="committeesValue"
+                (ngModelChange)="onChange($event)"
+                [ngModelOptions]="{ standalone: true }"
+              >
+                <mat-option
+                  *ngFor="let committee of committees"
+                  [value]="committee"
+                  >{{ committee }}</mat-option
+                >
               </mat-select>
               <mat-label>Block Number</mat-label>
+              <mat-select
+                class="select"
+                placeholder="Block Number"
+                [(ngModel)]="blockNumberValue"
+                [ngModelOptions]="{ standalone: true }"
+              >
+              <mat-option
+                *ngFor="let blockNumber of availableBlocks"
+                [value]="blockNumber"
+                >{{ blockNumber }}</mat-option>
+              </mat-select>
 
-              <input type="text" placeholder="Block Number" aria-label="Number" [(ngModel)]="blockNumberValue"
-                class="search" [formControl]="myControl" [matAutocomplete]="auto">
-
-              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                <mat-option *ngFor="let blockNumber of availableBlocks" [value]="blockNumber">{{blockNumber}}
-                </mat-option>
-              </mat-autocomplete>
             </form>
-            <p class="message" [style.color]="messageColor">{{message}}</p>
+            <p class="message" [style.color]="messageColor">{{ message }}</p>
             <div>
-              <button mat-button matStepperPrevious type="button">Previous</button>
-              <button mat-button type="button" class="next" (click)="createNewRequestuser()"
-                [disabled]="!this.myControl.valid">Done</button>
+              <button mat-button matStepperPrevious type="button">
+                Previous
+              </button>
+              <button
+                mat-button
+                type="button"
+                class="next"
+                (click)="createNewRequestuser()"
+                [disabled]="!blockNumberValue"
+              >
+                Done
+              </button>
             </div>
           </mat-step>
-
         </mat-vertical-stepper>
 
         <button mat-button class="cancel-button" (click)="back()">back</button>
       </div>
-
     </div>
   </div>
-
 </body>

@@ -1,68 +1,182 @@
 <body>
   <div class="container">
-
-    <img src="/assets/images/people/View Profile.png" alt="" class="img-web">
+    <img src="/assets/images/people/View Profile.png" alt="" class="img-web" />
 
     <div class="welcome-container">
-      <h1 class="welcome">Hello <p class="user-name">{{oldUserName}}</p></h1>
+      <h1 class="welcome" *ngIf="isOwn">
+        Hello
+        <p class="user-name">{{ oldUserName }}</p>
+      </h1>
+      <h1 class="welcome" *ngIf=" !isOwn">
+        Editing
+        <p class="user-name">{{ oldUserName }}</p>
+      </h1>
       <h6 class="login-text">Click to edit info</h6>
     </div>
     <div class="login">
       <div class="form">
         <form class="edit-form" [formGroup]="updateUserForm">
-
-          <mat-label>Username<p *ngIf="newUserName.length == 10" class="limit"> (limit reach)</p></mat-label>
-          <input type="text" title="username" placeholder="Username" maxlength="10" formControlName="usernameCtrl"
-            [(ngModel)]="newUserName" required>
+          <mat-label
+            >Username
+            <p *ngIf="isExistUserName == true" class="limit"> (Username is taken)</p>
+            </mat-label>
+          <input
+            type="text"
+            title="username"
+            placeholder="Username"
+            maxlength="10"
+            (change)="checkUserExist()"
+            formControlName="usernameCtrl"
+            [(ngModel)]="newUserName"
+            required
+          />
 
           <mat-label>First Name</mat-label>
-          <input type="text" title="first name" placeholder="First name" value={{newFirstName}}
-            [(ngModel)]="newFirstName" formControlName="firstNameCtrl" required>
+          <input
+            type="text"
+            title="first name"
+            placeholder="First name"
+            value="{{ newFirstName }}"
+            [(ngModel)]="newFirstName"
+            formControlName="firstNameCtrl"
+            required
+          />
 
           <mat-label>Gender</mat-label>
-          <mat-select class="selection-input" placeholder="Gender" [(ngModel)]="newGender"  required value={{newGender}}
-          formControlName="genderCtrl">
+          <mat-select
+            class="selection-input"
+            placeholder="Gender"
+            [(ngModel)]="newGender"
+            required
+            value="{{ newGender }}"
+            formControlName="genderCtrl"
+          >
             <mat-option value="M">M</mat-option>
             <mat-option value="F">F</mat-option>
           </mat-select>
 
-          <mat-label>Email</mat-label>
-          <input type="email" title="Email" placeholder="Email" value={{newEmail}} formControlName="emailCtrl"
-            [(ngModel)]="newEmail" required>
+          <mat-label>Email
+            <p *ngIf="isExistEmail == true" class="limit"> (Email is taken)</p>
+          </mat-label>
+          <input
+            type="email"
+            title="Email"
+            placeholder="Email"
+            value="{{ newEmail }}"
+            formControlName="emailCtrl"
+            (change)="checkUserExist()"
+            [(ngModel)]="newEmail"
+            required
+          />
 
           <mat-label>Phone Number</mat-label>
-          <input type="text" title="phoneNumber" placeholder="Phone Number" value={{newPhoneNumber}} formControlName="phoneNumberCtrl"
-            [(ngModel)]="newPhoneNumber" maxlength="8" required>
-
+          <input
+            type="text"
+            title="phoneNumber"
+            placeholder="Phone Number"
+            value="{{ newPhoneNumber }}"
+            formControlName="phoneNumberCtrl"
+            [(ngModel)]="newPhoneNumber"
+            maxlength="8"
+            required
+          />
 
           <mat-label>Role</mat-label>
-          <mat-select class="selection-input" placeholder="Role"
-          formControlName="roleCtrl" [disabled]="_role != 'Admin' "
-            [(ngModel)]="newRoleValue" [value]="newRoleValue">
-            <mat-option *ngFor="let userTypesArray of userTypesArrays" [value]="userTypesArray">{{userTypesArray}}
+          <mat-select
+            class="selection-input"
+            placeholder="Role"
+            formControlName="roleCtrl"
+            [disabled]="_role != 'Admin'"
+            [(ngModel)]="newRoleValue"
+            [value]="newRoleValue"
+          >
+            <mat-option
+              *ngFor="let userTypesArray of userTypesArrays"
+              [value]="userTypesArray"
+              >{{ userTypesArray }}
             </mat-option>
           </mat-select>
 
           <mat-label>Committee</mat-label>
-          <mat-select class="selection-input" placeholder="Committee" (ngModelChange)="onChange($event)"
-          formControlName="committeeCtrl" [disabled]="_role !=='Admin' "
-            [(ngModel)]="newCommitteeValue">
-            <mat-option  *ngFor="let committeeArray of committeeArrays" [value]="committeeArray">{{committeeArray}}
+          <mat-select
+            class="selection-input"
+            placeholder="Committee"
+            (ngModelChange)="onChange($event)"
+            formControlName="committeeCtrl"
+            [disabled]="_role !== 'Admin'"
+            [(ngModel)]="newCommitteeValue"
+          >
+            <mat-option
+              *ngFor="let committeeArray of committeeArrays"
+              [value]="committeeArray"
+              >{{ committeeArray }}
             </mat-option>
           </mat-select>
 
           <mat-label>Block Number</mat-label>
-          <mat-select placeholder="Block Number" [disabled]="_role !=='Admin' " aria-label="Number" [(ngModel)]="newBlockNumber" formControlName="blockNumberCtrl" class="selection-input">
-            <mat-option *ngFor="let blockNumber of availableBlocks "[value]="blockNumber">{{blockNumber}}</mat-option>
+          <mat-select
+            placeholder="Block Number"
+            [disabled]="_role !== 'Admin'"
+            aria-label="Number"
+            [(ngModel)]="newBlockNumber"
+            formControlName="blockNumberCtrl"
+            class="selection-input"
+          >
+            <mat-option
+              *ngFor="let blockNumber of availableBlocks"
+              [value]="blockNumber"
+              >{{ blockNumber }}</mat-option
+            >
           </mat-select>
 
           <div class="button">
-            <br>
-            <button class="edit-btn" type="button" [disabled]="updateUserForm.pristine"
-            (click)="openEditDialog()">Save changes</button>
-            <button  class="forget-btn" type="button" routerLink="/forgetpassword" >Change Password?</button>
-            <button mat-button class="delete-btn" type="button" (click)="delete()"  *ngIf="_role =='Admin' || _role =='CC staff' || _role =='RN Manager' " >Delete Account</button>
-            <button mat-button type="button" class="cancel-button" (click)="goBack()" routerLink="/">Back</button>
+            <br />
+            <button
+              class="edit-btn"
+              type="button"
+              *ngIf="requestStatus"
+              [disabled]="updateUserForm.pristine || isExistEmail || isExistUserName"
+              (click)="openEditDialog()"
+            >
+              Save changes
+            </button>
+
+            <button
+              class="forget-btn"
+              type="button"
+              routerLink="/forgetpassword"
+              *ngIf="requestStatus =='Accepted' "
+            >
+              Change Password
+            </button>
+            <button class="forget-btn" type="button" *ngIf="requestStatus != 'Accepted'" (click)="openAcceptDialog()">
+              Accept
+            </button>
+            <button class="delete-btn" type="button" *ngIf="requestStatus != 'Accepted'" (click)="openRejectDialog()">
+              Reject
+            </button>
+
+            <button
+              mat-button
+              class="delete-btn"
+              type="button"
+              (click)="delete()"
+              *ngIf="
+                this.allowDeleteUser.indexOf(_role) > -1 &&
+                requestStatus == 'Accepted'
+              "
+            >
+              Delete Account
+            </button>
+            <button
+              mat-button
+              type="button"
+              class="cancel-button"
+              (click)="goBack()"
+              routerLink="/"
+            >
+              Back
+            </button>
           </div>
         </form>
       </div>

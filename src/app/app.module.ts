@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
-import { logoutConfirmationDialog, NavBarComponent } from './nav-bar/nav-bar.component';
+import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
@@ -59,6 +59,8 @@ import { excelPreviewDialog } from './share/excel-preview-dialog';
 import { uploadFileDialog } from './share/upload-file';
 import { SpinnerComponent } from './share/spinner/spinner.component';
 import { RequestComponent } from './request/request.component';
+import { RequestNewUserService } from './share/services/request-new-user.service';
+import { userService } from './share/services/user.service';
 
 
 
@@ -76,7 +78,6 @@ import { RequestComponent } from './request/request.component';
     UserProfileComponent,
     saveChangesDialog,
     DeleteUserConfirmationDialog,
-    logoutConfirmationDialog,
     UpdateResidentComponent,
     ResidentInfoComponent,
     ResidentDetailComponent,
@@ -134,6 +135,8 @@ import { RequestComponent } from './request/request.component';
   },
     HasRoleGuard,
     Authservice,
+    userService,
+    RequestNewUserService,
     AuthRouteGuard,
   windowService],
   bootstrap: [AppComponent]

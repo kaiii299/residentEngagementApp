@@ -30,7 +30,8 @@ hide = true
     }
 
     else{
-      this.authService.signIn(this.loginData.email, this.loginData.password).then(userInfo=>{
+      this.authService.signIn(this.loginData.email, this.loginData.password).then((res)=>{
+        
      }).catch(error=>{
        this.message = "Wrong username or password"
      })

@@ -1,7 +1,8 @@
 .limit{
 color: red;
 margin-left: 5px;
-font-size: 15px;
+margin-top: 1px;
+font-size: 13px;
 }
 
 .warning-icon{
@@ -57,10 +58,12 @@ mat-vertical-stepper{
 
 body{
   background-position: center;
+  //background-color: #329bf1;
   background-color: #EB9C5C;
   background-repeat: no-repeat;
-  // height: 110vh;
+  height: 100vh;
 }
+
 
 .img-web{
   position: absolute;

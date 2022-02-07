@@ -10,6 +10,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 admin.initializeApp(functions.config().firebase);
+admin.initializeApp(functions.config().firebase, "router");
 // eslint-disable-next-line camelcase
 const SENDGRID_API_KEy = functions.config().sendgrid.key;
 sgMail.setApiKey(SENDGRID_API_KEy);
@@ -25,7 +26,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
-// app.use(_authMiddleware);
+app.use(_authMiddleware);
 app.use(morgan('tiny'));
 app.options('*', cors());
 app.options('/deleteUser/:id', cors());
@@ -36,7 +37,6 @@ app.all('/*', function(req, res, next) {
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
-
 
 app.get("/getAllUsers", async (req, res) => {
   const users = [];
@@ -49,6 +49,7 @@ app.get("/getAllUsers", async (req, res) => {
   res.status(200).send(users);
 });
 
+
 app.get("/getUsers/:id", async (req, res) => {
   const snapshot = await userDb.doc(req.params.id).get();
   const uid = snapshot.id;
@@ -56,6 +57,32 @@ app.get("/getUsers/:id", async (req, res) => {
 
   res.status(200).send({id: uid, userData});
 });
+
+app.get("/checkUserName/:userName", async (req, res)=>{
+  let isExist = false;
+  const userName = req.params.userName;
+  const snapshot = await userDb.where('userName', '==', userName).get();
+  if (!snapshot.empty) {
+    isExist = true;
+    res.status(200).send(isExist);
+  }
+  res.status(200).send(isExist);
+});
+
+// app.get("/search/:committee/:role/:status", async (req, res)=>{
+//   const _users = [];
+//   const committee = req.params.category;
+//   const role = req.params.keyword;
+//   const status = req.params.status;
+//   const snapshot = await userDb.where('committee', '==', committee).where('role', '==', role).where('status', '==', status).get();
+//   // if not == to empty
+//   snapshot.forEach((doc) => {
+//     const id = doc.id;
+//     const data = doc.data();
+//     _users.push({id, data});
+//   });
+//   res.status(200).send( _users);
+// });
 
 app.get("/search/:category/:keyword", async (req, res)=>{
   const _users = [];
@@ -79,8 +106,8 @@ app.post("/createUser", async (req, res) => {
   res.status(201).send("User created successfully", userData);
 });
 
-app.put("/updateUser/:uid", async (req, res) => {
-  const userData = req.body.userData;
+app.put("/update/:uid", async (req, res) => {
+  const userData = req.body;
   const uid = req.params.uid;
   await userDb.doc(uid).update(userData);
   res.status(200).send("User successfully updated");
@@ -257,3 +284,23 @@ exports.onUserDeletedSendEmail = functions.firestore.document("Users/{userId}").
     console.log("There is an error sending Email" + err);
   });
 });
+
+exports.onRequestSent = functions.firestore.document("Requests/{userId}").onCreate((snap, context) => {
+  const user = snap.data();
+  const msg = {
+    to: user.email,
+    from: 'residentappv2@gmail.com',
+    templateId: 'd-670dcc0a3fc4493a8a727226970ca884', // request template
+    dynamic_template_data: {
+      Subject: 'User Deleted Successfully!',
+      name: user.userName,
+    },
+  };
+  sgMail.send(msg).then(() => {
+    console.log(`Email sent to ${user.email}`);
+  }).catch((err) => {
+    console.log("There is an error sending Email" + err);
+  });
+});
+
+

@@ -1,11 +1,22 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { StepperSelectionEvent, STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
+import { Component, ElementRef, EventEmitter, OnInit, ViewChild } from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
+import {
+  StepperSelectionEvent,
+  STEPPER_GLOBAL_OPTIONS,
+} from '@angular/cdk/stepper';
 import { MatStepper } from '@angular/material/stepper';
 import { Authservice } from '../share/services/auth.service';
 import { Constants } from '../constants';
 import { Observable } from 'rxjs/internal/Observable';
-import { map, startWith } from 'rxjs/operators';
+import { RequestNewUserService } from '../share/services/request-new-user.service';
+import { userService } from '../share/services/user.service';
 
 @Component({
   selector: 'app-request',
@@ -18,21 +29,26 @@ import { map, startWith } from 'rxjs/operators';
     },
   ],
 })
-export class RequestComponent  implements OnInit {
+export class RequestComponent implements OnInit {
   @ViewChild('stepper') private myStepper: MatStepper;
 
-  strength = "0"
-  strengthColor = ""
-  strengthMessage = ""
+  strength = '0';
+  strengthColor = '';
+  strengthMessage = '';
   hide = true;
   disabled = true;
 
+  userDataArray = Array();
+  userNameArray = Array();
+  userEmailArray = Array();
+  isExistUserName: any;
+  isExistEmail: any;
   message: string;
   email: string;
-  userName = "";
+  userName = '';
   firstName: string;
   phoneNumber: string;
-  password ="";
+  password = '';
   repeatPassword: string;
   gender: string;
   blockNumberValue: any;
@@ -44,8 +60,13 @@ export class RequestComponent  implements OnInit {
   availableBlocks: any = [];
   registeredDate: string;
   registeredTime: string;
-  status = "Active";
   messageColor: string;
+
+  eventcbIsExistUserName = new EventEmitter<any>();
+  eventcbIsExistUserName$ = this.eventcbIsExistUserName.asObservable();
+
+  eventcbIsExistEmail = new EventEmitter<any>();
+  eventcbIsExistEmail$ = this.eventcbIsExistEmail.asObservable();
 
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
@@ -55,51 +76,85 @@ export class RequestComponent  implements OnInit {
   committees = Constants.committees;
   blockNumbers = Constants.blkNum;
 
-  myControl = new FormControl("",Validators.required);
+  myControl = new FormControl('', Validators.required);
 
   filterdBlockNumbers: Observable<string[]>;
 
-  constructor(private _formBuilder: FormBuilder, private authService: Authservice) { }
+  constructor(
+    private userService: userService,
+    private requestNewUserService: RequestNewUserService,
+    private _formBuilder: FormBuilder,
+    private authService: Authservice
+  ) {}
 
   ngOnInit(): void {
     this.firstFormGroup = this._formBuilder.group({
-      emailCtrl: ['', Validators.required,],
-      usernameCtrl: ['', Validators.required,],
-      firstNameCtrl: ['', Validators.required,],
-      phoneNumberCtrl: ['', Validators.required,],
-      passwordCtrl: ['', Validators.required,],
-      repeatPasswordCtrl: ['', Validators.required,],
+      emailCtrl: ['', Validators.required],
+      usernameCtrl: ['', Validators.required],
+      firstNameCtrl: ['', Validators.required],
+      phoneNumberCtrl: ['', Validators.required],
+      passwordCtrl: ['', Validators.required],
+      repeatPasswordCtrl: ['', Validators.required],
     });
     this.secondFormGroup = this._formBuilder.group({
       roleCtrl: ['', Validators.required],
     });
+  }
 
+  checkUserExist() {
+    this.authService.getAllUsers();
+    this.authService.eventcbUserData$.subscribe((data) => {
+      this.userDataArray = data;
+      this.userDataArray.forEach((_userData) => {
+        this.userNameArray.push(_userData.data.userName);
+        this.userEmailArray.push(_userData.data.email);
+      });
+      if (this.userNameArray.includes(this.userName)) {  //check if username exists
+        this.isExistUserName = true;
+        this.eventcbIsExistUserName.emit(this.isExistUserName);
+      } else {
+        this.isExistUserName = false;
+        this.eventcbIsExistUserName.emit(this.isExistUserName);
+      }
+      if(this.userEmailArray.includes(this.email)){  //check if email exists
+        this.isExistEmail = true;
+        this.eventcbIsExistEmail.emit(this.isExistEmail);
+      } else{
+        this.isExistEmail = false;
+        this.eventcbIsExistEmail.emit(this.isExistEmail);
+      }
+      const emptyArr = Array();
+      this.userNameArray = emptyArr;
+    });
   }
 
   getErrorMessage() {
-    if (this.email == "") {
-      this.message = "Email cannot be empty"
+    if (this.email == '') {
+      this.message = 'Email cannot be empty';
     }
-    if (this.userName == "") {
-      this.message = "Username cannot be empty"
+    if (this.userName == '') {
+      this.message = 'Username cannot be empty';
     }
-    if (this.firstName == "") {
-      this.message = "First name cannot be empty"
+    if (this.firstName == '') {
+      this.message = 'First name cannot be empty';
     }
-    if (this.password == "") {
-      this.message = "Password cannot be empty"
+    if (this.password == '') {
+      this.message = 'Password cannot be empty';
     }
-    if (this.password != this.repeatPassword) {
-      this.message = "Password does not match"
+    if (this.phoneNumber.length < 8) {
+      this.message = 'Invalid Phone Number';
     }
-    if (this.phoneNumber.length < 8){
-      this.message = "Invalid Phone Number"
+    else if (this.isExistUserName == true) {
+      this.message = "Username is in use";
     }
-    else if (this.strengthColor == "red") {
-      this.message = "Password too weak."
+    else if (this.password != this.repeatPassword) {
+      this.message = 'Password does not match';
+    }
+    else if (this.strengthColor == 'red') {
+      this.message = 'Password too weak.';
     }
     else {
-      this.message = ""
+      this.message = '';
       this.myStepper.next();
     }
   }
@@ -108,36 +163,38 @@ export class RequestComponent  implements OnInit {
     var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
     const passwordValue = (event.target as HTMLInputElement).lang;
     if (this.password.length == 0) {
-      this.message = "";
-      this.strengthMessage = "weak";
-
+      this.message = '';
+      this.strengthMessage = 'weak';
     }
     if (this.password.length < 8 && this.password.length > 0) {
-      this.strengthMessage = "weak";
-      this.strengthColor = "red";
-      this.strength = "10";
+      this.strengthMessage = 'weak';
+      this.strengthColor = 'red';
+      this.strength = '10';
     }
     if (this.password.length > 8) {
-      this.strengthMessage = "Medium";
-      this.strengthColor = "Organge";
-      this.strength = "50";
+      this.strengthMessage = 'Medium';
+      this.strengthColor = 'Organge';
+      this.strength = '50';
     }
     if (this.password.length > 10 && this.password.match(format)) {
-      this.strengthMessage = "Strong";
-      this.strengthColor = "green";
-      this.strength = "100";
+      this.strengthMessage = 'Strong';
+      this.strengthColor = 'green';
+      this.strength = '100';
     }
   }
 
   createNewRequestuser() {
-    if (this.firstFormGroup.invalid, this.secondFormGroup.invalid, this.myControl.invalid) {
-      this.message = "There are still missing form fields"
-    }
-    else {
+    if (
+      (this.firstFormGroup.invalid,
+      this.secondFormGroup.invalid,
+      !this.blockNumberValue)
+    ) {
+      this.message = 'There are still missing form fields';
+    } else {
       this.registeredDate = new Date().toLocaleDateString();
       this.registeredTime = new Date().toLocaleTimeString();
 
-      let newUser: any = {}
+      let newUser: any = {};
       newUser['email'] = this.email;
       newUser['userName'] = this.userName;
       newUser['firstName'] = this.firstName;
@@ -148,15 +205,17 @@ export class RequestComponent  implements OnInit {
       newUser['blockNumber'] = this.blockNumberValue;
       newUser['registrationDate'] = this.registeredDate;
       newUser['registrationTime'] = this.registeredTime;
-      newUser['status'] = this.status;
+      newUser['status'] = 'Active';
+      newUser['requestStatus'] = "Pending";
+      newUser['isRequested'] = true;
 
       console.log(newUser)
-      this.authService.register(this.email, this.password).then(res => {
-        this.authService.createNewRequestUser(newUser).then(res => {
-          this.message = "Request sent successfully."
+      this.userService.register(this.email, this.password).then(res => {
+        this.userService.createNewUser(newUser).then(res => {
+          this.message = "User request sent"
           this.messageColor = "Green"
         }).catch(error => {
-          this.message = "Failed to send request. Try again"
+          this.message = "Error sending request. Try again"
           this.messageColor = "red"
           console.log(error)
         })
@@ -175,8 +234,7 @@ export class RequestComponent  implements OnInit {
     console.log(this.zonesInfo.get(this.committeesValue));
   }
 
-  back(){
+  back() {
     this.authService.goback();
   }
-
 }

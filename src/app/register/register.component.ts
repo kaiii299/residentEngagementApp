@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { StepperSelectionEvent, STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MatStepper } from '@angular/material/stepper';
@@ -6,6 +6,9 @@ import { Authservice } from '../share/services/auth.service';
 import { Constants } from '../constants';
 import { Observable } from 'rxjs/internal/Observable';
 import { map, startWith } from 'rxjs/operators';
+import { userService } from '../share/services/user.service';
+import { Subject } from 'rxjs/internal/Subject';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -28,11 +31,15 @@ export class RegisterComponent implements OnInit {
   disabled = true;
 
   message: string;
+  isExist: any;
+  userData: any;
+  userDataArray = Array();
+  userNameArray = Array();
   email: string;
   userName = "";
   firstName: string;
   phoneNumber: string;
-  password ="";
+  password = "";
   repeatPassword: string;
   gender: string;
   blockNumberValue: any;
@@ -44,7 +51,6 @@ export class RegisterComponent implements OnInit {
   availableBlocks: any = [];
   registeredDate: string;
   registeredTime: string;
-  status = "Active";
   messageColor: string;
 
   firstFormGroup: FormGroup;
@@ -55,11 +61,14 @@ export class RegisterComponent implements OnInit {
   committees = Constants.committees;
   blockNumbers = Constants.blkNum;
 
-  myControl = new FormControl("",Validators.required);
+  myControl = new FormControl("", Validators.required);
 
   filterdBlockNumbers: Observable<string[]>;
 
-  constructor(private _formBuilder: FormBuilder, private authService: Authservice) { }
+  eventcbIsExist = new EventEmitter<any>();
+  eventcbIsExist$ = this.eventcbIsExist.asObservable();
+
+  constructor(private userService: userService, private _formBuilder: FormBuilder, private authService: Authservice) { }
 
   ngOnInit(): void {
     this.firstFormGroup = this._formBuilder.group({
@@ -73,33 +82,58 @@ export class RegisterComponent implements OnInit {
     this.secondFormGroup = this._formBuilder.group({
       roleCtrl: ['', Validators.required],
     });
-
   }
+
+
+  checkUserName() {
+      this.authService.getAllUsers();
+      this.authService.eventcbUserData$.subscribe((data) => {
+        this.userDataArray = data;
+        this.userDataArray.forEach((_userData) => {
+          this.userNameArray.push(_userData.data.userName);
+        });
+        if (this.userNameArray.includes(this.userName)) {
+          this.isExist = true;
+          this.eventcbIsExist.emit(this.isExist);
+        }
+        else {
+          this.isExist = false;
+          this.eventcbIsExist.emit(this.isExist);
+
+        }
+        // console.log(this.userName);
+        const emptyArr = Array()
+        this.userNameArray = emptyArr;
+      })
+    }
 
   getErrorMessage() {
     if (this.email == "") {
-      this.message = "Email cannot be empty"
+      this.message = "Email cannot be empty";
     }
     if (this.userName == "") {
-      this.message = "Username cannot be empty"
+      this.message = "Username cannot be empty";
     }
     if (this.firstName == "") {
-      this.message = "First name cannot be empty"
+      this.message = "First name cannot be empty";
     }
     if (this.password == "") {
-      this.message = "Password cannot be empty"
+      this.message = "Password cannot be empty";
     }
-    if (this.password != this.repeatPassword) {
-      this.message = "Password does not match"
+    if (this.phoneNumber.length < 8) {
+      this.message = "Invalid Phone Number";
     }
-    if (this.phoneNumber.length < 8){
-      this.message = "Invalid Phone Number"
+    else if (this.isExist == true) {
+      this.message = "Username is in use";
     }
     else if (this.strengthColor == "red") {
-      this.message = "Password too weak."
+      this.message = "Password too weak.";
+    }
+    else if (this.password !== this.repeatPassword) {
+      this.message = "Password does not match";
     }
     else {
-      this.message = ""
+      this.message = "";
       this.myStepper.next();
     }
   }
@@ -130,7 +164,7 @@ export class RegisterComponent implements OnInit {
   }
 
   createNewuser() {
-    if (this.firstFormGroup.invalid, this.secondFormGroup.invalid, this.myControl.invalid) {
+    if (this.firstFormGroup.invalid, this.secondFormGroup.invalid, !this.blockNumberValue) {
       this.message = "There are still missing form fields"
     }
     else {
@@ -148,11 +182,13 @@ export class RegisterComponent implements OnInit {
       newUser['blockNumber'] = this.blockNumberValue;
       newUser['registrationDate'] = this.registeredDate;
       newUser['registrationTime'] = this.registeredTime;
-      newUser['status'] = this.status;
+      newUser['status'] = "Active";
+      newUser['requestStatus'] = "Accepted";
+      newUser['isRequested'] = false;
 
       console.log(newUser)
-      this.authService.register(this.email, this.password).then(res => {
-        this.authService.createNewUser(newUser).then(res => {
+      this.userService.register(this.email, this.password).then(res => {
+        this.userService.createNewUser(newUser).then(res => {
           this.message = "User created successfully."
           this.messageColor = "Green"
         }).catch(error => {
@@ -175,7 +211,7 @@ export class RegisterComponent implements OnInit {
     console.log(this.zonesInfo.get(this.committeesValue));
   }
 
-  back(){
+  back() {
     this.authService.goback();
   }
 

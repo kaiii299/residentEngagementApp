@@ -13,7 +13,8 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
     const authservice = this.injector.get(Authservice);
-    const _jwt = localStorage.getItem('token')
+    const _jwt = localStorage.getItem('token');
+    const refreshToken = localStorage.getItem('refreshToken');
     this.jwt = authservice.decryptData(_jwt)
 
     const tokenizeReq = req.clone({
@@ -25,7 +26,7 @@ export class AuthInterceptor implements HttpInterceptor {
     this.spinnerService.requestStarted();
     return next.handle(tokenizeReq).pipe(
       finalize(()=>{
-      this.spinnerService.requestEnded();
+        this.spinnerService.requestEnded();
       })
     )
   }

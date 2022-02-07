@@ -16,9 +16,10 @@ import { Location } from '@angular/common';
 import { Constants } from 'src/app/constants';
 import { MatDialog } from '@angular/material/dialog';
 import { confirmationDialog } from '../confirmatonDialog';
-
+import { userService } from './user.service';
+import Swal from 'sweetalert2'
 @Injectable()
-export class Authservice implements OnInit {
+export class Authservice {
   userInfo: BehaviorSubject<any> = new BehaviorSubject(null);
   jwtHelper = new JwtHelperService();
   currentLogedInUserId: any;
@@ -28,94 +29,100 @@ export class Authservice implements OnInit {
   userLoggedIn: boolean;
   authState: any;
   secretKey = Constants.secretKey;
+  refreshToken: any;
 
   eventCallbackuserName = new Subject<string>(); //source
   eventCallbackuserName$ = this.eventCallbackuserName.asObservable();
 
-  eventcbFilterData = new Subject<Object>();
-  eventcbFilterData$ = this.eventcbFilterData.asObservable();
+  eventcbRole = new Subject<string>(); //source
+  eventcbRole$ = this.eventcbRole.asObservable();
 
-  eventcbJWT = new Subject<any>();
+  eventcbJWT = new BehaviorSubject<any>("");
   eventcbJWT$ = this.eventcbJWT.asObservable();
+
+  eventcbRefresh = new BehaviorSubject<any>("");
+  eventcbRefresh$ = this.eventcbRefresh.asObservable();
 
   eventcbUserData = new Subject<any>();
   eventcbUserData$ = this.eventcbUserData.asObservable();
 
-  encryptedToken = localStorage.getItem("token");
+  eventcbisExist = new Subject<any>();
+  eventcbisExist$ = this.eventcbisExist.asObservable();
+
+  encryptedToken = localStorage.getItem('token');
 
   baseUrl = Constants.baseURL;
 
   constructor(
+    private userService: userService,
     private http: HttpClient,
     private firebaseAuth: AngularFireAuth,
-    private db: AngularFirestore,
     private router: Router,
     private location: Location,
-    private dialog: MatDialog,
-  ) {
-  }
-
-  ngOnInit(){
-  }
+    private dialog: MatDialog
+  ) {}
 
   async signIn(email: string, password: string) {
-    return await this.firebaseAuth.signInWithEmailAndPassword(email, password).then(res => {
-      if(res){
+    return await this.firebaseAuth
+      .signInWithEmailAndPassword(email, password)
+      .then((res) => {
+        if (res) {
           res.user?.getIdToken().then((jwtToken) => {
-          // console.log(jwtToken);
-          const encryptJwt = this.encryptData(jwtToken);
-          localStorage.setItem("token", encryptJwt)
-          this.getUserById(res.user?.uid).subscribe((userdata)=>{
-            this.currentUserObject = userdata
-            this.eventCallbackuserName.next(this.currentUserObject.userData.userName);
-            var encryptedRole = this.encryptData(this.currentUserObject.userData.role);
-            localStorage.setItem("role", encryptedRole);
-            this.eventCallbackuserName.next(userdata.userData.userName)
-            var encryptedCommittee = this.encryptData(this.currentUserObject.userData.committee);
-            localStorage.setItem("committee", encryptedCommittee);
+            console.log(jwtToken);
+            this.refreshToken = res.user?.refreshToken;
+            // console.log(refreshToken);
+            localStorage.setItem('refreshToken', JSON.stringify(this.refreshToken))
+            this.eventcbRefresh.next(this.refreshToken);
+            this.eventcbJWT.next(jwtToken);
+            const encryptJwt = this.encryptData(jwtToken);
+            localStorage.setItem('token', encryptJwt);
+            this.userService.getUserById(res.user?.uid).subscribe((userdata) => {
+              this.currentUserObject = userdata;
+              console.log(this.currentUserObject);
+              this.eventCallbackuserName.next(
+                this.currentUserObject.userData.userName
+              );
+              var encryptedRole = this.encryptData(
+                this.currentUserObject.userData.role
+              );
+              localStorage.setItem('role', encryptedRole);
+              this.eventcbRole.next(userdata.userData.role);
+              this.eventCallbackuserName.next(userdata.userData.userName);
+            });
           });
-          this.getAllUsers();
-        })
-        const encryptedText = this.encryptData(res.user?.uid)
-        localStorage.setItem("uid", encryptedText);
-        const _uid = this.decryptData(encryptedText);
-        this.router.navigate(['list']);
-      } else{
-        console.log("error");
-        localStorage.clear();
-        this.router.navigate(['/'])
-        this.dialog.open(confirmationDialog,{
-          data:{
-            message: "Error signing in",
-            reload: false
-          }
-        })
-      }
-    });
+          const encryptedText = this.encryptData(res.user?.uid);
+          localStorage.setItem('uid', encryptedText);
+          const _uid = this.decryptData(encryptedText);
+          this.router.navigate(['list']);
+        } else {
+          console.log('error');
+          localStorage.clear();
+          Swal.fire('Please sign in', '','error');
+          this.router.navigate(['/']);
+        }
+      });
   }
 
+
   async getAllUsers() {
-    return await this.http.get(this.baseUrl + "/getAllUsers").toPromise().then((data) => {
+    return await this.http
+    .get(this.baseUrl + '/getAllUsers')
+    .toPromise()
+    .then((data) => {
       this.eventcbUserData.next(data);
-      const encryptUserData = this.encryptData(JSON.stringify(data));
-      localStorage.setItem("userData", encryptUserData);
-    }).catch(err => {
+      // const encryptUserData = this.encryptData(JSON.stringify(data));
+      // localStorage.setItem("userData", encryptUserData);
+    })
+    .catch((err) => {
       if (err instanceof HttpErrorResponse) {
         if (err) {
           console.log(err);
-          console.log("user not loged in");
-           localStorage.clear();
-           this.router.navigate(['/']);
+          console.log('user not loged in');
+          localStorage.clear();
+          this.router.navigate(['/']);
         }
       }
-    })
-  }
-
-  getUserbyFilter(category: any, keyword: any) {
-    this.http.get(this.baseUrl + "/search/" + category + "/" + keyword).toPromise().then((data) => {
-      console.log(data);
-      this.eventcbFilterData.next(data);
-    })
+    });
   }
 
   logout() {
@@ -124,35 +131,6 @@ export class Authservice implements OnInit {
     this.router.navigate(['/']);
   }
 
-  async updateUserData(uid: any ,data: any) {
-    return await this.http.put(this.baseUrl + "/updateUser/" + uid, data, {responseType: 'text'}).toPromise().then((data)=>{
-      console.log(data);
-    })
-  }
-
-  async register(email: string, password: string) {
-    await this.firebaseAuth
-      .createUserWithEmailAndPassword(email, password)
-      .then((userinfo) => {
-        this.newUserId = userinfo.user?.uid;
-      });
-  }
-
-  createNewUser(_userData: any) {
-    return this.db.collection("Users").doc(this.newUserId).set(_userData);
-  }
-
-  createNewRequestUser(_userData: any){
-    return this.db.collection("Requests").add(_userData);
-  }
-
-    getUserById(id: any){
-      return this.http.get(this.baseUrl + "/getUsers/" + id) as Observable<any>
-  }
-
-  async forgetPassword(email: string) {
-    await this.firebaseAuth.sendPasswordResetEmail(email).then((res) => { });
-  }
 
   encryptData(value: any) {
     return CryptoJS.AES.encrypt(value, this.secretKey.trim()).toString();
@@ -166,21 +144,6 @@ export class Authservice implements OnInit {
 
   goback() {
     this.location.back();
-  }
-
-  deleteUserbyId(uid: any) {
-    console.log(uid);
-    this.http.delete(this.baseUrl + "/deleteUser/" + uid).toPromise().then(() => {
-      console.log("User DELETED");
-    }).catch(err => {
-      console.log("There is an error", err)
-    });
-    if (uid != this.currentLogedInUserId) {
-      this.goback
-    }
-    else {
-      localStorage.clear()
-    }
   }
 
 }

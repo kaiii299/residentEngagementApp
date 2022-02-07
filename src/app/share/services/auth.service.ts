@@ -60,23 +60,23 @@ export class Authservice {
     private router: Router,
     private location: Location,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   async signIn(email: string, password: string) {
     return await this.firebaseAuth
       .signInWithEmailAndPassword(email, password)
       .then((res) => {
         if (res) {
-          res.user?.getIdToken().then((jwtToken) => {
+          res.user ?.getIdToken().then((jwtToken) => {
             console.log(jwtToken);
-            this.refreshToken = res.user?.refreshToken;
+            this.refreshToken = res.user ?.refreshToken;
             // console.log(refreshToken);
             localStorage.setItem('refreshToken', JSON.stringify(this.refreshToken))
             this.eventcbRefresh.next(this.refreshToken);
             this.eventcbJWT.next(jwtToken);
             const encryptJwt = this.encryptData(jwtToken);
             localStorage.setItem('token', encryptJwt);
-            this.userService.getUserById(res.user?.uid).subscribe((userdata) => {
+            this.userService.getUserById(res.user ?.uid).subscribe((userdata) => {
               this.currentUserObject = userdata;
               console.log(this.currentUserObject);
               this.eventCallbackuserName.next(
@@ -88,16 +88,18 @@ export class Authservice {
               localStorage.setItem('role', encryptedRole);
               this.eventcbRole.next(userdata.userData.role);
               this.eventCallbackuserName.next(userdata.userData.userName);
+              var encryptedCommittee = this.encryptData(this.currentUserObject.userData.committee);
+              localStorage.setItem("committee", encryptedCommittee);
             });
           });
-          const encryptedText = this.encryptData(res.user?.uid);
+          const encryptedText = this.encryptData(res.user ?.uid);
           localStorage.setItem('uid', encryptedText);
           const _uid = this.decryptData(encryptedText);
           this.router.navigate(['list']);
         } else {
           console.log('error');
           localStorage.clear();
-          Swal.fire('Please sign in', '','error');
+          Swal.fire('Please sign in', '', 'error');
           this.router.navigate(['/']);
         }
       });
@@ -106,23 +108,23 @@ export class Authservice {
 
   async getAllUsers() {
     return await this.http
-    .get(this.baseUrl + '/getAllUsers')
-    .toPromise()
-    .then((data) => {
-      this.eventcbUserData.next(data);
-      // const encryptUserData = this.encryptData(JSON.stringify(data));
-      // localStorage.setItem("userData", encryptUserData);
-    })
-    .catch((err) => {
-      if (err instanceof HttpErrorResponse) {
-        if (err) {
-          console.log(err);
-          console.log('user not loged in');
-          localStorage.clear();
-          this.router.navigate(['/']);
+      .get(this.baseUrl + '/getAllUsers')
+      .toPromise()
+      .then((data) => {
+        this.eventcbUserData.next(data);
+        // const encryptUserData = this.encryptData(JSON.stringify(data));
+        // localStorage.setItem("userData", encryptUserData);
+      })
+      .catch((err) => {
+        if (err instanceof HttpErrorResponse) {
+          if (err) {
+            console.log(err);
+            console.log('user not loged in');
+            localStorage.clear();
+            this.router.navigate(['/']);
+          }
         }
-      }
-    });
+      });
   }
 
   logout() {

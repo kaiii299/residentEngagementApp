@@ -108,8 +108,6 @@ export abstract class Constants {
     ["Normal RN Members", {viewSearchFilterAllResident: false, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: false}]
   ]);
 
-  static readonly baseURL: string = "https://us-central1-residentappv2-affc6.cloudfunctions.net/api"
-
   static readonly secretKey: string = 'YourSecretKeyForEncryption&Descryption';
 
   static readonly allowDeleteUser = ['Admin', 'CC staff', 'RN Manager'];

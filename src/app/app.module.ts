@@ -45,6 +45,9 @@ import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {CdkTableModule} from '@angular/cdk/table';
 import {MatCardModule} from '@angular/material/card';
 import { ScheduleModule } from '@syncfusion/ej2-angular-schedule';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+
 
 
 //firebase

@@ -3,7 +3,7 @@
     <div class="container">
       <div class="mat-elevation-z8">
           <div class="search">
-              <input matInput [(ngModel)]="search" placeholder="Type and Press Enter to Search" autocomplete="off" (keydown)="searchInput($event)">
+              <input matInput [(ngModel)]="search" placeholder="Type Resident Name and Press Enter to Search" autocomplete="off" (keydown)="searchInput($event)">
           </div>
           <mat-divider></mat-divider>
           <div class="filter">
@@ -29,18 +29,6 @@
                   </button>
                 </div>
           </div>
-
-        <!-- <mat-accordion class="accordion">
-          <mat-expansion-panel hideToggle>
-            <mat-expansion-panel-header>
-              <mat-label>Click for more</mat-label>
-              
-            </mat-expansion-panel-header>
-
-            
-          </mat-expansion-panel>
-
-        </mat-accordion> -->
 
         <mat-divider></mat-divider>
         <div class="mat-elevation-z8">
@@ -77,7 +65,7 @@
               <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
                 <button mat-button class="view-btn" (click)="onClickViewDetails(element.id)">View Details</button>
                 <button mat-button class="edit-btn" (click)="onClickEdit(element.id)">Edit</button>
-                <button mat-button class="delete-btn" (click)="openDeleteDialog(element)">Delete</button>
+                <button mat-button class="delete-btn" [disabled]="!canDeleteResident" (click)="openDeleteDialog(element)">Delete</button>
               </div>
             </td>
           </ng-container>

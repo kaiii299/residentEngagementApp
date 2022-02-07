@@ -50,7 +50,15 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   residentdata = Array();
   dataSource: any = new MatTableDataSource();
 
-  residentData: any;
+
+  accessControlList = Constants.access_control;
+
+  user_role: any;
+  user_committee: any;
+
+  accessObj: any;
+
+  canDeleteResident = true;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -67,12 +75,24 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   }
 
   async ngOnInit(){
-    this.residentService.getAllResidents();
-    this.residentService.eventcbResidentData$.subscribe((res)=>{
+    this.user_role = this.residentService.decryptData(localStorage.getItem("role"));
+    this.user_committee = this.residentService.decryptData(localStorage.getItem("committee"));
+    console.log("user role -> "+this.user_role);
+    console.log("user committee -> "+this.user_committee);
+    this.accessObj = this.accessControlList.get(this.user_role);
+    this.canDeleteResident = this.accessObj.deleteResident;
+    
+    console.log(this.accessObj);
+    var body = {committee: null};
+    if(!this.accessObj.viewSearchFilterAllResident){
+      body = {committee: this.user_committee};
+      this.committees = new Array(this.user_committee);
+    }
+    this.residentService.getAllResidents(body).then((res:any) =>{
       this.dataSource.data = res;
       this.residentdata = res;
       this.totalCount = this.residentdata.length;
-    })
+    });
   }
 
   ngAfterViewInit() {
@@ -81,14 +101,19 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   }
 
   searchInput(event: KeyboardEvent) {
+    let wordToSearch = this.search.trim().toUpperCase();
     if(event.keyCode === 13){
-      let wordToSearch = this.search.trim().toUpperCase();
-      this.residentService.searchResidentData({keyword: wordToSearch});
-      this.residentService.eventcbResidentData$.subscribe((res)=>{
+      var body = {keyword: wordToSearch, committee: null};
+      if(!this.accessObj.viewSearchFilterAllResident){
+        body = {keyword: wordToSearch, committee: this.user_committee};
+        this.committees = new Array(this.user_committee);
+      }
+      
+      this.residentService.searchResidentData(body).then((res:any) => {
         this.dataSource.data = res;
         this.residentdata = res;
         this.totalCount = this.residentdata.length;
-      })
+      });
 
       if (this.dataSource.paginator) {
         this.dataSource.paginator.firstPage();
@@ -136,12 +161,11 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   onClickFilter(event: any) {
     console.log(event);
     event.blkNumControl = event.blkNumControl.trim();
-    this.residentService.filterResident({committee: event.committeeControl, blkNum: event.blkNumControl, ageGp: event.ageGpControl});
-    this.residentService.eventcbResidentData$.subscribe((res)=>{
+    this.residentService.filterResident({committee: event.committeeControl, blkNum: event.blkNumControl, ageGp: event.ageGpControl}).then((res:any) => {
       this.dataSource.data = res;
       this.residentdata = res;
       this.totalCount = this.residentdata.length;
-    })
+    });
   }
 
   onChange(value: any) {

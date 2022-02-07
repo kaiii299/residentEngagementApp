@@ -44,6 +44,8 @@ import { Authservice } from './share/services/auth.service';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {CdkTableModule} from '@angular/cdk/table';
 import {MatCardModule} from '@angular/material/card';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 //firebase
@@ -120,6 +122,8 @@ import { RequestComponent } from './request/request.component';
     MatAutocompleteModule,
     CdkTableModule,
     MatCardModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
   ],
 
   providers: [

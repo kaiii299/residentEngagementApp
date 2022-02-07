@@ -71,7 +71,8 @@ export class Authservice implements OnInit {
             var encryptedRole = this.encryptData(this.currentUserObject.userData.role);
             localStorage.setItem("role", encryptedRole);
             this.eventCallbackuserName.next(userdata.userData.userName)
-
+            var encryptedCommittee = this.encryptData(this.currentUserObject.userData.committee);
+            localStorage.setItem("committee", encryptedCommittee);
           });
           this.getAllUsers();
         })

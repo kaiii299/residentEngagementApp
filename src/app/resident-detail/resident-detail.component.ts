@@ -15,6 +15,8 @@ import { Constants } from '../constants';
 export class ResidentDetailComponent implements OnInit {
   residentDetailsForm: any;
   residentDetail: any;
+  feedbackForm: any;
+  surveys: any = [];
 
   resid = this.activatedRoute.snapshot.queryParams.id;
 
@@ -29,6 +31,8 @@ export class ResidentDetailComponent implements OnInit {
       ageGpControl: new FormControl('', [Validators.required]),
       expertiseControl: new FormControl('', [Validators.required]),
     });
+
+    
   }
 
   // ngOnInit(): void {
@@ -55,6 +59,22 @@ export class ResidentDetailComponent implements OnInit {
         expertiseControl: residentDetail.expertise,
       });
     })
+    console.log(decryptedResid);
+    await this.residentService.getSurveyByResidentID(decryptedResid).then((res) => {
+      console.log("get survey");
+      console.log(res);
+      var dataList:any = [];
+      for (const e of res) {
+        console.log(e);
+        dataList.push(e.data);
+      }
+
+      dataList.sort((a:any, b:any) => b.date - a.date)
+      console.log("sorted data...");
+      console.log(dataList);
+      this.surveys = dataList;
+      console.log(this.surveys);
+    })
   }
 
   openSurveyDialog() {
@@ -67,26 +87,3 @@ export class ResidentDetailComponent implements OnInit {
 
 }
 
-// @Component({
-//   selector: 'input-survey-dialog',
-//   templateUrl: './inputSurvey-dialog.html',
-//   styleUrls: ['./inputSurvey-dialog.scss']
-// })
-// export class InputSurveyDialog{
-//   surveyForm: FormGroup;
-//   activitiesList = Constants.activities;
-//   constructor(private formBuilder: FormBuilder) {
-
-//   }
-//   ngOnInIt(): void {
-
-//     this.surveyForm = this.formBuilder.group({
-//       activities: new FormArray([], [Validators.required])
-//     });
-//     console.log(this.surveyForm.controls.activities);
-//     this.activitiesList.forEach(() => this.activitiesFormArray.push(new FormControl(false)));
-//   }
-//   get activitiesFormArray() {
-//     return this.surveyForm.controls.activities as FormArray;
-//   }
-// }

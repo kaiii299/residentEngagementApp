@@ -16,7 +16,9 @@ sgMail.setApiKey(SENDGRID_API_KEy);
 
 const userDb = admin.firestore().collection("Users");
 const residentDb = admin.firestore().collection("residents");
+const surveyDb = admin.firestore().collection("surveys");
 const _authMiddleware = require('./authMiddleware.js');
+
 
 // Middleware
 const app = express();
@@ -100,14 +102,23 @@ app.delete("/deleteUser/:id", async (req, res) => {
   });
 });
 
-app.get("/getAllResidents", async (req, res) => {
+app.post("/getAllResidents", async (req, res) => {
   const residents = [];
-  const snapshot = await residentDb.get();
-  snapshot.forEach((doc) => {
-    const id = doc.id;
-    const data = doc.data();
-    residents.push({id, data});
-  });
+  if (req.body.committee != null) {
+    const snapshot = await residentDb.where('committee', '==', req.body.committee).get();
+    snapshot.forEach((doc) => {
+      const id = doc.id;
+      const data = doc.data();
+      residents.push({id, data});
+    });
+  } else {
+    const snapshot = await residentDb.get();
+    snapshot.forEach((doc) => {
+      const id = doc.id;
+      const data = doc.data();
+      residents.push({id, data});
+    });
+  }
   res.status(200).send(residents);
 });
 
@@ -133,7 +144,13 @@ app.post("/searchResidentByName", async (req, res) => {
   snapshot.forEach((doc) => {
     const id = doc.id;
     const data = doc.data();
-    residents.push({id, data});
+    if (req.body.committee != null) {
+      if (data.committee == req.body.committee) {
+        residents.push({id, data});
+      }
+    } else {
+      residents.push({id, data});
+    }
   });
   res.status(200).send(residents);
 });
@@ -182,6 +199,24 @@ app.post("/filterResident", async (req, res) => {
     });
   }
   res.status(200).send(residents);
+});
+
+app.post("/createSurvey", async (req, res) => {
+  req.header("Access-Control-Allow-Origin", 'http://localhost:4200');
+  const surveyData = req.body;
+  await surveyDb.doc().set(surveyData);
+  res.status(200).send(surveyData);
+});
+
+app.get("/getSurveyByResidentId/:id", async (req, res) => {
+  const surverys = [];
+  const snapshot = await surveyDb.where('residentId', '==', req.params.id).get();
+  snapshot.forEach((doc) => {
+    const id = doc.id;
+    const data = doc.data();
+    surverys.push({id, data});
+  });
+  res.status(200).send(surverys);
 });
 
 

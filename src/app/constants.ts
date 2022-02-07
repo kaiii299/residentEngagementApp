@@ -49,8 +49,8 @@ export abstract class Constants {
     "CC staff",
     "Key Ccc",
     "RN Manager",
-    "Key RN Manager",
-    "Normal RN Manager"];
+    "Key RN Members",
+    "Normal RN Members"];
 
   static readonly genders: string[] = [
     'Male',
@@ -90,6 +90,15 @@ export abstract class Constants {
     ["Taman Jurong Zone E RC", ['337A', '337B', '337C', '337D', '338A', '338B', '339A', '339B', '339C', '339D']],
     ["Taman Jurong Zone F RC", ['177', '178', '179', '180', '181', '182', '183', '184', '175A', '175B', '175C']],
     ["Taman Jurong Zone G RN", ['138A', '138B', '138C', '138D', '140A', '140B', '140C', '140D', '150A']],
+  ]);
+
+  static readonly access_control = new Map<string, Object>([
+    ["Admin", {viewSearchFilterAllResident: true, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: true }],
+    ["CC staff", {viewSearchFilterAllResident: true, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: true }],
+    ["Key Ccc", {viewSearchFilterAllResident: true, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: false }],
+    ["RN Manager", {viewSearchFilterAllResident: false, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: true }],
+    ["Key RN Members", {viewSearchFilterAllResident: false, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: false }],
+    ["Normal RN Members", {viewSearchFilterAllResident: false, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: false}]
   ]);
 
   static readonly baseURL: string = "https://us-central1-residentappv2-affc6.cloudfunctions.net/api"

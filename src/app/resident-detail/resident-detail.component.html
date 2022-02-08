@@ -1,10 +1,11 @@
 <body>
-    <div class="main-container">
+    <div class="panelContainer1">
         <div class="container">
             <h1>Resident Details</h1>
             <form [formGroup]="residentDetailsForm">
                 <label>Resident Name :</label>
-                <input title="residentName" class='form-control' type="text" formControlName="residentNameControl" readonly>
+                <input title="residentName" class='form-control' type="text" formControlName="residentNameControl"
+                    readonly>
                 <label>Committee :</label>
                 <input title="committee" class='form-control' type="text" formControlName="committeeControl" readonly>
                 <label>Block Number :</label>
@@ -19,17 +20,45 @@
                 <input title="Age" class='form-control' formControlName="ageGpControl" readonly>
                 <label>Expertise :</label>
                 <input title="expertise" class='form-control' type="text" formControlName="expertiseControl" readonly>
-                <!-- <label>Preferred Activity (Select All That Apply)</label>
-                <div *ngFor="let activity of activities; let i=index">
-                    <label>
-                        <input type="checkbox" [value]="activity" />
-                        {{activity}}
-                    </label>
-                </div> -->
+
             </form>
             <div class="button">
-                <button type="submit" class="btn-survey" (click)="openSurveyDialog()">Input Survey</button>
+                <button type="submit" class="btn-survey" (click)="openSurveyDialog()">Input Feedback</button>
             </div>
         </div>
+    </div>
+    <div class="panelContainer2">
+        <mat-accordion>
+            <div class="surveyContainer" *ngFor="let survey of surveys">
+                <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>Feedback from {{survey.date}}</mat-panel-title>
+                    </mat-expansion-panel-header>
+                    <form>
+                        <label class="question">How can we regularly get your feedback and update you on what's
+                            happening
+                            in
+                            our RC and Taman Jurong?</label>
+                        <input class="form-control" value="{{survey.contact}}" readonly>
+                        <label>Mobile Number</label>
+                        <input class="form-control" value="{{survey.mobileNum}}" readonly>
+                        <label>Email Address</label>
+                        <input class="form-control" value="{{survey.email}}" readonly>
+                        <label>What types of activities are you and your family interested in?</label>
+                        <input class="form-control" value="{{survey.activities}}" readonly>
+                        <label>Number of elderly in the family (aged 60 & above)</label>
+                        <input class="form-control" value="{{survey.numElderly}}" readonly>
+                        <label>No of adults in the family (aged between 26 - 59)</label>
+                        <input class="form-control" value="{{survey.numAdult}}" readonly>
+                        <label>No of youth in the family (aged between 13 - 25)</label>
+                        <input class="form-control" value="{{survey.numYouth}}" readonly>
+                        <label>No of young children in the family (aged 12 & below)</label>
+                        <input class="form-control" value="{{survey.numChild}}" readonly>
+                        <label>What are the jobs of all the people in the household who are working?</label>
+                        <input class="form-control" value="{{survey.job}}" readonly>
+                    </form>
+                </mat-expansion-panel>
+            </div>
+        </mat-accordion>
     </div>
 </body>

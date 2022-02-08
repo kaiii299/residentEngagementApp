@@ -2,6 +2,12 @@
     <div>
         <h1>Input feedback from this Resident</h1>
         <form [formGroup]="surveyForm">
+            <mat-form-field appearance="fill">
+                <mat-label>Choose the date of survey</mat-label>
+                <input title="date picker" matInput [matDatepicker]="picker" formControlName="date">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
             <label>How can we regularly get your feedback and update you on what's happening in our RC and Taman
                 Jurong? (Select All That Apply)</label>
             <div formArrayName="contact" *ngFor="let contact of contactFormArray.controls; let i = index">
@@ -11,9 +17,9 @@
                 </label>
             </div>
             <label>Mobile Number</label>
-            <input title="form-control" class="form-control">
+            <input title="mobileNumber" class="form-control" type="text" formControlName="mobileNum">
             <label>Email Address</label>
-            <input title="form-control" class="form-control">
+            <input title="email" class="form-control" type="text" formControlName="email">
             <label>What types of activities are you and your family interested in?(Select All That Apply)</label>
             <div formArrayName="activities" *ngFor="let activity of activitiesFormArray.controls; let j = index">
                 <label>
@@ -32,8 +38,11 @@
             <label>What are the jobs of all the people in the household who are working?</label>
             <input title='form-control' class="form-control">
         </form>
+        <div class="alert alert-success" *ngIf="submitStatus">
+            <label class="success">{{submitStatus}}</label>
+        </div>
         <div class="button">
-            <button type="submit" class="btn-success">Submit</button>
+            <button type="submit" class="btn-success" (click)="submit(surveyForm.value)">Submit</button>
             <button type="submit" class="btn-cancel">Cancel</button>
         </div>
     </div>

@@ -159,7 +159,6 @@ export class Authservice {
   //     });
   // }
 
-
   logout() {
     this.firebaseAuth.signOut();
     localStorage.clear();

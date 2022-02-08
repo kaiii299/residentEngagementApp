@@ -44,6 +44,10 @@ import { Authservice } from './share/services/auth.service';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {CdkTableModule} from '@angular/cdk/table';
 import {MatCardModule} from '@angular/material/card';
+// import { ScheduleModule } from '@syncfusion/ej2-angular-schedule';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+
 
 
 //firebase
@@ -87,6 +91,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     SpinnerComponent,
     RequestComponent,
     DashboardComponent,
+
+
   ],
   imports: [
     CommonModule,
@@ -121,7 +127,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     MatAutocompleteModule,
     CdkTableModule,
     MatCardModule,
-    SpreadsheetAllModule
+    MatDatepickerModule,
+    MatNativeDateModule,
+    // ScheduleModule,
   ],
 
   providers: [

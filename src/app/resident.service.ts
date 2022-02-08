@@ -27,6 +27,7 @@ export class ResidentService {
   encryptData(value: any) {
     return CryptoJS.AES.encrypt(value, this.secretKey.trim()).toString();
   }
+
   decryptData(textToDecrypt: any) {
     console.log("decrpt");
     console.log(textToDecrypt);
@@ -38,7 +39,8 @@ export class ResidentService {
   addResident(resident: object) {
     return this.firestore.collection('residents').add(resident);
   }
-  async getAllResidents() {
+
+  async getAllResidents(body: any) {
     //return this.firestore.collection('residents').valueChanges({ idField: 'id' });
     return await this.http.get(this.baseUrl + "/getAllResidents").toPromise().then((data) => {
       this.eventcbResidentData.next(data);
@@ -51,10 +53,12 @@ export class ResidentService {
       }
     })
   }
+
   getResidentById(id: any){
     // return this.firestore.collection('residents').doc(id).valueChanges();
     return this.http.get(this.baseUrl + "/getResident/" + id) as Observable<any>
   }
+
   getResidentByFilter(commiittee: string, ageGp: string) {
     console.log("filter");
     var residentRef = this.firestore.collection<any>('residents', tempRes => {
@@ -64,6 +68,7 @@ export class ResidentService {
     });
     return residentRef.valueChanges({ idField: 'id' });
   }
+
   async updateResidentInfo(id: string, resident: Object) {
     //return this.firestore.collection('residents').doc(id).update(resident);
     return await this.http.put(this.baseUrl + "/updateResident/" + id,resident, {responseType: 'text'}).toPromise().then((data)=>{
@@ -71,6 +76,7 @@ export class ResidentService {
     })
 
   }
+
   deleteResident(id: string) {
     this.firestore.collection('residents').doc(id).delete().then(function () {
       alert("Resident has been removed from the records!");
@@ -83,9 +89,7 @@ export class ResidentService {
 
   async searchResidentData(body: any) {
     return await this.http.post(this.baseUrl +"/searchResidentByName ", body).toPromise().then((data) => {
-      this.eventcbResidentData.next(data);
-      const encryptResidentData = this.encryptData(JSON.stringify(data));
-      localStorage.setItem("residentData", encryptResidentData);
+      return data;
     }).catch(err => {
       if (err instanceof HttpErrorResponse) {
         if (err) {
@@ -99,6 +103,7 @@ export class ResidentService {
   async filterResident(body: any) {
     return await this.http.post(this.baseUrl +"/filterResident ", body).toPromise().then((data) => {
       this.eventcbResidentData.next(data);
+      return data;
     }).catch(err => {
       if (err instanceof HttpErrorResponse) {
         if (err) {
@@ -107,5 +112,23 @@ export class ResidentService {
         }
       }
     })
+  }
+
+  async addSurvey(survey: object) {
+    return await this.http.post(this.baseUrl+"/createSurvey", survey).toPromise().then((data) => {
+      console.log("svury data =>>>> ");
+      console.log(data);
+      return data;
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+  async getSurveyByResidentID(residentId: String) {
+    return await this.http.get(this.baseUrl+"/getSurveyByResidentId/"+residentId).toPromise().then((response:any) => {
+      return response;
+    }).catch(err => {
+      console.log(err);
+    });
   }
 }

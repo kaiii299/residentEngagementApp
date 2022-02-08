@@ -56,7 +56,7 @@ export abstract class Constants {
     "Key Ccc",
     "RN Manager",
     "Key RN Manager",
-    "Normal RN Manager"];
+    "Normal RN Members"];
 
   static readonly genders: string[] = [
     'Male',

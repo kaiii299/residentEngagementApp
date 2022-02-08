@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Authservice } from '../share/services/auth.service';
 import * as CryptoJS from 'crypto-js';
+import { ForgetPasswordService } from '../share/services/forget-password.service';
 
 @Component({
   selector: 'app-home',
@@ -10,33 +11,32 @@ import * as CryptoJS from 'crypto-js';
 })
 export class HomeComponent implements OnInit {
 message= " "
+email: any;
+password: any;
 hide = true
-  constructor(private authService: Authservice,private route: Router) { }
-  loginData ={
-    email:'',
-    password: ''
-  }
+  constructor(private forgetPasswordService: ForgetPasswordService,private authService: Authservice,private route: Router) { }
 
   ngOnInit(): void {
   }
 
    Login(){
-    if(this.loginData.email == ""){
+    if(this.email == ""){
       this.message ="Please provide email"
     }
 
-    else if(this.loginData.password == ""){
+    else if(this.password == ""){
       this.message ="Please provide Password"
     }
 
     else{
-      this.authService.signIn(this.loginData.email, this.loginData.password).then((res)=>{
-        
+      this.authService.signIn(this.email, this.password).then((res)=>{
+
      }).catch(error=>{
        this.message = "Wrong username or password"
      })
     }
-
   }
-
+  openForgetPassword(){
+    this.forgetPasswordService.openForgetpassword(this.email)
+  }
 }

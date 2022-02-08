@@ -31,7 +31,7 @@ import { UpdateResidentComponent } from './update-resident/update-resident.compo
 import { ResidentInfoComponent } from './resident-info/resident-info.component';
 import { ResidentDetailComponent } from './resident-detail/resident-detail.component';
 import { EventsPageComponent } from './events-page/events-page.component';
-import { DeleteUserConfirmationDialog, saveChangesDialog, UserProfileComponent } from './user-profile/user-profile.component';
+import { saveChangesDialog, UserProfileComponent } from './user-profile/user-profile.component';
 import { InputSurveyComponent } from './input-survey/input-survey.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -60,8 +60,8 @@ import { SpinnerComponent } from './share/spinner/spinner.component';
 import { RequestComponent } from './request/request.component';
 import { RequestNewUserService } from './share/services/request-new-user.service';
 import { userService } from './share/services/user.service';
-
-
+import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +76,6 @@ import { userService } from './share/services/user.service';
     EventsPageComponent,
     UserProfileComponent,
     saveChangesDialog,
-    DeleteUserConfirmationDialog,
     UpdateResidentComponent,
     ResidentInfoComponent,
     ResidentDetailComponent,
@@ -87,6 +86,7 @@ import { userService } from './share/services/user.service';
     InputSurveyComponent,
     SpinnerComponent,
     RequestComponent,
+    DashboardComponent,
   ],
   imports: [
     CommonModule,
@@ -121,6 +121,7 @@ import { userService } from './share/services/user.service';
     MatAutocompleteModule,
     CdkTableModule,
     MatCardModule,
+    SpreadsheetAllModule
   ],
 
   providers: [

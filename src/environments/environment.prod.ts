@@ -1,14 +1,13 @@
-
 export const environment = {
   production: true,
   firebaseConfig : {
-    apiKey: process.env.API_APIKEY,
-    authDomain: process.env.AUTH_DOMAIN,
-    databaseURL: process.env.DATABASE_URL ,
-    projectId: process.env.PROJECT_ID ,
-    storageBucket: process.env.STORAGE_BUCKET ,
-    messagingSenderId: process.env.MESSAGE_SENDER_ID,
-    appId: process.env.APP_ID,
-    measurementId: process.env.MEASUREMENT_ID
+    apiKey: "AIzaSyA1m5F1zg65bOc32HnJ0FSduRpZl9ZKWS4",
+    authDomain: "residentappv2-affc6.firebaseapp.com",
+    databaseURL: "https://residentappv2-affc6-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "residentappv2-affc6",
+    storageBucket: "residentappv2-affc6.appspot.com",
+    messagingSenderId: "263234314096",
+    appId: "1:263234314096:web:7b0ac9067827b96dd0f9b5",
+    measurementId: "G-CQ47CV1VCY"
   }
 };

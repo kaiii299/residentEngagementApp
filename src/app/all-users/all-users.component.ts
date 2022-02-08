@@ -3,17 +3,17 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import {userDataInterface} from 'src/app/share/services/Users'
+import { userDataInterface } from 'src/app/share/services/Users'
 import { Constants } from '../constants';
 import { Authservice } from '../share/services/auth.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { NavigationExtras, Router} from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { excelPreviewDialog } from '../share/excel-preview-dialog';
 import { uploadFileDialog } from '../share/upload-file';
 import { HttpClient } from '@angular/common/http';
 import { userService } from '../share/services/user.service';
-
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-all-users',
@@ -30,59 +30,68 @@ import { userService } from '../share/services/user.service';
 
 export class AllUsersComponent implements AfterViewInit, OnInit {
   columnsToDisplay = Array();
-  expandedElement:  null;
+  expandedElement: null;
   committees = Constants.committees;
   roles = Constants.roles;
   status = Constants.status;
   blockNumber = Constants.blkNum;
   variables = Constants.variables;
   requestStatus = Constants.requestStatus;
+  zonesInfo = Constants.zones;
+
   panelOpenState = false;
-  search: any;
-  variableValue: any = '';
-  committeesValue: string ='';
-  roleValue: string ='' ;
-  statusValue: string ='';
-  requestStatusValue:string = '';
-  blockValue:string;
-  searchValue: any;
+
+  availableBlocks: any = [];
+  variableValue: any | null = '';
+  committeesValue: string | null = '';
+  blockNumberValue: string | null;
+  roleValue: string | null;
+  statusValue: string | null;
+  requestStatusValue: string | null;
+  searchValue: string = '';
+  selectedZone: string;
+  blockValue: string;
   filter_form: FormGroup;
-  uid = localStorage.getItem("uid");
+  _role: any;
   userdata = Array();
   filterData = Array();
   totalCount: any;
   filterValue: any;
-  defaultValue = ['userName','committee', 'blockNumber','role'];
-  dataSource:any = new MatTableDataSource();
+
+  uid = localStorage.getItem("uid");
+  defaultValue = ['userName', 'committee', 'blockNumber', 'role'];
+  dataSource: any = new MatTableDataSource();
   encryptedUserData = localStorage.getItem("userData");
 
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private userService: userService,private authService:Authservice,private formBuilder: FormBuilder, private router: Router,private dialog: MatDialog, private http: HttpClient) {
+  constructor(private userService: userService, private authService: Authservice, private formBuilder: FormBuilder, private router: Router, private dialog: MatDialog, private http: HttpClient) {
 
     this.uid = authService.decryptData(this.uid)
 
-    if(localStorage.getItem("filterValue")){
+    if (localStorage.getItem("filterValue")) {
       const stringValue = JSON.stringify(localStorage.getItem("filterValue"));
       const parseValue = JSON.parse(JSON.parse(stringValue))
       this.columnsToDisplay = parseValue;
       this.variableValue = parseValue;
     }
-    else if(!localStorage.getItem("filterValue") || this.variableValue ==''){
+    else if (!localStorage.getItem("filterValue") || this.variableValue == '') {
       this.variableValue = this.defaultValue;
       this.columnsToDisplay = this.defaultValue;
     }
   }
-  async ngOnInit(){
-    this.authService.getAllUsers();
-    this.authService.eventcbUserData$.subscribe((data)=>{
-      // console.log(data);
+
+  async ngOnInit() {
+    this.userService.getAllUsers();
+    this.userService.eventcbUserData$.subscribe((data) => {
       this.dataSource.data = data;
       this.userdata = data;
       this.totalCount = this.userdata.length
     })
+    const role = localStorage.getItem("role");
+    this._role = this.authService.decryptData(role);
   }
 
   ngAfterViewInit() {
@@ -90,81 +99,92 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     this.dataSource.sort = this.sort;
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  searchInput(event: KeyboardEvent) {
+    if (event.keyCode === 13) {
+      let wordToSearch = this.searchValue.charAt(0).toUpperCase() + this.searchValue.slice(1);
+      this.userService.searchUserData({ keyword: wordToSearch });
+      this.userService.eventcbUserData$.subscribe((res) => {
+        this.dataSource.data = res;
+        this.userdata = res;
+        this.totalCount = this.userdata.length;
+      })
+
+      if (this.dataSource.paginator) {
+        this.dataSource.paginator.firstPage();
+      }
+    }
   }
 
-  userInfo(uid: any){
+  userInfo(uid: any) {
     var encryptedUid = this.authService.encryptData(uid)
-    const navigationExtras: NavigationExtras = {queryParams:{id: encryptedUid}}
-    this.router.navigate(['userprofile'],navigationExtras)
+    const navigationExtras: NavigationExtras = { queryParams: { id: encryptedUid } }
+    this.router.navigate(['userprofile'], navigationExtras)
   }
 
-  getData(data: any){
+  getData(data: any) {
     console.log(data);
   }
 
-  filter(){
-    if(this.searchValue){
-      this.userService.getUserbyFilter("", this.searchValue);
-    }
-    if(this.committeesValue){
-      this.userService.getUserbyFilter("committee", this.committeesValue);
-    }
-    if(this.roleValue){
-      this.userService.getUserbyFilter("role", this.roleValue);
-    }
-    if(this.statusValue){
-      this.userService.getUserbyFilter("status", this.statusValue);
-    }
-    if(this.requestStatusValue){
-      this.userService.getUserbyFilter('requestStatus', this.requestStatusValue)
-    }
-    if(this.variableValue !='' && this.variableValue !=undefined){
-      localStorage.setItem("filterValue",JSON.stringify(this.variableValue))
-      this.columnsToDisplay = this.variableValue
-    }
-    this.userService.eventcbFilterData$.subscribe((filterdata)=>{
-      this.dataSource.data = filterdata;
-      if(Object.keys(filterdata).length > 0){
-        console.log("filterdata");
-        const encryptedData = this.authService.encryptData(JSON.stringify(filterdata));
-        localStorage.setItem("filterData", encryptedData);
-      }
-    })
+  filter() {
+    localStorage.setItem("filterValue", JSON.stringify(this.variableValue))
+    this.columnsToDisplay = this.variableValue
+    let userData: any = {}
+    userData['committee'] = this.committeesValue,
+      userData['blockNumber'] = this.blockNumberValue,
+      userData['role'] = this.roleValue,
+      userData['status'] = this.statusValue,
+      userData['requestStatus'] = this.requestStatusValue,
+      this.userService.filterUser(userData);
+    this.userService.eventcbUserData$.subscribe((data) => {
+      console.log(userData);
+      console.log(data);
+      this.dataSource.data = data;
+      this.userdata = data;
+      this.totalCount = this.userdata.length;
+    });
+
   }
 
-  clearFilter(){
-    this.dataSource.data = this.userdata;
-    this.committeesValue ="";
+  clearFilter() {
+    this.userService.getAllUsers();
+    this.userService.eventcbUserData$.subscribe((data) => {
+      this.dataSource.data = data;
+    })
+    this.committeesValue = "";
     this.roleValue = '';
-    this.statusValue ='';
+    this.statusValue = '';
     this.requestStatusValue = '';
-    this.search = null;
+    this.searchValue = '';
     this.variableValue = this.defaultValue;
     this.columnsToDisplay = this.defaultValue;
-    localStorage.removeItem("filterValue")
-    localStorage.removeItem("filterData")
-    this.searchValue = ""
+    localStorage.removeItem("filterValue");
+    localStorage.removeItem("filterData");
+    this.searchValue = "";
+    this.blockNumberValue = "";
   }
 
-  refresh(){
+  onChange(value: any) {
+    this.selectedZone = value;
+    this.availableBlocks = this.zonesInfo.get(this.selectedZone);
+  }
+
+  refresh() {
     location.reload()
   }
 
-  openExcelPreviewDialog(){
-    this.dialog.open(excelPreviewDialog,{
-      width:'600px',
-      height:'700px',
+  openExcelPreviewDialog() {
+    this.dialog.open(excelPreviewDialog, {
+      width: '750px',
+      height: '650px',
       data: this.userdata
     })
   }
 
-  uploadFile(){
-    this.dialog.open(uploadFileDialog),{
-
-    }
+  async uploadFile() {
+    this.dialog.open(uploadFileDialog,{
+      width: '750px',
+      height: '650px'
+    })
   }
 }
 

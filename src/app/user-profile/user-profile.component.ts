@@ -20,6 +20,7 @@ import { map, startWith } from 'rxjs/operators';
 import { userService } from '../share/services/user.service';
 import { RequestNewUserService } from '../share/services/request-new-user.service';
 import Swal from 'sweetalert2';
+import { ForgetPasswordService } from '../share/services/forget-password.service';
 export interface DialogData {
   password: string;
 }
@@ -42,7 +43,7 @@ export class UserProfileComponent implements OnInit {
   userEmailArray = Array();
   isExistUserName: any;
   isExistEmail: any;
-  isOwn: any = true;
+  isOwn = false;
   newEmail: any;
   oldUserName: any;
   newUserName: string;
@@ -53,7 +54,7 @@ export class UserProfileComponent implements OnInit {
   newRoleValue: any;
   oldRoleValue: any;
   newCommitteeValue: any;
-  newStatus: any;
+  status: any;
   newPhoneNumber: string;
   user: any;
   requestStatus: any;
@@ -78,17 +79,18 @@ export class UserProfileComponent implements OnInit {
   _role: any;
 
   constructor(
+    public forgetPasswordService: ForgetPasswordService,
     public requestService: RequestNewUserService,
     public userService: userService,
     public dialog: MatDialog,
     public authService: Authservice,
     private activatedRoute: ActivatedRoute,
     private _formBuilder: FormBuilder
-  ) {}
+  ) { }
 
   async ngOnInit() {
-    if (this.uid != this._uid) {
-      this.isOwn = null;
+    if (this.uid == this._uid) {
+      this.isOwn = true;
     }
 
     const decryptedUid = this.authService.decryptData(this._uid);
@@ -107,6 +109,7 @@ export class UserProfileComponent implements OnInit {
         this.newCommitteeValue = this.user.committee;
         this.newBlockNumber = this.user.blockNumber;
         this.requestStatus = this.user.requestStatus;
+        this.status = this.user.status;
       });
 
     this.updateUserForm = this._formBuilder.group({
@@ -124,9 +127,13 @@ export class UserProfileComponent implements OnInit {
     this._role = this.authService.decryptData(_role);
   }
 
-  checkUserExist() {
-    this.authService.getAllUsers();
-    this.authService.eventcbUserData$.subscribe((data) => {
+  openForgetPassword(){
+    this.forgetPasswordService.openForgetpassword(this.newEmail)
+  }
+
+ async checkUserExist() {
+    await this.userService.getAllUsers();
+    this.userService.eventcbUserData$.subscribe((data) => {
       this.userDataArray = data;
       this.userDataArray.forEach((_userData) => {
         this.userNameArray.push(_userData.data.userName);
@@ -150,20 +157,7 @@ export class UserProfileComponent implements OnInit {
     this.availableBlocks = this.zonesInfo.get(this.newCommitteeValue);
   }
 
-  delete() {
-    const dialogRef = this.dialog.open(DeleteUserConfirmationDialog, {
-      width: '250px',
-      data: { delete: this.deleteConfirmation },
-    });
 
-    dialogRef
-      .afterClosed()
-      .toPromise()
-      .then((result) => {
-        this.deleteConfirmation = result;
-        console.log(result);
-      });
-  }
 
   openEditDialog(
     userName = this.newUserName,
@@ -194,6 +188,76 @@ export class UserProfileComponent implements OnInit {
       },
     });
   }
+
+  async reactivate() {
+    const decryptedid = this.authService.decryptData(this._uid);
+    let userData: any = {}
+    userData['status'] = 'Active'
+    Swal.fire({
+      title: 'Are you sure?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: `Reactivate ${this.oldUserName}`
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.userService.updateUserData(decryptedid, userData)
+        Swal.fire(
+          'Success',
+          `${this.oldUserName} has been reactivated`,
+          'success'
+        ).then(()=>{
+          setTimeout(() => {
+            location.reload(), 80000;
+          });
+        })
+      }
+    })
+  }
+
+  async delete() {
+    const decryptedid = this.authService.decryptData(this._uid);
+    let userData: any = {}
+    userData['status'] = 'Inactive'
+    Swal.fire({
+      title: 'Do you want to save the changes?',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Deactivate',
+      denyButtonText: `Delete permanently`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.userService.updateUserData(decryptedid, userData).then(() => {
+          Swal.fire('User deactivated', '', 'success').then(()=>{
+            setTimeout(() => {
+              location.reload(), 80000;
+            });
+          })
+        }).catch((err) => {
+          Swal.fire('ERROR', `${err}`, 'error')
+        })
+      } else if (result.isDenied) {
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You won't be able to revert this!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: '#3085d6',
+          confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.userService.deleteUserbyId(decryptedid);
+            Swal.fire(
+              'Deleted!',
+              'This user has been deleted.',
+              'success'
+            )
+          }
+        })
+      }
+    })
+  }
+
 
   openAcceptDialog(
     userName = this.newUserName,
@@ -296,8 +360,8 @@ export class saveChangesDialog {
           icon: 'success',
           title: 'User profile updated',
           showConfirmButton: true,
-        }).then((result)=>{
-          if(result.isConfirmed){
+        }).then((result) => {
+          if (result.isConfirmed) {
             setTimeout(() => {
               location.reload(), 80000;
             });
@@ -310,9 +374,9 @@ export class saveChangesDialog {
         Swal.fire({
           position: 'center',
           icon: 'error',
-          title: 'Failed to update user profile',
-          showConfirmButton: false,
-          timer: 1000,
+          title: `Oops something went wrong...`,
+          text: `${err.message}`,
+          showConfirmButton: true,
         });
       });
     this.dialogRef.close();
@@ -320,7 +384,7 @@ export class saveChangesDialog {
 
   accept() {
     this._data.requestStatus = "Accepted";
-    this.userService.updateUserData(this.decryptedParamsId, this._data).then(()=>{
+    this.userService.updateUserData(this.decryptedParamsId, this._data).then(() => {
       this.dialogRef.close();
       Swal.fire({
         position: 'center',
@@ -329,7 +393,7 @@ export class saveChangesDialog {
         showConfirmButton: false,
         timer: 1000,
       });
-    }).catch((err)=>{
+    }).catch((err) => {
       this.dialogRef.close();
       Swal.fire({
         position: 'center',
@@ -342,7 +406,7 @@ export class saveChangesDialog {
 
   reject() {
     this._data.requestStatus = "Rejected";
-    this.userService.updateUserData(this.decryptedParamsId, this._data).then(()=>{
+    this.userService.updateUserData(this.decryptedParamsId, this._data).then(() => {
       this.dialogRef.close();
       Swal.fire({
         position: 'center',
@@ -351,7 +415,7 @@ export class saveChangesDialog {
         showConfirmButton: false,
         timer: 1000,
       });
-    }).catch((err)=>{
+    }).catch((err) => {
       this.dialogRef.close();
       Swal.fire({
         position: 'center',
@@ -363,49 +427,3 @@ export class saveChangesDialog {
   }
 }
 
-@Component({
-  selector: 'delete-user-confirmation-dialog',
-  templateUrl: './deleteUser-dialog.html',
-})
-export class DeleteUserConfirmationDialog {
-  deleteConfirmation = '';
-  message = '';
-  reload = true;
-
-  text: any;
-
-  constructor(
-    private userService: userService,
-    private authService: Authservice,
-    public dialogRef: MatDialogRef<UserProfileComponent>,
-    private dialog: MatDialog,
-    private activatedRoute: ActivatedRoute
-  ) {
-    dialogRef.disableClose = true;
-  }
-
-  uid = this.activatedRoute.snapshot.queryParams.id;
-  _uid = this.authService.decryptData(this.uid);
-
-  ngOnInit(): void {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-
-  confirmDelete() {
-    if (this.deleteConfirmation == 'DELETE') {
-      this.userService.deleteUserbyId(this._uid);
-      this.dialog.open(confirmationDialog, {
-        data: {
-          message: 'User deleted',
-        },
-      });
-      this.dialogRef.close();
-      this.authService.goback();
-    } else {
-      this.message = 'Try again';
-      this.deleteConfirmation = '';
-    }
-  }
-}

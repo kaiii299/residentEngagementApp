@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Authservice } from '../share/services/auth.service';
 import { windowService } from '../share/services/window.service';
-import * as firebase from 'firebase';
 import { userService } from '../share/services/user.service';
+import Swal from 'sweetalert2';
+
 @Component({
   selector: 'app-forget-password',
   templateUrl: './forget-password.component.html',
@@ -16,20 +17,17 @@ export class ForgetPasswordComponent implements OnInit {
   verified = false;
   color = 'Green';
   user: any;
-
-  windowRef: any;
+  isSent: boolean = false;
   phoneNumber: string;
   verificationCode: string;
 
   constructor(private userService : userService,private authService: Authservice, private win: windowService) { }
 
   ngOnInit(): void {
-    //firebase.default.auth().settings.appVerificationDisabledForTesting = true
     var encryptedUid = localStorage.getItem('uid');
     var uid = this.authService.decryptData(encryptedUid);
-    this.userService.getUserById(uid)
-    this.authService.eventcbUserData$.subscribe((data)=>{
-      this.user = data.userData
+    this.userService.getUserById(uid).toPromise().then((res)=>{
+      this.user = res.userData
       if (this.user.phoneNumber) {
         this.email = this.user.email;
         this.phoneNumber = this.user.phoneNumber;
@@ -38,50 +36,26 @@ export class ForgetPasswordComponent implements OnInit {
         this.phoneNumber = this.phoneNumber
       }
     })
+  }
 
-
-    this.windowRef = this.win.windowRef;
-    this.windowRef.recaptchaVerifier = new firebase.default.auth.RecaptchaVerifier('recaptcha-container', {
-      size: "invisible"
+  async sendOTP() {
+    Swal.fire({
+      title: 'Enter your name',
+      input: 'text',
+      html: '<input id="swal-input1" class="swal2-input">' +
+      '<input id="swal-input2" class="swal2-input">',
+      preConfirm: (value) => {
+        if (!value) {
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i> Your name is required'
+          )
+        }
+      }
     })
-    //this.windowRef.recaptchaVerifier.render();
-  }
+}
 
-  sendLoginCode() {
-    const appVerifier = this.windowRef.recaptchaVerifier;
-    const num = "+65" + this.phoneNumber
-    console.log(num);
-    firebase.default
-      .auth()
-      .signInWithPhoneNumber(num, appVerifier)
-      .then((result) => {
-        this.windowRef.confirmationResult = result;
-        console.log(result)
-        this.verified = true;
-        console.log(this.verified);
-      })
-      .catch((error) => console.log(error));
-  }
+  verify(){
 
-  verify() {
-    this.windowRef.confirmationResult
-      .confirm(this.verificationCode)
-      .then((): any => {
-        this.userService
-          .forgetPassword(this.email)
-          .then((res) => {
-            this.message = 'Email sent successfully.Please check email';
-            this.color = 'Green';
-          })
-          .catch((error) => {
-            console.log(error);
-            this.message = 'Failed to send email';
-            this.color = "red"
-          });
-      }).catch(() => {
-        this.message = 'Incorrect verification entered';
-        this.color = "red"
-      });
   }
 
   goBack() {

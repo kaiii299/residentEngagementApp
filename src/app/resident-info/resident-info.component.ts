@@ -109,7 +109,7 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     let navigationExtras: NavigationExtras = {queryParams: {id: encryptedResid}}
     this.router.navigate(['residentdetail'], navigationExtras)
   }
-  
+
   // onClickEdit(obj: any) {
   //   console.log(obj);
   //   console.log(obj.id);

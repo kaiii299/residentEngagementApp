@@ -1,9 +1,13 @@
-import { Component, Inject } from "@angular/core";
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
-import { BehaviorSubject } from "rxjs/internal/BehaviorSubject";
-import { Observable } from "rxjs/internal/Observable";
+import { Component, Inject, ViewChild } from '@angular/core';
+import {
+  MatDialog,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
 import * as XLSX from 'xlsx';
-import { DialogData } from "../user-profile/user-profile.component";
+import { DialogData } from '../user-profile/user-profile.component';
+import Swal from 'sweetalert2';
+import { SpreadsheetComponent, BeforeSaveEventArgs } from '@syncfusion/ej2-angular-spreadsheet';
 
 @Component({
   selector: 'excel-preview-dialog',
@@ -14,22 +18,36 @@ export class excelPreviewDialog {
   deleteConfirmation = '';
   message = '';
   text: any;
+  BufferArray = Array();
+  userData = Array() ;
+  dataArray = Array();
+  data: any;
   fileName = 'user-details.xlsx';
-  userList: any;
 
   constructor(public dialogRef: MatDialogRef<excelPreviewDialog>,
      private dialog: MatDialog,
      @Inject(MAT_DIALOG_DATA) public _data: DialogData) {
     dialogRef.disableClose = true;
-    var _userList = _data;
-    this.userList = _userList
-    console.log(this.userList)
+    this.data = _data
+    this.dataArray = this.data
+    this.dataArray.forEach((doc)=>{
+      const data = doc
+      this.data = data
+      delete this.data.id
+      this.BufferArray.push(this.data)
+    })
+    this.BufferArray.forEach((doc)=>{
+      this.userData.push(doc.data)
+    })
   }
 
   ngOnInit(): void { }
 
   close(): void {
     this.dialogRef.close();
+  }
+
+  beforeSave (args: BeforeSaveEventArgs) {
   }
 
   exportexcel(): void

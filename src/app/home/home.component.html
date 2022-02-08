@@ -12,15 +12,15 @@
         <form class="login-form">
           <span class="material-icons">lock</span>
           <mat-label>Username</mat-label>
-          <input type="text" placeholder="email*" class="email" required [(ngModel)]="loginData.email" [ngModelOptions]="{standalone: true}"
+          <input type="text" placeholder="email*" class="email" required [(ngModel)]="email" [ngModelOptions]="{standalone: true}"
             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" required />
 
             <mat-label>Password</mat-label>
-          <input [type]="hide ? 'password' : 'text'" placeholder="password*" class="password" [(ngModel)]="loginData.password" required [ngModelOptions]="{standalone: true}"/>
+          <input [type]="hide ? 'password' : 'text'" placeholder="password*" class="password" [(ngModel)]="password" required [ngModelOptions]="{standalone: true}"/>
           <button type="button" class="eye" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
           <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
         </button>
-          <a routerLink="forgetpassword"
+          <a (click)="openForgetPassword()"
             class="forget">Forget?
           </a>
           <p class="message">{{message}}</p>

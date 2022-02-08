@@ -4,7 +4,7 @@
         <form [formGroup]="surveyForm">
             <mat-form-field appearance="fill">
                 <mat-label>Choose the date of survey</mat-label>
-                <input matInput [matDatepicker]="picker" formControlName="date">
+                <input title="date picker" matInput [matDatepicker]="picker" formControlName="date">
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
@@ -28,15 +28,15 @@
                 </label>
             </div>
             <label>Number of elderly in the family (aged 60 & above)</label>
-            <input class="form-control" formControlName="numElderly">
+            <input title='form-control' class="form-control">
             <label>No of adults in the family (aged between 26 - 59)</label>
-            <input class="form-control" formControlName="numAdult">
+            <input title='form-control' class="form-control">
             <label>No of youth in the family (aged between 13 - 25)</label>
-            <input class="form-control" formControlName="numYouth">
+            <input  title='form-control'class="form-control">
             <label>No of young children in the family (aged 12 & below)</label>
-            <input class="form-control" formControlName="numChild">
+            <input title='form-control' class="form-control">
             <label>What are the jobs of all the people in the household who are working?</label>
-            <input class="form-control" type="text" formControlName="job">
+            <input title='form-control' class="form-control">
         </form>
         <div class="alert alert-success" *ngIf="submitStatus">
             <label class="success">{{submitStatus}}</label>

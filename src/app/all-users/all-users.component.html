@@ -30,6 +30,7 @@
         <mat-select
           class="select"
           placeholder="Committee"
+          (selectionChange)="onChange($event.value)"
           [(ngModel)]="committeesValue"
           [ngModelOptions]="{ standalone: true }"
         >
@@ -38,6 +39,18 @@
             class="list"
             [value]="committee"
             >{{ committee }}</mat-option
+          >
+        </mat-select>
+
+        <mat-select
+          class="select"
+          *ngIf="committeesValue || committeesValue != ''"
+          placeholder="Block Number"
+          [(ngModel)]="blockNumberValue"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          <mat-option *ngFor="let blk of availableBlocks" [value]="blk">
+            {{ blk }}</mat-option
           >
         </mat-select>
 
@@ -68,6 +81,7 @@
 
         <mat-select
           class="select"
+          *ngIf="_role == 'Admin'"
           placeholder="Request Status"
           [(ngModel)]="requestStatusValue"
           [ngModelOptions]="{ standalone: true }"
@@ -84,8 +98,12 @@
           mat-button
           class="filter-btn"
           (click)="filter()"
-          [disabled]="variableValue == defaultValue &&
-            committeesValue == '' && roleValue == '' && statusValue == '' && requestStatusValue == ''
+          [disabled]="
+            variableValue == defaultValue &&
+            committeesValue == '' &&
+            roleValue == '' &&
+            statusValue == '' &&
+            requestStatusValue == ''
           "
         >
           Filiter
@@ -102,10 +120,11 @@
             matInput
             [(ngModel)]="searchValue"
             [ngModelOptions]="{ standalone: true }"
-            placeholder="Type to search"
-            (keyup)="applyFilter($event)"
-            #input
+            placeholder="Press enter to search"
+            autocomplete="off"
+            (keydown)="searchInput($event)"
             class="search"
+            #input
           />
         </mat-card>
 
@@ -117,6 +136,14 @@
               >Total Number of Users: <b>{{ totalCount }}</b>
             </mat-label>
             <div class="buttonContainer">
+              <button
+                type="button"
+                mat-button
+                class="excel-btn"
+                (click)="openExcelPreviewDialog()"
+              >
+                <mat-icon>cloud_download</mat-icon> Export
+              </button>
               <span
                 mat-button
                 class="excel-btn"
@@ -126,13 +153,11 @@
                 <mat-icon>attachment</mat-icon> upload
               </span>
               <button
+                type="button"
                 mat-button
                 class="excel-btn"
-                (click)="openExcelPreviewDialog()"
+                (click)="refresh()"
               >
-                <mat-icon>cloud_download</mat-icon> Export
-              </button>
-              <button mat-button class="excel-btn" (click)="refresh()">
                 Refresh
               </button>
             </div>

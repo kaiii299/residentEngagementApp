@@ -15,7 +15,7 @@ export class ResidentService {
 
   baseUrl = Constants.baseURL;
   secretKey = Constants.secretKey;
-  
+
   eventcbResidentData = new Subject<any>();
   eventcbResidentData$ = this.eventcbResidentData.asObservable();
 
@@ -27,7 +27,7 @@ export class ResidentService {
   encryptData(value: any) {
     return CryptoJS.AES.encrypt(value, this.secretKey.trim()).toString();
   }
-  
+
   decryptData(textToDecrypt: any) {
     console.log("decrpt");
     console.log(textToDecrypt);
@@ -42,8 +42,8 @@ export class ResidentService {
 
   async getAllResidents(body: any) {
     //return this.firestore.collection('residents').valueChanges({ idField: 'id' });
-    return await this.http.post(this.baseUrl + "/getAllResidents", body).toPromise().then((data) => {
-      return data;
+    return await this.http.get(this.baseUrl + "/getAllResidents").toPromise().then((data) => {
+      this.eventcbResidentData.next(data);
     }).catch(err => {
       if (err instanceof HttpErrorResponse) {
         if (err) {
@@ -102,6 +102,7 @@ export class ResidentService {
 
   async filterResident(body: any) {
     return await this.http.post(this.baseUrl +"/filterResident ", body).toPromise().then((data) => {
+      this.eventcbResidentData.next(data);
       return data;
     }).catch(err => {
       if (err instanceof HttpErrorResponse) {

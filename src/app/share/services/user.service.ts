@@ -8,20 +8,19 @@ import { Observable } from 'rxjs/internal/Observable';
 import { Subject } from 'rxjs/internal/Subject';
 import { Constants } from 'src/app/constants';
 import { Authservice } from './auth.service';
-
+import Swal from 'sweetalert2';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class userService{
-
+export class userService {
   baseUrl = Constants.baseURL;
 
   eventcbUserData = new Subject<any>();
   eventcbUserData$ = this.eventcbUserData.asObservable();
 
-  eventcbFilterData = new Subject<Object>();
-  eventcbFilterData$ = this.eventcbFilterData.asObservable();
+  // eventcbFilterData = new Subject<Object>();
+  // eventcbFilterData$ = this.eventcbFilterData.asObservable();
 
   newUserId: any | undefined;
   currentLogedInUserId: any;
@@ -34,29 +33,43 @@ export class userService{
     private firebaseAuth: AngularFireAuth,
     private db: AngularFirestore,
     private router: Router,
-    private dialog: MatDialog,
+    private dialog: MatDialog
   ) {}
 
-  getUserbyFilter(category: any, keyword: any) {
-    this.http
-      .get(this.baseUrl + '/search/' + category + '/' + keyword)
+  async getAllUsers() {
+    return await this.http
+      .get(this.baseUrl + '/getAllUsers')
       .toPromise()
       .then((data) => {
-        console.log(data);
-        this.eventcbFilterData.next(data);
+        this.eventcbUserData.next(data);
+      })
+  }
+
+  async searchUserData(body: any) {
+    return await this.http
+      .post(this.baseUrl + '/searchUserByName', body)
+      .toPromise()
+      .then((data) => {
+        this.eventcbUserData.next(data);
+      })
+      .catch((err) => {
+        if (err instanceof HttpErrorResponse) {
+          if (err) {
+            console.log(err);
+            Swal.fire('ERROR', `${err.message}`, 'error');
+          }
+        }
       });
   }
 
-  // getUserbyFilter(committee: any, role: any, status: any) {
-  //   this.http
-  //     .get(this.baseUrl + '/search/' + committee + '/' + role + '/' + status)
-  //     .toPromise()
-  //     .then((data) => {
-  //       console.log(data);
-  //       this.eventcbFilterData.next(data);
-  //     });
-  // }
-  
+  async filterUser(body:any){
+    return await this.http.post(this.baseUrl + '/filter', body).toPromise().then((data)=>{
+      this.eventcbUserData.next(data);
+    }).catch((err)=>{
+      Swal.fire('ERROR',`${err.message}`,'error')
+    });
+  }
+
   async register(email: string, password: string) {
     await this.firebaseAuth
       .createUserWithEmailAndPassword(email, password)
@@ -69,9 +82,9 @@ export class userService{
     return this.db.collection('Users').doc(this.newUserId).set(_userData);
   }
 
-  createNewUserFromRequest(_userData: any, uid: any){
+  createNewUserFromRequest(_userData: any, uid: any) {
     return this.db.collection('Users').doc(uid).set(_userData);
-    }
+  }
 
   getUserById(id: any) {
     return this.http.get(this.baseUrl + '/getUsers/' + id) as Observable<any>;
@@ -105,5 +118,4 @@ export class userService{
       localStorage.clear();
     }
   }
-
 }

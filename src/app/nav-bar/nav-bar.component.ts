@@ -46,7 +46,9 @@ export class NavBarComponent implements OnInit {
     });
     if (!this.role || this.role == undefined) {
       let _role = localStorage.getItem('role');
-      this.role = this.authService.decryptData(_role);
+      if(_role){
+        this.role = this.authService.decryptData(_role);
+      }
     }
   }
 

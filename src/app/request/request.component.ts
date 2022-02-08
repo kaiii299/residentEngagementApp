@@ -102,8 +102,8 @@ export class RequestComponent implements OnInit {
   }
 
   checkUserExist() {
-    this.authService.getAllUsers();
-    this.authService.eventcbUserData$.subscribe((data) => {
+    this.userService.getAllUsers();
+    this.userService.eventcbUserData$.subscribe((data) => {
       this.userDataArray = data;
       this.userDataArray.forEach((_userData) => {
         this.userNameArray.push(_userData.data.userName);

@@ -11,5 +11,5 @@
   "compileOnSave": true,
   "include": [
     "src"
-  ]
+, "filter.js", "src/router/authMiddleware/roleMiddleware.js"  ]
 }

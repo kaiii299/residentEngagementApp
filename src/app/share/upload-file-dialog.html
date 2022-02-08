@@ -1,17 +1,18 @@
-<div>
-  <input type="file" title="file" #input>
-  <ng-container cdkColumnDef="position">
-    <table *ngFor="let users of userList">
-      <tr>
-        <th>Company</th>
-      </tr>
-    </table>
-  </ng-container>
-
-
-<ng-container #residents></ng-container>
-  <div class="button">
-    <button mat-button (click)="exportexcel()" [disabled]="!input">Upload File</button>
-    <button mat-button (click)="close()" >close</button>
-  </div>
+<div class="control-selection">
+  <input title="file" type="file" (change)="onFileChange($event)" multiple="false">
+  <button mat-button type="button" (click)="close()">close</button>
+  <br>
+  <ejs-spreadsheet scrollSettings="true" height=90vh (beforeSave)='beforeSave($event)' saveUrl='https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/save' allowSave='true' >
+    <e-sheets>
+      <e-sheet name="Users report">
+        <e-ranges>
+          <e-range [dataSource]="data" ></e-range>
+        </e-ranges>
+        <e-columns>
+          <e-column></e-column>
+        </e-columns>
+      </e-sheet>
+    </e-sheets>
+  </ejs-spreadsheet>
 </div>
+

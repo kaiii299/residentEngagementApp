@@ -47,6 +47,7 @@ import {MatCardModule} from '@angular/material/card';
 import { ScheduleModule } from '@syncfusion/ej2-angular-schedule';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core'
 
 
 
@@ -138,6 +139,7 @@ import { userService } from './share/services/user.service';
     useClass: AuthInterceptor,
     multi: true,
   },
+  { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
     HasRoleGuard,
     Authservice,
     userService,

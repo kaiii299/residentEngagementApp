@@ -46,6 +46,7 @@ import {CdkTableModule} from '@angular/cdk/table';
 import {MatCardModule} from '@angular/material/card';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
+import { MAT_DATE_LOCALE } from '@angular/material/core'
 
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/database'
@@ -64,6 +65,8 @@ import { ScheduleAllModule, ScheduleModule} from '@syncfusion/ej2-angular-schedu
 import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import {MatBadgeModule} from '@angular/material/badge';
+import { ExcelExportResidentsComponent } from './excel-export-residents/excel-export-residents.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -88,6 +91,9 @@ import {MatBadgeModule} from '@angular/material/badge';
     SpinnerComponent,
     RequestComponent,
     DashboardComponent,
+    ExcelExportResidentsComponent,
+
+
   ],
   imports: [
     CommonModule,
@@ -136,6 +142,7 @@ import {MatBadgeModule} from '@angular/material/badge';
     useClass: AuthInterceptor,
     multi: true,
   },
+  { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
     HasRoleGuard,
     Authservice,
     userService,

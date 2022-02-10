@@ -95,9 +95,11 @@ export class Authservice {
                 );
 
                 localStorage.setItem('role', encryptedRole);
-                this.eventcbRole.next(this.currentUserObject.userData.role);
-                this.eventCallbackuserName.next(this.currentUserObject.userData.userName);
-              }
+                this.eventcbRole.next(userdata.userData.role);
+                this.eventCallbackuserName.next(userdata.userData.userName);
+                var encryptedCommittee = this.encryptData(this.currentUserObject.userData.committee);
+                localStorage.setItem("committee", encryptedCommittee);
+              });
             });
           });
           const encryptedText = this.encryptData(res.user?.uid);
@@ -117,8 +119,6 @@ export class Authservice {
    return this.http.get(this.baseUrl + '/currentUser/' + id) as Observable<any>;
     // return this.db.collection('Users').doc(id).valueChanges();
   }
-
-
 
   SwalFire(title: string, icon: string) {
     Swal.fire({

@@ -5,10 +5,10 @@ const router = express.Router();
 const admin = require("firebase-admin");
 admin.initializeApp(functions.config().firebase);
 const userDb = admin.firestore().collection("Users");
+const {allowedUsers} = require('./authMiddleware/roleMiddleware');
 router.use(express.json());
-const {allowedUsers} = require('./src/router/authMiddleware/roleMiddleware.js');
 
-router.post("/", allowedUsers(['Admin', 'CC staff', 'Key Ccc Members', 'RN Manager', 'key RN Manager']), async (req, res)=>{
+router.post("/", allowedUsers(['Admin', 'CC staff', 'Key Ccc Members', 'RN Manager', 'key RN Members']), async (req, res)=>{
   const users = [];
   const reqBody = req.body;
   const committee = reqBody.committee;
@@ -159,6 +159,28 @@ router.post("/", allowedUsers(['Admin', 'CC staff', 'Key Ccc Members', 'RN Manag
     const snapShot = await userDb
         .where('committee', '==', committee)
         .where('blockNumber', '==', blockNumber)
+        .get();
+    snapShot.forEach((doc)=>{
+      const id = doc.id;
+      const data = doc.data();
+      users.push({id, data});
+    });
+  }
+  if (committee && !blockNumber && !role && status && !requestStatus) {
+    const snapShot = await userDb
+        .where('committee', '==', committee)
+        .where('status', '==', status)
+        .get();
+    snapShot.forEach((doc)=>{
+      const id = doc.id;
+      const data = doc.data();
+      users.push({id, data});
+    });
+  }
+  if (committee && !blockNumber && role && !status && !requestStatus) {
+    const snapShot = await userDb
+        .where('committee', '==', committee)
+        .where('role', '==', role)
         .get();
     snapShot.forEach((doc)=>{
       const id = doc.id;

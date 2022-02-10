@@ -14,6 +14,7 @@ message= " "
 email: any;
 password: any;
 hide = true
+
   constructor(private forgetPasswordService: ForgetPasswordService,private authService: Authservice,private route: Router) { }
 
   ngOnInit(): void {
@@ -29,7 +30,7 @@ hide = true
     }
 
     else{
-      this.authService.signIn(this.email, this.password).then((res)=>{
+      this.authService.signIn(this.email.trim(), this.password).then((res)=>{
 
      }).catch(error=>{
        this.message = "Wrong username or password"

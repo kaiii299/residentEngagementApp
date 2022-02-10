@@ -22,8 +22,7 @@ const routes: Routes = [
   {
     path: 'createnewuser',
     component: RegisterComponent,
-    canActivate: [AuthRouteGuard],
-    //data: { role: 'Admin' },
+    canActivate: [AuthRouteGuard, HasRoleGuard],
   },
   {
     path: 'requestaccount',
@@ -45,7 +44,7 @@ const routes: Routes = [
   {
     path: 'events',
     component: EventsPageComponent,
-    //canActivate: [AuthRouteGuard, HasRoleGuard],
+    canActivate: [AuthRouteGuard],
     //data: { role: 'Admin' },
   },
   {
@@ -61,8 +60,8 @@ const routes: Routes = [
     //data: { role: 'Admin' },
   },
   { path: 'updateresident', component: UpdateResidentComponent },
-  { 
-    path: 'residentinfo', 
+  {
+    path: 'residentinfo',
     component: ResidentInfoComponent ,
     canActivate: [AuthRouteGuard],
   },

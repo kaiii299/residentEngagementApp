@@ -35,13 +35,6 @@ export class ResidentDetailComponent implements OnInit {
     
   }
 
-  // ngOnInit(): void {
-  //   this.residentService.getResidentById(this.residentId).subscribe(residentInfo => {
-  //     console.log(residentInfo);
-  //     this.residentDetail = residentInfo;
-  //   })
-  // }
-
   async ngOnInit() {
     const decryptedResid = this.residentService.decryptData(this.resid);
     await this.residentService.getResidentById(decryptedResid).toPromise().then((data) => {

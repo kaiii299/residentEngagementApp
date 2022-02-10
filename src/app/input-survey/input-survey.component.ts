@@ -6,11 +6,10 @@ import { ActivatedRoute } from '@angular/router';
 import { ResidentService } from '../resident.service';
 
 
-
 @Component({
   selector: 'app-input-survey',
   templateUrl: './input-survey.component.html',
-  styleUrls: ['./input-survey.component.scss']
+  styleUrls: ['./input-survey.component.scss'],
 })
 export class InputSurveyComponent implements OnInit {
   surveyForm: FormGroup;
@@ -67,9 +66,13 @@ export class InputSurveyComponent implements OnInit {
         selected_activities.push(get_activity);
       }
     }
+    let formattedDate = value.date.toLocaleDateString();
+    console.log("Formatted Date")
+    console.log(formattedDate);
     if (this.surveyForm.valid && selected_contact.length !=0 && selected_activities.length !=0){
       value.contact = selected_contact;
       value.activities = selected_activities;
+      value.date = formattedDate;
       let survey = {
         residentId: this.decryptedResid,
         date: value.date,

@@ -17,8 +17,6 @@ import { Constants } from '../constants';
 import { Observable } from 'rxjs/internal/Observable';
 import { RequestNewUserService } from '../share/services/request-new-user.service';
 import { userService } from '../share/services/user.service';
-import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-request',
@@ -46,7 +44,7 @@ export class RequestComponent implements OnInit {
   isExistUserName: any;
   isExistEmail: any;
   message: string;
-  email ='';
+  email: string;
   userName = '';
   firstName: string;
   phoneNumber: string;
@@ -83,7 +81,6 @@ export class RequestComponent implements OnInit {
   filterdBlockNumbers: Observable<string[]>;
 
   constructor(
-    private router: Router,
     private userService: userService,
     private requestNewUserService: RequestNewUserService,
     private _formBuilder: FormBuilder,
@@ -104,30 +101,31 @@ export class RequestComponent implements OnInit {
     });
   }
 
-  async checkUserExist() {
-    if(this.userName){
-      this.userService.checkUserName(this.userName).subscribe((res)=>{
-        if(res.length !== 0){
-          this.isExistUserName = true;
-        }else{
-          this.isExistUserName = false;
-        }
+  checkUserExist() {
+    this.userService.getAllUsers();
+    this.userService.eventcbUserData$.subscribe((data) => {
+      this.userDataArray = data;
+      this.userDataArray.forEach((_userData) => {
+        this.userNameArray.push(_userData.data.userName);
+        this.userEmailArray.push(_userData.data.email);
       });
-    }
-    else if(this.email.trim()){
-      this.userService.checkEmailExist(this.email).subscribe((res: any)=>{
-        console.log(res);
-        if(res.length !== 0){
-          this.isExistEmail = true;
-        }else{
-          this.isExistEmail = false;
-        }
-      })
-    }
-    else if(this.email == "" || this.userName == ""){
-      this.isExistEmail = false;
-      this.isExistUserName = false;
-    }
+      if (this.userNameArray.includes(this.userName)) {  //check if username exists
+        this.isExistUserName = true;
+        this.eventcbIsExistUserName.emit(this.isExistUserName);
+      } else {
+        this.isExistUserName = false;
+        this.eventcbIsExistUserName.emit(this.isExistUserName);
+      }
+      if(this.userEmailArray.includes(this.email)){  //check if email exists
+        this.isExistEmail = true;
+        this.eventcbIsExistEmail.emit(this.isExistEmail);
+      } else{
+        this.isExistEmail = false;
+        this.eventcbIsExistEmail.emit(this.isExistEmail);
+      }
+      const emptyArr = Array();
+      this.userNameArray = emptyArr;
+    });
   }
 
   getErrorMessage() {
@@ -145,13 +143,17 @@ export class RequestComponent implements OnInit {
     }
     if (this.phoneNumber.length < 8) {
       this.message = 'Invalid Phone Number';
-    } else if (this.isExistUserName == true) {
-      this.message = 'Username is in use';
-    } else if (this.strengthColor == 'red') {
-      Swal.fire("Password too weak",'Minium 8 character. Include uppercase, numbers and special characters', 'warning')
-    } else if (this.password !== this.repeatPassword) {
-      Swal.fire('Password does not match','','error')
-    } else {
+    }
+    else if (this.isExistUserName == true) {
+      this.message = "Username is in use";
+    }
+    else if (this.password != this.repeatPassword) {
+      this.message = 'Password does not match';
+    }
+    else if (this.strengthColor == 'red') {
+      this.message = 'Password too weak.';
+    }
+    else {
       this.message = '';
       this.myStepper.next();
     }
@@ -187,13 +189,13 @@ export class RequestComponent implements OnInit {
       this.secondFormGroup.invalid,
       !this.blockNumberValue)
     ) {
-      Swal.fire('There are still missing fields','','error')
+      this.message = 'There are still missing form fields';
     } else {
       this.registeredDate = new Date().toLocaleDateString();
       this.registeredTime = new Date().toLocaleTimeString();
 
       let newUser: any = {};
-      newUser['email'] = this.email.trim();
+      newUser['email'] = this.email;
       newUser['userName'] = this.userName;
       newUser['firstName'] = this.firstName;
       newUser['phoneNumber'] = this.phoneNumber;
@@ -203,21 +205,23 @@ export class RequestComponent implements OnInit {
       newUser['blockNumber'] = this.blockNumberValue;
       newUser['registrationDate'] = this.registeredDate;
       newUser['registrationTime'] = this.registeredTime;
-      newUser['status'] = 'Inactive';
+      newUser['status'] = 'Active';
       newUser['requestStatus'] = "Pending";
       newUser['isRequested'] = true;
 
       console.log(newUser)
       this.userService.register(this.email, this.password).then(res => {
         this.userService.createNewUser(newUser).then(res => {
-          Swal.fire('Request sent!','Reqest is now pending','success')
-          this.router.navigate(['/'])
+          this.message = "User request sent"
+          this.messageColor = "Green"
         }).catch(error => {
-          Swal.fire('Error sending Email','','error')
+          this.message = "Error sending request. Try again"
+          this.messageColor = "red"
           console.log(error)
         })
       }).catch(error => {
-        Swal.fire('The email address is not valid',`${error}`,'error')
+        this.message = "The Email address is in use"
+        this.messageColor = "red"
         console.log(error)
       });
     }

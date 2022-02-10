@@ -135,7 +135,7 @@
             <button
               class="edit-btn"
               type="button"
-              *ngIf="requestStatus && status != 'Inactive'"
+              *ngIf="requestStatus"
               [disabled]="updateUserForm.pristine || isExistEmail || isExistUserName"
               (click)="openEditDialog()"
             >
@@ -146,14 +146,14 @@
               class="forget-btn"
               type="button"
               (click)="openForgetPassword()"
-              *ngIf="requestStatus =='Accepted' && status == 'Active'"
+              *ngIf="requestStatus =='Accepted' "
             >
               Change Password
             </button>
-            <button class="forget-btn" type="button" *ngIf="requestStatus == 'Pending'" (click)="openAcceptDialog()">
+            <button class="forget-btn" type="button" *ngIf="requestStatus != 'Accepted'" (click)="openAcceptDialog()">
               Accept
             </button>
-            <button class="delete-btn" type="button" *ngIf="requestStatus == 'Pending'" (click)="openRejectDialog()">
+            <button class="delete-btn" type="button" *ngIf="requestStatus != 'Accepted'" (click)="openRejectDialog()">
               Reject
             </button>
 
@@ -164,11 +164,12 @@
               (click)="delete()"
               *ngIf="
                 this.allowDeleteUser.indexOf(_role) > -1 &&
-                requestStatus == 'Accepted' && status != 'Inactive'  && !isOwn
+                requestStatus == 'Accepted' && status != 'Inactive'
               "
             >
               Delete Account
             </button>
+
             <button
               mat-button
               class="reactivate-btn"
@@ -176,24 +177,11 @@
               (click)="reactivate()"
               *ngIf="
                 this.allowDeleteUser.indexOf(_role) > -1 &&
-                requestStatus == 'Rejected' || status == 'Inactive' && !isOwn
+                requestStatus == 'Accepted' && status == 'Inactive'
               "
             >
               Reacivate Account
             </button>
-
-            <button
-            mat-button
-            class="delete-btn2"
-            type="button"
-            (click)="deletePermanently()"
-            *ngIf="
-              this.allowDeleteUser.indexOf(_role) > -1 &&
-              requestStatus == 'Rejected' || status == 'Inactive' && !isOwn
-            "
-          >
-            Delete Forever
-          </button>
 
             <button
               mat-button

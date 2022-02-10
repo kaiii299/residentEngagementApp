@@ -48,7 +48,6 @@ export abstract class Constants {
     'registrationDate',
     'LastUpdatedDate',
     'LastUpdatedTime',
-    'requestStatus'
   ];
 
   static readonly roles: string[] = [
@@ -112,8 +111,4 @@ export abstract class Constants {
   static readonly secretKey: string = 'YourSecretKeyForEncryption&Descryption';
 
   static readonly allowDeleteUser = ['Admin', 'CC staff', 'RN Manager'];
-
-  static readonly allowDeleteCommitteUser = ['Admin','CC staff', 'RN Manager'];
-
-  static readonly allowViewAllUsers = ['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']
 }

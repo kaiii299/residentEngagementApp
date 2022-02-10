@@ -38,7 +38,7 @@ export class EventsPageComponent implements OnInit  {
       });
   }
   ngOnInit(): void {
-
+    
   }
   public onActionBegin(args: any): void {
     if (args.requestType == "eventChange") {

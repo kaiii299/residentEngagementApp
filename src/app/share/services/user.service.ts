@@ -19,8 +19,8 @@ export class userService {
   eventcbUserData = new Subject<any>();
   eventcbUserData$ = this.eventcbUserData.asObservable();
 
-  eventcbPendingData = new Subject<Object>();
-  eventcbFilterData$ = this.eventcbPendingData.asObservable();
+  // eventcbFilterData = new Subject<Object>();
+  // eventcbFilterData$ = this.eventcbFilterData.asObservable();
 
   newUserId: any | undefined;
   currentLogedInUserId: any;
@@ -29,13 +29,12 @@ export class userService {
 
   constructor(
     private authService: Authservice,
-  private http: HttpClient,
+    private http: HttpClient,
     private firebaseAuth: AngularFireAuth,
     private db: AngularFirestore,
     private router: Router,
     private dialog: MatDialog
-  ) {
-  }
+  ) {}
 
   async getAllUsers() {
     return await this.http
@@ -47,7 +46,6 @@ export class userService {
   }
 
   async searchUserData(body: any) {
-    console.log(body);
     return await this.http
       .post(this.baseUrl + '/searchUserByName', body)
       .toPromise()
@@ -88,9 +86,8 @@ export class userService {
     return this.db.collection('Users').doc(uid).set(_userData);
   }
 
-
   getUserById(id: any) {
-    return this.http.get(this.baseUrl + '/getUser/' + id) as Observable<any>;
+    return this.http.get(this.baseUrl + '/getUsers/' + id) as Observable<any>;
   }
 
   async updateUserData(uid: any, userData: any) {
@@ -103,36 +100,6 @@ export class userService {
   async forgetPassword(email: string) {
     await this.firebaseAuth.sendPasswordResetEmail(email).then((res) => {});
   }
-
-  // checkUserName(userName: any){
-  //   return this.http.get(this.baseUrl + '/checkUserName/' + userName) as Observable<any>;
-  // }
-
-  checkUserName(userName: any){
-    var residentRef = this.db.collection<any>('Users', tempRes => {
-      return tempRes
-        .where('userName', '==', userName)
-    });
-    return residentRef.valueChanges();
-  }
-
-  checkPendingUsers(){
-    var residentRef = this.db.collection<any>('Users', tempRes => {
-      return tempRes
-        .where('requestStatus', '==', 'Pending')
-    });
-    return residentRef.valueChanges();
-  }
-
-   checkEmailExist(email: any){
-    var residentRef = this.db.collection<any>('Users', tempRes => {
-      return tempRes
-        .where('email', '==', email)
-    });
-    return residentRef.valueChanges();
-  }
-
-
 
   deleteUserbyId(uid: any) {
     console.log(uid);

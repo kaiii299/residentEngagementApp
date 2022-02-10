@@ -9,7 +9,6 @@ import { Authservice } from '../share/services/auth.service';
 import { userDataInterface } from 'src/app/share/services/Users';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { userService } from '../share/services/user.service';
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -21,10 +20,8 @@ export class NavBarComponent implements OnInit {
   userArray = Array();
   displayName: any;
   role: any;
-  hidden = false;
-  pendingNumber: any;
+
   constructor(
-    public userService: userService,
     public authService: Authservice,
     public dialog: MatDialog,
     private router: Router,
@@ -42,7 +39,6 @@ export class NavBarComponent implements OnInit {
       this.displayName = userName;
       var encrypted = this.authService.encryptData(this.displayName);
       localStorage.setItem('username', encrypted);
-
     });
 
     this.authService.eventcbRole$.subscribe((role) => {
@@ -54,18 +50,6 @@ export class NavBarComponent implements OnInit {
         this.role = this.authService.decryptData(_role);
       }
     }
-    this.checkPending();
-  }
-
-  checkPending(){
-    this.userService.checkPendingUsers().subscribe((res)=>{
-      if(res.length !== 0){
-        this.pendingNumber = res.length
-      }
-      else{
-        this.hidden = true
-      }
-    })
   }
 
   userProfile() {

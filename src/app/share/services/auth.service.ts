@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Subject} from 'rxjs';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient} from '@angular/common/http';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { userDataInterface } from './Users';
 import { Router } from '@angular/router';
@@ -11,7 +11,6 @@ import { Constants } from 'src/app/constants';
 import { MatDialog } from '@angular/material/dialog';
 import { userService } from './user.service';
 import Swal from 'sweetalert2'
-import { AngularFirestore } from '@angular/fire/firestore';
 
 @Injectable()
 export class Authservice {
@@ -38,6 +37,12 @@ export class Authservice {
   eventcbRefresh = new BehaviorSubject<any>("");
   eventcbRefresh$ = this.eventcbRefresh.asObservable();
 
+  eventcbisVerified = new Subject<any>();
+  eventcbisVerified$ = this.eventcbisVerified.asObservable();
+
+  eventcbIsOTPCompleted = new Subject<any>();
+  eventcbIsOTPCompleted$ = this.eventcbIsOTPCompleted.asObservable();
+
   encryptedToken = localStorage.getItem('token');
 
   baseUrl = Constants.baseURL;
@@ -46,13 +51,12 @@ export class Authservice {
   phoneNumber: any;
   isSent = false;
   isVerify = false;
-  otpCompleted: boolean;
+  otpCompleted : boolean;
 
   constructor(
     private userService: userService,
     private http: HttpClient,
     private firebaseAuth: AngularFireAuth,
-    private db: AngularFirestore,
     private router: Router,
     private location: Location,
     private dialog: MatDialog
@@ -60,40 +64,32 @@ export class Authservice {
 
   }
 
+
+
   async signIn(email: string, password: string) {
     return await this.firebaseAuth
       .signInWithEmailAndPassword(email, password)
       .then((res) => {
-        if (res) {
-          res.user?.getIdToken().then((jwtToken) => {
-            this.eventcbRefresh.next(this.refreshToken);
-            this.eventcbJWT.next(jwtToken);
-            localStorage.setItem('token', jwtToken);
+          if (res) {
+            res.user?.getIdToken().then((jwtToken) => {
+              console.log(jwtToken);
 
-            this.CurrentUser(res.user?.uid ).subscribe((userdata) => {
-              this.currentUserObject = userdata;
-              console.log(this.currentUserObject);
-              if (
-                this.currentUserObject.userData.requestStatus == "Rejected" ||
-                this.currentUserObject.userData.requestStatus == "Inactive"
-              ) {
-                this.SwalFire('Account has been deactivated', 'error')
-              } else if (this.currentUserObject.requestStatus == "Pending" ||
-                this.currentUserObject.userData.requestStatus == "Inactive"
-              ) {
-                this.SwalFire('Account status is pending', 'error')
-              }
-              else {
-                this.refreshToken = res.user?.refreshToken;
-                localStorage.setItem('refreshToken', JSON.stringify(this.refreshToken))
+              this.refreshToken = res.user?.refreshToken;
+              localStorage.setItem('refreshToken', JSON.stringify(this.refreshToken))
+              this.eventcbRefresh.next(this.refreshToken);
+              this.eventcbJWT.next(jwtToken);
+              const encryptJwt = this.encryptData(jwtToken);
+              localStorage.setItem('token', encryptJwt);
+              this.userService.getUserById(res.user?.uid).subscribe((userdata) => {
+                this.currentUserObject = userdata;
                 this.phoneNumber = this.currentUserObject.phoneNumber
+                console.log(this.currentUserObject);
                 this.eventCallbackuserName.next(
                   this.currentUserObject.userData.userName
                 );
                 var encryptedRole = this.encryptData(
                   this.currentUserObject.userData.role
                 );
-
                 localStorage.setItem('role', encryptedRole);
                 this.eventcbRole.next(userdata.userData.role);
                 this.eventCallbackuserName.next(userdata.userData.userName);
@@ -101,24 +97,25 @@ export class Authservice {
                 localStorage.setItem("committee", encryptedCommittee);
               });
             });
-          });
-          const encryptedText = this.encryptData(res.user?.uid);
-          localStorage.setItem('uid', encryptedText);
-          const _uid = this.decryptData(encryptedText);
-          // this.router.navigate(['event'])
-        } else {
-          console.log('error');
-          localStorage.clear();
-          Swal.fire('Oops something went wrong', 'please log in again', 'error');
-          this.router.navigate(['/']);
-        }
+            const encryptedText = this.encryptData(res.user?.uid);
+            localStorage.setItem('uid', encryptedText);
+            const _uid = this.decryptData(encryptedText);
+          } else {
+            console.log('error');
+            localStorage.clear();
+            Swal.fire('Oops something went wrong', 'please log in again','error');
+            this.router.navigate(['/']);
+          }
       });
   }
 
-  CurrentUser(id: any){
-   return this.http.get(this.baseUrl + '/currentUser/' + id) as Observable<any>;
-    // return this.db.collection('Users').doc(id).valueChanges();
-  }
+//sign in with OTP
+  // async signIn(email: string, password: string) {
+  //   return await this.firebaseAuth
+  //     .signInWithEmailAndPassword(email, password)
+  //     .then((res) => {
+  //         if (res) {
+  //           res.user?.getIdToken().then((jwtToken) => {
 
   SwalFire(title: string, icon: string) {
     Swal.fire({
@@ -162,4 +159,134 @@ export class Authservice {
     this.location.back();
   }
 
+  async sendOTP(phoneNumber: any) {
+    return await this.http
+      .get(this.baseUrl + `/sendOTP/${phoneNumber}`)
+      .toPromise()
+      .then((res) => {
+        this.isSent = true
+      })
+      .catch((err) => {
+        this.isSent = false
+        console.log('Error sending otp', err);
+      });
+  }
+
+  async verifyOTP(phoneNumber: any, code: any) {
+    return await this.http
+      .get(this.baseUrl + `/sendOTP/verify/${phoneNumber}/${code}`)
+      .toPromise()
+      .then((res) => {
+        const data: any = res;
+        let stringData = JSON.stringify(data.status)
+        console.log(stringData);
+        if( stringData == "approved"){
+          this.isVerify = true;
+          this.eventcbisVerified.next(this.isVerify);
+        } else if(stringData == "pending"){
+          this.isVerify = false
+          this.eventcbisVerified.next(this.isVerify);
+          Swal.showValidationMessage(
+            '<i class="fa fa-info-circle"></i>Invalid OTP try again.'
+          );
+        }
+      })
+      .catch((err) => {
+        this.isVerify = false;
+        console.log('Error sending otp', err);
+      });
+  }
+
+  async openOTP(){
+     await Swal.fire({
+      title: 'OTP will be sent to',
+      showCancelButton: false,
+      showConfirmButton: true,
+      allowEscapeKey:false,
+      reverseButtons: false,
+      confirmButtonText: 'Send OTP',
+      showLoaderOnConfirm: true,
+      focusConfirm: false,
+      allowOutsideClick: false,
+      html:
+        `<input id="phoneNumber" placeholder="Phone number" value=${this.phoneNumber} readonly class="swal2-input" maxlength="8" type="email">`,
+      preConfirm: () => {
+        {
+          const phoneNumber: any = document.getElementById('phoneNumber');
+          this.phoneNumber = phoneNumber.value;
+          if(!this.phoneNumber){
+            Swal.showValidationMessage(
+              '<i class="fa fa-info-circle"></i>Phone number cannot be empty'
+            );
+          }
+         else if(this.phoneNumber.length < 8){
+            Swal.showValidationMessage(
+              '<i class="fa fa-info-circle"></i> Invalid phone number'
+            );
+          }
+        }
+      },
+    }).then((res)=>{
+      if(res.isConfirmed){
+        this.sendOTP(this.phoneNumber).then((res)=>{
+          console.log(res);
+          if(this.isSent == false){
+            Swal.fire({
+              title:'Error',
+              text:'Error sending OTP',
+              icon:'error',
+              showDenyButton: false,
+              showCancelButton: true,
+              confirmButtonText: 'Send Again',
+            }).then((res)=>{
+              if(res.isConfirmed){
+                this.openOTP();
+              }
+            })
+          }else{
+            Swal.fire({
+              title: 'OTP',
+              showCancelButton: false,
+              showConfirmButton: true,
+              allowEscapeKey:false,
+              reverseButtons: false,
+              confirmButtonText: 'Verify OTP',
+              showLoaderOnConfirm: true,
+              focusConfirm: false,
+              allowOutsideClick: false,
+              html:
+              `<input id="OTP" placeholder="OTP" class="swal2-input" maxlength="6" type="email">`,
+              preConfirm: () =>{
+                const _OTP: any = document.getElementById('OTP');
+                this.OTP = _OTP.value
+                if(!this.OTP){
+                  Swal.showValidationMessage(
+                    'OTP cannot be empty'
+                  )
+                }
+                else if(this.OTP.length < 6){
+                  'Invalid OTP'
+                }
+              }
+            }).then((res)=>{
+              if(res.isConfirmed){
+                this.verifyOTP(this.phoneNumber, this.OTP)
+                  this.eventcbisVerified$.subscribe((verified)=>{
+                    if (verified = true){
+                      this.eventcbIsOTPCompleted.next(true);
+                      Swal.fire('success','OTP verified', 'success');
+                      this.router.navigate(['list']);
+                    }
+                    else{
+                      this.eventcbIsOTPCompleted.next(false);
+                      Swal.showValidationMessage('Invalid OTP')
+                    }
+                  })
+              }
+            })
+          }
+        })
+      }
+    })
+  }
 }

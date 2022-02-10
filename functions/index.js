@@ -1,8 +1,7 @@
 /* eslint-disable require-jsdoc */
 /* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-
 "use strict";
+/* eslint-disable no-unused-vars */
 const morgan = require("morgan");
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
@@ -13,8 +12,7 @@ const bodyParser = require("body-parser");
 const router = require('./src/router/filter');
 const process = require('process');
 const sendMessage = require('./src/router/sendMessage');
-const CryptoJS = require("crypto-js");
-const secretKey = functions.config().cryptojs.secretkey;
+
 
 process.on('unhandledRejection', (error, promise) => {
   console.log('Error ', promise);
@@ -30,6 +28,7 @@ const userDb = admin.firestore().collection("Users");
 const residentDb = admin.firestore().collection("residents");
 const _authMiddleware = require("./src/router/authMiddleware/authMiddleware.js");
 const {allowedUsers} = require('./src/router/authMiddleware/roleMiddleware.js');
+
 const surveyDb = admin.firestore().collection("surveys");
 
 // Middleware
@@ -44,19 +43,9 @@ app.use('/sendOTP', sendMessage);
 app.options("*", cors());
 app.options("/deleteUser/:id", cors());
 
-// ---------------------------------------------------------------------------------------------------Encrypty&& Decrypt---------------------------------------------------------------------------------
-
-// encrypting and decrypting increase the loading speed by 15s so iv decide to remove it.
-function ecryptData(value) {
-  return CryptoJS.AES.encrypt(value, secretKey).toString();
-}
-
-function decryptData(value) {
-  const bytes = CryptoJS.AES.decrypt(value, secretKey.trim());
-  return bytes.toString(CryptoJS.enc.Utf8);
-}
-
 // ----------------------------------------------------------------------------------------------------USERS-----------------------------------------------------------------------------------------------
+
+
 app.all("/*", function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "DELETE, PUT, GET, POST");
@@ -67,58 +56,37 @@ app.all("/*", function(req, res, next) {
   next();
 });
 
-app.get("/getAllUsers", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']), async (req, res) => {
-  const Allusers = [];
-  try {
-    const snapshot = await userDb.get();
-    snapshot.forEach((doc) => {
-      const id = doc.id;
-      const data = doc.data();
-      ['LastUpdatedDate',
-        'registrationTime',
-        'regsitrationDate',
-        'LastUpdatedTime',
-        'gender',
-        'email',
-        'firstName',
-        'requestStatus',
-        'status',
-      ].forEach((e) => delete data[e]); // delete all this data
-      Allusers.push({id, data});
-    });
-    res.status(200).send(Allusers);
-  } catch (e) {
-    res.status(500).send(`ERROR! ${someUsers}, ${e}`);
+app.get("/getAllUsers", allowedUsers(['Admin', 'CC staff', 'Key Ccc Members', 'RN Manager', 'key RN Manager']), async (req, res) => {
+  const users = [];
+  const snapshot = await userDb.get();
+  snapshot.forEach((doc) => {
+    const id = doc.id;
+    const data = doc.data();
+    users.push({id, data});
+  });
+  res.status(200).send(users);
+});
+
+app.get("/getUsers/:id", async (req, res) => {
+  const snapshot = await userDb.doc(req.params.id).get();
+  const uid = snapshot.id;
+  const userData = snapshot.data();
+
+  res.status(200).send({id: uid, userData});
+});
+
+app.get("/checkUserName/:userName", async (req, res) => {
+  let isExist = false;
+  const userName = req.params.userName;
+  const snapshot = await userDb.where("userName", "==", userName).get();
+  if (!snapshot.empty) {
+    isExist = true;
+    res.status(200).send(isExist);
   }
+  res.status(200).send(isExist);
 });
 
-app.get("/currentUser/:id", async (req, res) => {
-  const snapshot = await userDb.doc(req.params.id).get();
-  const id = snapshot.id;
-  const userData = snapshot.data();
-  ['LastUpdatedDate',
-    'registrationTime',
-    'regsitrationDate',
-    'LastUpdatedTime',
-    'gender',
-    'email',
-    'firstName',
-    'isAccepted',
-  ]
-      .forEach((e) => delete userData[e]);
-  res.status(200).send({id, userData});
-});
-
-app.get("/getUser/:id", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members', 'Normal RN Members']), async (req, res) => {
-  const snapshot = await userDb.doc(req.params.id).get();
-  const id = snapshot.id;
-  const userData = snapshot.data();
-  ['LastUpdatedDate', 'registrationTime', 'regsitrationDate', 'LastUpdtedTime'].forEach((e) => delete userData[e]);
-  res.status(200).send({id, userData});
-});
-
-
-app.post("/searchUserByName", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']), async (req, res) => {
+app.post("/searchUserByName", async (req, res) => {
   const users = [];
   const searchKeyword = req.body.keyword;
   const snapshot = await userDb
@@ -133,6 +101,27 @@ app.post("/searchUserByName", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN 
   res.status(200).send(users);
 });
 
+app.get("/search/:category/:keyword", allowedUsers(['Admin', 'CC staff', 'Key Ccc Members', 'RN Manager', 'key RN Manager']), async (req, res) => {
+  const _users = [];
+  const category = req.params.category;
+  const keyword = req.params.keyword;
+  const snapshot = await userDb.where(category, "==", keyword).get();
+  // if not == to empty
+  snapshot.forEach((doc) => {
+    const id = doc.id;
+    const data = doc.data();
+    _users.push({id, data});
+  });
+  res.status(200).send(_users);
+});
+
+app.post("/createUser", allowedUsers(['Admin']), async (req, res) => {
+  const userData = req.body.userData;
+  const uid = req.body.uid;
+  await userDb.doc(uid).add(userData);
+  res.status(201).send("User created successfully", userData);
+});
+
 app.put("/update/:uid", async (req, res) => {
   const userData = req.body;
   const uid = req.params.uid;
@@ -140,7 +129,7 @@ app.put("/update/:uid", async (req, res) => {
   res.status(200).send("User successfully updated");
 });
 
-app.delete("/deleteUser/:id", allowedUsers(["Admin", "Cc staff"]), async (req, res) => {
+app.delete("/deleteUser/:id", async (req, res) => {
   await admin
       .auth()
       .deleteUser(req.params.id)
@@ -325,33 +314,28 @@ exports.onUserCreatedSendEmail = functions.firestore
           });
     });
 
-exports.onUserRquestedSendEmail = functions.firestore.document('Users/{userId}')
-    .onUpdate((snap, context) => {
-      const newValue = snap.after.data();
-      const previousValue = snap.before.data();
-
-      if (newValue.requestStatus !== previousValue.requestStatus) {
-        const user = snap.data();
-        const msg = {
-          to: user.email,
-          from: "residentappv2@gmail.com",
-          templateId: "d-670dcc0a3fc4493a8a727226970ca884",
-          dynamic_template_data: {
-            Subject: 'Your account status has been updated',
-            name: user.userName,
-            requestStatus: user.requestStatus,
-          },
-        };
-        sgMail
-            .send(msg)
-            .then(() => {
-              console.log(`Email sent to ${user.email}`);
-            })
-            .catch((err) => {
-              console.log("There is an error sending Email" + err);
-            });
-      }
-    });
+// exports.onUserRquestedSendEmail = functions.firestore
+//     .document("Users/{userId}/requestStatus")
+//     .onCreate((snap, context) => {
+//       const user = snap.data();
+//       const msg = {
+//         to: user.email,
+//         from: "residentappv2@gmail.com",
+//         templateId: "d-41f5040dd8e14b659ac15a5baba8adb0", // user created template
+//         dynamic_template_data: {
+//           Subject: "User Created Successfully!",
+//           name: user.userName,
+//         },
+//       };
+//       sgMail
+//           .send(msg)
+//           .then(() => {
+//             console.log(`Email sent to ${user.email}`);
+//           })
+//           .catch((err) => {
+//             console.log("There is an error sending Email" + err);
+//           });
+//     });
 
 exports.onUserDeletedSendEmail = functions.firestore
     .document("Users/{userId}")
@@ -376,4 +360,6 @@ exports.onUserDeletedSendEmail = functions.firestore
           });
     });
 
+
+// templateId: "d-670dcc0a3fc4493a8a727226970ca884", // request template
 

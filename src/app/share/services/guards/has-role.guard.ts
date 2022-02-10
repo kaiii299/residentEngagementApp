@@ -11,23 +11,16 @@ import { Authservice } from '../auth.service';
 
 @Injectable()
 export class HasRoleGuard implements CanActivate {
-  role: any;
-  constructor(private authService: Authservice, private router: Router) {}
+  constructor(private authService: Authservice) {}
 
   canActivate(
-    next: ActivatedRouteSnapshot,
-    state: any
-  ): Observable<boolean> | Promise<boolean> | boolean {
-    const permission = next.data['permission'];
-
-    const _role = localStorage.getItem('role');
-    this.role = this.authService.decryptData(_role);
-
-    if (this.role == 'Admin') {
-      return true;
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ):
+    | boolean
+    | UrlTree
+    | Observable<boolean | UrlTree>
+    | Promise<boolean | UrlTree> {
+      return this.authService.userInfo //.roles.inclue(route.data.role);
     }
-    localStorage.clear();
-    this.router.navigate(['/']);
-    return false;
-  }
 }

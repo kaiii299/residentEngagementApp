@@ -1,24 +1,20 @@
 <nav class="navbar fixed-top">
   <div class="title">Resident App</div>
   <ul class="open-menu">
-    <li><a routerLink="/" class="headings" *ngIf="!displayName">Home</a></li>
+    <li><a routerLink="/" class="headings"  *ngIf="!displayName">Home</a></li>
 
     <li>
       <div class="dropdown">
-        <a routerLink="events" routerLinkActive="active" class="headings"
-          >Events</a
-        >
+      <a routerLink="events" routerLinkActive="active" class="headings">Events</a>
       </div>
     </li>
 
     <li>
       <div class="dropdown">
-        <a class="headings">Resident Info</a>
+        <a class="headings" >Resident Info</a>
         <div class="dropdown-content">
           <a href="#">Dashboard</a>
-          <a routerLink="residentinfo" routerLinkActive="active"
-            >All Residents</a
-          >
+          <a routerLink="residentinfo" routerLinkActive="active">All Residents</a>
           <a routerLink="addresident" routerLinkActive="active">Add Resident</a>
         </div>
       </div>
@@ -26,45 +22,31 @@
 
     <li>
       <div class="dropdown">
-        <a *ngIf="displayName"
-        class="headings">Users</a>
+        <a *ngIf="displayName" class="headings">Users</a>
         <div class="dropdown-content">
-          <a
-          routerLink="allusers"
-          routerLinkActive="active"
-          [matBadgeHidden]="hidden"
-            matBadge={{pendingNumber}}
-            matBadgeSize="large"
-            matBadgeOverlap="true"
-            matBadgeColor="warn"
-            >All Users</a
-          >
-          <a routerLink="createnewuser" routerLinkActive="active"
-          *ngIf="role == 'Admin' "
-            >Add New User</a
-          >
+          <a routerLink="allusers" routerLinkActive="active" >All Users</a>
+          <a routerLink="createnewuser" routerLinkActive="active">Add New User</a>
         </div>
       </div>
     </li>
+
 
     <li>
       <div class="dropdown" *ngIf="displayName">
-        <p class="dropdownbtn">{{ displayName }}</p>
+        <p class="dropdownbtn">{{displayName}}</p>
         <div class="dropdown-content">
-          <a routerLinkActive="active" (click)="userProfile()">My Profile</a>
-          <a class="logout" (click)="openLogoutDialog()"> Log Out </a>
+          <a  routerLinkActive="active" (click)="userProfile()">My Profile</a>
+          <a  class='logout' (click)="openLogoutDialog()">
+              Log Out
+          </a>
         </div>
       </div>
     </li>
+
   </ul>
 
   <div class="body">
-    <input
-      placeholder="."
-      type="checkbox"
-      class="openSidebarMenu"
-      id="openSidebarMenu"
-    />
+    <input placeholder="." type="checkbox" class="openSidebarMenu" id="openSidebarMenu">
     <label for="openSidebarMenu" class="sidebarIconToggle">
       <div class="spinner diagonal part-1"></div>
       <div class="spinner horizontal"></div>
@@ -73,21 +55,20 @@
     <div id="sidebarMenu">
       <div class="main-content-wrapper">
         <div class="sidebar-container">
-          <a *ngIf="displayName" class="name"
-            ><strong>{{ displayName }}</strong></a
-          >
-          <a href="/" *ngIf="!displayName">Home</a>
-          <a routerLinkActive="active" (click)="userProfile()">My Profile</a>
-          <a href="events">Events</a>
-          <a>Resident Info</a>
-          <a href="createnewuser" routerLinkActive="active">New Account</a>
-          <a href="allusers" routerLinkActive="active">All users</a>
-          <a class="logout" *ngIf="displayName" (click)="openLogoutDialog()">
-            Log Out
-          </a>
-          <a> </a>
-        </div>
+        <a *ngIf="displayName" class="name"><strong>{{displayName}}</strong></a>
+        <a href="/"  *ngIf="!displayName" >Home</a>
+        <a  routerLinkActive="active" (click)="userProfile()">My Profile</a>
+        <a href="events">Events</a>
+        <a>Resident Info</a>
+        <a href="createnewuser" routerLinkActive="active">New Account</a>
+        <a href="allusers" routerLinkActive="active">All users</a>
+        <a  class='logout' *ngIf="displayName" (click)="openLogoutDialog()">
+          Log Out
+      </a>
+        <a>
+        </a>
       </div>
+    </div>
     </div>
   </div>
 </nav>

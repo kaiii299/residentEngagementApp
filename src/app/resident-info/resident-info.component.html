@@ -2,44 +2,45 @@
   <div class="bigContainer">
     <div class="container">
       <div class="mat-elevation-z8">
-          <div class="search">
-              <input matInput [(ngModel)]="search" placeholder="Type Resident Name and Press Enter to Search" autocomplete="off" (keydown)="searchInput($event)">
-          </div>
-          <mat-divider></mat-divider>
-          <div class="filter">
-              <form class="filterContainer" [formGroup]="filter_form">
-                  <mat-select class="select" placeholder="Committee" [(ngModel)]="committeeControl" (selectionChange)=onChange($event.value)
-                    formControlName="committeeControl">
-                    <mat-option *ngFor="let committee of committees" [value]="committee">{{committee}}</mat-option>
-                  </mat-select>
-                  <mat-select class="select" placeholder="Block Number" [(ngModel)]="blkNumControl" formControlName="blkNumControl">
-                    <mat-option *ngFor="let blk of availableBlocks" [value]="blk">{{blk}}</mat-option>
-                  </mat-select>
-                  <mat-select class="select" placeholder="Age Group" [(ngModel)]="ageGpControl" formControlName="ageGpControl">
-                    <mat-option *ngFor="let ageGp of ageGps" [value]="ageGp">{{ageGp}}</mat-option>
-                  </mat-select>
-                </form>
+        <div class="search">
+          <input matInput [(ngModel)]="search" placeholder="Type Resident Name and Press Enter to Search" autocomplete="off"
+            (keydown)="searchInput($event)">
+        </div>
+        <mat-divider></mat-divider>
+        <div class="filter">
+          <form class="filterContainer" [formGroup]="filter_form">
+            <mat-select class="select" placeholder="Committee" [(ngModel)]="committeeControl" (selectionChange)=onChange($event.value)
+              formControlName="committeeControl">
+              <mat-option *ngFor="let committee of committees" [value]="committee">{{committee}}</mat-option>
+            </mat-select>
+            <mat-select class="select" placeholder="Block Number" [(ngModel)]="blkNumControl" formControlName="blkNumControl">
+              <mat-option *ngFor="let blk of availableBlocks" [value]="blk">{{blk}}</mat-option>
+            </mat-select>
+            <mat-select class="select" placeholder="Age Group" [(ngModel)]="ageGpControl" formControlName="ageGpControl">
+              <mat-option *ngFor="let ageGp of ageGps" [value]="ageGp">{{ageGp}}</mat-option>
+            </mat-select>
+          </form>
 
-                <div class="buttonContainer">
-                  <button mat-button class="filter-btn" (click)="onClickFilter(filter_form.value)">
-                    <mat-icon>filter_list</mat-icon>filter
-                  </button>
-                  <button mat-button class="refresh-btn" (click)="refresh()">
-                    <mat-icon>cached</mat-icon>Refresh
-                  </button>
-                </div>
+          <div class="buttonContainer">
+            <button mat-button class="filter-btn" (click)="onClickFilter(filter_form.value)">
+              <mat-icon>filter_list</mat-icon>filter
+            </button>
+            <button mat-button class="refresh-btn" (click)="refresh()">
+              <mat-icon>cached</mat-icon>Refresh
+            </button>
           </div>
+        </div>
 
         <mat-divider></mat-divider>
         <div class="mat-elevation-z8">
           <div class="total">
             <mat-label>Total Number of Residents: <b>{{totalCount}}</b> </mat-label>
             <div class="button_Container">
-              <span mat-button class="excel-btn" type="button">
-                <mat-icon>attachment</mat-icon> UPLOAD
-              </span>
-              <button mat-button class="excel-btn">
+              <span mat-button class="excel-btn" type="button" (click)="openExcelExport()">
                 <mat-icon>cloud_download</mat-icon>EXPORT
+              </span>
+              <button mat-button class="excel-btn" type="button">
+                <mat-icon>attachment</mat-icon> UPLOAD
               </button>
             </div>
           </div>

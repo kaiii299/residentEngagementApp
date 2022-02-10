@@ -44,7 +44,7 @@ import { Authservice } from './share/services/auth.service';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {CdkTableModule} from '@angular/cdk/table';
 import {MatCardModule} from '@angular/material/card';
-// import { ScheduleModule } from '@syncfusion/ej2-angular-schedule';
+import { ScheduleModule } from '@syncfusion/ej2-angular-schedule';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import { MAT_DATE_LOCALE } from '@angular/material/core'
@@ -67,6 +67,7 @@ import { RequestNewUserService } from './share/services/request-new-user.service
 import { userService } from './share/services/user.service';
 import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ExcelExportResidentsComponent } from './excel-export-residents/excel-export-residents.component';
 
 @NgModule({
   declarations: [
@@ -92,6 +93,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     SpinnerComponent,
     RequestComponent,
     DashboardComponent,
+    ExcelExportResidentsComponent,
 
 
   ],
@@ -130,7 +132,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     MatCardModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    // ScheduleModule,
+    ScheduleModule,
+    SpreadsheetAllModule
   ],
 
   providers: [

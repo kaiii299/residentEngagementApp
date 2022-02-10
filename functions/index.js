@@ -156,7 +156,7 @@ app.delete("/deleteUser/:id", async (req, res) => {
 
 // -----------------------------------------RESIDENT------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-app.get("/getAllResidents", async (req, res) => {
+app.post("/getAllResidents", async (req, res) => {
   const residents = [];
   if (req.body.committee != null) {
     const snapshot = await residentDb.where('committee', '==', req.body.committee).get();

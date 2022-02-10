@@ -10,6 +10,7 @@ import { Constants } from '../constants';
 import { Router, NavigationExtras } from '@angular/router';
 import { DialogData } from "../user-profile/user-profile.component";
 import { HttpClient } from '@angular/common/http';
+import { ExcelExportResidentsComponent } from '../excel-export-residents/excel-export-residents.component';
 
 
 @Component({
@@ -81,7 +82,7 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     console.log("user committee -> "+this.user_committee);
     this.accessObj = this.accessControlList.get(this.user_role);
     this.canDeleteResident = this.accessObj.deleteResident;
-    
+    console.log("access obj")
     console.log(this.accessObj);
     var body = {committee: null};
     if(!this.accessObj.viewSearchFilterAllResident){
@@ -121,13 +122,6 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     }
   }
 
-  // onClickViewDetails(obj: any) {
-  //   console.log(obj);
-  //   console.log(obj.id);
-  //   let resid = obj.id;
-  //   let navigationExtras: NavigationExtras = { queryParams: { id: resid } };
-  //   this.router.navigate(['residentdetail'], navigationExtras)
-  // }
   onClickViewDetails(id: any) {
     console.log(id);
     var encryptedResid = this.residentService.encryptData(id)
@@ -135,13 +129,6 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     this.router.navigate(['residentdetail'], navigationExtras)
   }
 
-  // onClickEdit(obj: any) {
-  //   console.log(obj);
-  //   console.log(obj.id);
-  //   let resid = obj.id;
-  //   let navigationExtras: NavigationExtras = { queryParams: { id: resid } };
-  //   this.router.navigate(['updateresident'], navigationExtras)
-  // }
   onClickEdit(id: any){
     console.log(id);
     var encryptedResid = this.residentService.encryptData(id)
@@ -175,6 +162,13 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   refresh() {
     location.reload()
   }
+  openExcelExport(){
+    this.dialog.open(ExcelExportResidentsComponent, {
+      width: '750px',
+      height: '650px',
+      data: this.residentdata
+    })
+  }
 
 }
 
@@ -187,6 +181,7 @@ export class DeleteResidentConfirmationDialog {
   data: any;
   constructor(public dialogRef: MatDialogRef<ResidentInfoComponent>, private residentService: ResidentService, @Inject(MAT_DIALOG_DATA) public dialogData: DialogData) {
     dialogRef.disableClose = true;
+    
   }
 
   ngOnInit(): void {

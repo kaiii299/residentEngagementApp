@@ -46,6 +46,7 @@ import {CdkTableModule} from '@angular/cdk/table';
 import {MatCardModule} from '@angular/material/card';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
+import {MatDividerModule} from '@angular/material/divider';
 
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/database'
@@ -65,7 +66,7 @@ import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ExcelExportResidents } from './excel-export-residents/excel-export-residents';
 import {MatBadgeModule} from '@angular/material/badge';
-import { ExcelExportResidentsComponent } from './excel-export-residents/excel-export-residents.component';
+
 
 @NgModule({
   declarations: [

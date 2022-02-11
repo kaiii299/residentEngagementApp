@@ -2,6 +2,9 @@
     <div class="panelContainer1">
         <div class="container">
             <h1>Resident Details</h1>
+            <div class="edit">
+                <button class="edit-btn" (click)=onClickEdit()>Edit</button>
+            </div>
             <form [formGroup]="residentDetailsForm">
                 <label>Resident Name :</label>
                 <input title="residentName" class='form-control' type="text" formControlName="residentNameControl"

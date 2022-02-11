@@ -33,6 +33,7 @@
     "@syncfusion/ej2": "^19.4.48",
     "@syncfusion/ej2-angular-schedule": "^19.4.48",
     "@syncfusion/ej2-angular-spreadsheet": "^19.4.48",
+    "@syncfusion/ej2-splitbuttons": "^19.4.48",
     "angular-cookies": "^1.8.2",
     "angular-font-awesome": "^3.1.2",
     "bootstrap": "^5.1.3",

@@ -6,6 +6,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import * as CryptoJS from 'crypto-js';
 import { Resident } from '././resident';
+import Swal from 'sweetalert2';
 
 
 @Injectable({
@@ -79,7 +80,10 @@ export class ResidentService {
 
   deleteResident(id: string) {
     this.firestore.collection('residents').doc(id).delete().then(function () {
-      alert("Resident has been removed from the records!");
+      Swal.fire("Resident has been removed from the records!");
+      setTimeout(function(){
+        location.reload(),80000;
+      })
     }).catch(
       function (error) {
         console.error("Error removing document: ", error);

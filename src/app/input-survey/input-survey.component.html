@@ -28,15 +28,15 @@
                 </label>
             </div>
             <label>Number of elderly in the family (aged 60 & above)</label>
-            <input title='form-control' class="form-control">
+            <input class="form-control" formControlName="numElderly">
             <label>No of adults in the family (aged between 26 - 59)</label>
-            <input title='form-control' class="form-control">
+            <input class="form-control" formControlName="numAdult">
             <label>No of youth in the family (aged between 13 - 25)</label>
-            <input  title='form-control'class="form-control">
+            <input class="form-control" formControlName="numYouth">
             <label>No of young children in the family (aged 12 & below)</label>
-            <input title='form-control' class="form-control">
+            <input class="form-control" formControlName="numChild">
             <label>What are the jobs of all the people in the household who are working?</label>
-            <input title='form-control' class="form-control">
+            <input class="form-control" formControlName="job">
         </form>
         <div class="alert alert-success" *ngIf="submitStatus">
             <label class="success">{{submitStatus}}</label>

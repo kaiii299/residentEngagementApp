@@ -5,6 +5,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { InputSurveyComponent } from '../input-survey/input-survey.component';
 import { Constants } from '../constants';
+import { Router, NavigationExtras } from '@angular/router';
 
 
 @Component({
@@ -20,7 +21,8 @@ export class ResidentDetailComponent implements OnInit {
 
   resid = this.activatedRoute.snapshot.queryParams.id;
 
-  constructor(private residentService: ResidentService, private activatedRoute: ActivatedRoute, public dialog: MatDialog) {
+  constructor(private residentService: ResidentService, private activatedRoute: ActivatedRoute, public dialog: MatDialog,
+    private router: Router) {
     this.residentDetailsForm = new FormGroup({
       residentNameControl: new FormControl('', [Validators.required]),
       committeeControl: new FormControl('', [Validators.required]),
@@ -68,6 +70,10 @@ export class ResidentDetailComponent implements OnInit {
       this.surveys = dataList;
       console.log(this.surveys);
     })
+  }
+  onClickEdit(){
+    let navigationExtras: NavigationExtras = {queryParams: {id : this.resid}}
+    this.router.navigate(['updateresident'], navigationExtras)
   }
 
   openSurveyDialog() {

@@ -47,7 +47,8 @@ import {MatCardModule} from '@angular/material/card';
 import { ScheduleModule } from '@syncfusion/ej2-angular-schedule';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
-import { MAT_DATE_LOCALE } from '@angular/material/core'
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+
 
 
 
@@ -67,7 +68,7 @@ import { RequestNewUserService } from './share/services/request-new-user.service
 import { userService } from './share/services/user.service';
 import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { ExcelExportResidentsComponent } from './excel-export-residents/excel-export-residents.component';
+import { ExcelExportResidents } from './excel-export-residents/excel-export-residents';
 
 @NgModule({
   declarations: [
@@ -93,7 +94,7 @@ import { ExcelExportResidentsComponent } from './excel-export-residents/excel-ex
     SpinnerComponent,
     RequestComponent,
     DashboardComponent,
-    ExcelExportResidentsComponent,
+    ExcelExportResidents,
 
 
   ],

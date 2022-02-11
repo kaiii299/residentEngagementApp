@@ -173,6 +173,8 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   openExcelPreviewDialog() {
+    console.log("user data ");
+    console.log(this.userdata);
     this.dialog.open(excelPreviewDialog, {
       width: '750px',
       height: '650px',

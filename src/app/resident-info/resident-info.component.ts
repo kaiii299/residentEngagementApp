@@ -10,8 +10,10 @@ import { Constants } from '../constants';
 import { Router, NavigationExtras } from '@angular/router';
 import { DialogData } from "../user-profile/user-profile.component";
 import { HttpClient } from '@angular/common/http';
-import { ExcelExportResidentsComponent } from '../excel-export-residents/excel-export-residents.component';
-
+import { ExcelExportResidents } from '../excel-export-residents/excel-export-residents';
+export interface DialogDataResident {
+  password: string;
+}
 
 @Component({
   selector: 'app-resident-info',
@@ -163,10 +165,30 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     location.reload()
   }
   openExcelExport(){
-    this.dialog.open(ExcelExportResidentsComponent, {
+    console.log("resident data ");
+    console.log(this.residentdata);
+    let residentData = this.residentdata;
+    // residentData.forEach(residentD => {
+    //   let str ='';
+    //   let activitiesArr = residentD.data.activities;
+    //   for(let i=1; i<activitiesArr.length; i++){
+    //     let activityStr = activitiesArr[i];
+    //     str += activityStr;
+    //     if(i != activitiesArr.length){
+    //       str += " ,";
+    //     }
+    //   }
+    //   activitiesArr.forEach(activityStr => {
+    //     str += activityStr;
+    //   });
+    //   residentD.data.activities = str;
+    //   console.log(residentD);
+    // });
+    console.log(residentData);
+    this.dialog.open(ExcelExportResidents, {
       width: '750px',
       height: '650px',
-      data: this.residentdata
+      data: residentData
     })
   }
 

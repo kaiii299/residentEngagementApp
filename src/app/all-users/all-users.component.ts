@@ -38,7 +38,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   variables = Constants.variables;
   requestStatus = Constants.requestStatus;
   zonesInfo = Constants.zones;
-
+  allowViewAllUsers = Constants.allowViewAllUsers;
   panelOpenState = false;
 
   availableBlocks: any = [];
@@ -62,7 +62,9 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   defaultValue = ['userName', 'committee', 'blockNumber', 'role'];
   dataSource: any = new MatTableDataSource();
   encryptedUserData = localStorage.getItem("userData");
-
+  decryptedUid: any;
+  pendingNumber: any;
+  hidden = false;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -84,23 +86,40 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   async ngOnInit() {
+    this.checkPending();
+    this.getAllusers();
+    const role = localStorage.getItem("role");
+    this._role = this.authService.decryptData(role);
+  }
+
+  getAllusers(){
     this.userService.getAllUsers();
     this.userService.eventcbUserData$.subscribe((data) => {
       this.dataSource.data = data;
       this.userdata = data;
       this.totalCount = this.userdata.length
     })
-    const role = localStorage.getItem("role");
-    this._role = this.authService.decryptData(role);
   }
+
+  checkPending(){
+    this.userService.checkPendingUsers().subscribe((res)=>{
+      if(res.length !== 0){
+        this.pendingNumber = res.length
+      }
+      else{
+        this.hidden = true
+      }
+    })
+  }
+
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
 
-  searchInput(event: KeyboardEvent) {
-    if (event.keyCode === 13) {
+  searchInput() {
+    if (this.searchValue) {
       let wordToSearch = this.searchValue.charAt(0).toUpperCase() + this.searchValue.slice(1);
       this.userService.searchUserData({ keyword: wordToSearch });
       this.userService.eventcbUserData$.subscribe((res) => {
@@ -108,10 +127,11 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
         this.userdata = res;
         this.totalCount = this.userdata.length;
       })
-
       if (this.dataSource.paginator) {
         this.dataSource.paginator.firstPage();
       }
+    } else if (!this.searchValue){
+      this.getAllusers();
     }
   }
 
@@ -135,7 +155,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
       userData['status'] = this.statusValue,
       userData['requestStatus'] = this.requestStatusValue,
       this.userService.filterUser(userData);
-    this.userService.eventcbUserData$.subscribe((data) => {
+      this.userService.eventcbUserData$.subscribe((data) => {
       console.log(userData);
       console.log(data);
       this.dataSource.data = data;
@@ -146,10 +166,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   clearFilter() {
-    this.userService.getAllUsers();
-    this.userService.eventcbUserData$.subscribe((data) => {
-      this.dataSource.data = data;
-    })
+    this.getAllusers();
     this.committeesValue = "";
     this.roleValue = '';
     this.statusValue = '';
@@ -186,6 +203,32 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     this.dialog.open(uploadFileDialog,{
       width: '750px',
       height: '650px'
+    })
+  }
+
+  async deactivate(uid: any) {
+    const decryptedid = this.authService.decryptData(uid);
+    let userData: any = {}
+    userData['status'] = 'Inactive'
+    userData['requestStatus'] = 'Rejected'
+    Swal.fire({
+      title: `Deactivate user?`,
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Deactivate',
+      cancelButtonColor: '#d33',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.userService.updateUserData(decryptedid, userData).then(() => {
+          Swal.fire('User deactivated', '', 'success').then(()=>{
+            setTimeout(() => {
+              location.reload(), 80000;
+            });
+          })
+        }).catch((err) => {
+          Swal.fire('ERROR', `${err.message}`, 'error')
+        })
+      }
     })
   }
 }

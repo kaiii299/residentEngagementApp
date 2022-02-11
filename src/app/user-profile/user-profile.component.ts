@@ -46,6 +46,7 @@ export class UserProfileComponent implements OnInit {
   isOwn = false;
   newEmail: any;
   oldUserName: any;
+  oldEmail: any;
   newUserName: string;
   newFirstName: any;
   newPassword: any;
@@ -79,6 +80,7 @@ export class UserProfileComponent implements OnInit {
   _role: any;
 
   constructor(
+    public router: Router,
     public forgetPasswordService: ForgetPasswordService,
     public requestService: RequestNewUserService,
     public userService: userService,
@@ -104,6 +106,7 @@ export class UserProfileComponent implements OnInit {
         this.newFirstName = this.user.firstName;
         this.newGender = this.user.gender;
         this.newEmail = this.user.email;
+        this.oldEmail = this.user.email;
         this.newPhoneNumber = this.user.phoneNumber;
         this.newRoleValue = this.user.role;
         this.newCommitteeValue = this.user.committee;
@@ -131,33 +134,36 @@ export class UserProfileComponent implements OnInit {
     this.forgetPasswordService.openForgetpassword(this.newEmail)
   }
 
- async checkUserExist() {
-    await this.userService.getAllUsers();
-    this.userService.eventcbUserData$.subscribe((data) => {
-      this.userDataArray = data;
-      this.userDataArray.forEach((_userData) => {
-        this.userNameArray.push(_userData.data.userName);
-        this.userEmailArray.push(_userData.data.email);
+  async checkUserExist() {
+    if(this.newUserName !== this.oldUserName){
+      this.userService.checkUserName(this.newUserName).subscribe((res)=>{
+        if(res.length !== 0){
+          this.isExistUserName = true;
+        }else{
+          this.isExistUserName = false;
+        }
       });
-      if (this.userNameArray.includes(this.newUserName)) {
-        //checks if username exists
-        this.isExistUserName = true;
-        this.eventcbIsExistUserName.emit(this.isExistUserName);
-      } else {
-        this.isExistUserName = false;
-        this.eventcbIsExistUserName.emit(this.isExistUserName);
-      }
-      const emptyArr = Array();
-      this.userNameArray = emptyArr;
-    });
+    }
+    else if(this.newEmail.trim() !== this.oldEmail.trim()){
+      this.userService.checkEmailExist(this.newEmail).subscribe((res: any)=>{
+        console.log(res);
+        if(res.length !== 0){
+          this.isExistEmail = true;
+        }else{
+          this.isExistEmail = false;
+        }
+      })
+    }
+    else if(this.newUserName == ""){
+      this.isExistEmail = false;
+      this.isExistUserName = false;
+    }
   }
 
   onChange(event: any) {
     this.newCommitteeValue = event;
     this.availableBlocks = this.zonesInfo.get(this.newCommitteeValue);
   }
-
-
 
   openEditDialog(
     userName = this.newUserName,
@@ -193,6 +199,7 @@ export class UserProfileComponent implements OnInit {
     const decryptedid = this.authService.decryptData(this._uid);
     let userData: any = {}
     userData['status'] = 'Active'
+    userData['requestStatus'] = 'Accepted'
     Swal.fire({
       title: 'Are you sure?',
       icon: 'warning',
@@ -218,8 +225,9 @@ export class UserProfileComponent implements OnInit {
     const decryptedid = this.authService.decryptData(this._uid);
     let userData: any = {}
     userData['status'] = 'Inactive'
+    userData['requestStatus'] = "Accepeted"
     Swal.fire({
-      title: 'Do you want to save the changes?',
+      title: `Deativate ${this.oldUserName}`,
       showDenyButton: true,
       showCancelButton: true,
       confirmButtonText: 'Deactivate',
@@ -258,6 +266,27 @@ export class UserProfileComponent implements OnInit {
     })
   }
 
+  deletePermanently(){
+    const decryptedid = this.authService.decryptData(this._uid);
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.userService.deleteUserbyId(decryptedid);
+        Swal.fire(
+          'Deleted!',
+          'This user has been deleted.',
+          'success'
+        )
+      }
+    })
+  }
 
   openAcceptDialog(
     userName = this.newUserName,
@@ -356,17 +385,14 @@ export class saveChangesDialog {
           localStorage.setItem('username', encrypt);
         }
         Swal.fire({
-          position: 'center',
           icon: 'success',
           title: 'User profile updated',
           showConfirmButton: true,
-        }).then((result) => {
-          if (result.isConfirmed) {
-            setTimeout(() => {
-              location.reload(), 80000;
-            });
+        }).then((res)=>{
+          if(res.isConfirmed){
+            location.reload();
           }
-        });
+        })
       })
       .catch((err) => {
         console.log(err);
@@ -384,14 +410,20 @@ export class saveChangesDialog {
 
   accept() {
     this._data.requestStatus = "Accepted";
+    this._data.status = "Acctive"
     this.userService.updateUserData(this.decryptedParamsId, this._data).then(() => {
       this.dialogRef.close();
       Swal.fire({
         position: 'center',
         icon: 'success',
         title: 'User accepted',
-        showConfirmButton: false,
-        timer: 1000,
+        showConfirmButton: true,
+      }).then((res)=>{
+        if(res.isConfirmed){
+          setTimeout(() => {
+            location.reload(), 80000;
+          });
+        }
       });
     }).catch((err) => {
       this.dialogRef.close();
@@ -406,6 +438,7 @@ export class saveChangesDialog {
 
   reject() {
     this._data.requestStatus = "Rejected";
+    this._data.status = "Inactive"
     this.userService.updateUserData(this.decryptedParamsId, this._data).then(() => {
       this.dialogRef.close();
       Swal.fire({
@@ -413,7 +446,10 @@ export class saveChangesDialog {
         icon: 'success',
         title: 'User Rejected',
         showConfirmButton: false,
-        timer: 1000,
+      }).then((res)=>{
+        setTimeout(() => {
+          location.reload(), 80000;
+        });
       });
     }).catch((err) => {
       this.dialogRef.close();

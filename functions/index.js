@@ -44,18 +44,6 @@ app.use('/sendOTP', sendMessage);
 app.options("*", cors());
 app.options("/deleteUser/:id", cors());
 
-// ---------------------------------------------------------------------------------------------------Encrypty&& Decrypt---------------------------------------------------------------------------------
-
-// encrypting and decrypting increase the loading speed by 15s so iv decide to remove it.
-function ecryptData(value) {
-  return CryptoJS.AES.encrypt(value, secretKey).toString();
-}
-
-function decryptData(value) {
-  const bytes = CryptoJS.AES.decrypt(value, secretKey.trim());
-  return bytes.toString(CryptoJS.enc.Utf8);
-}
-
 // ----------------------------------------------------------------------------------------------------USERS-----------------------------------------------------------------------------------------------
 app.all("/*", function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -65,6 +53,31 @@ app.all("/*", function(req, res, next) {
       "Origin, X-Requested-With, Content-Type, Accept",
   );
   next();
+});
+
+app.get("/getAllUsers", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']), async (req, res) => {
+  const Allusers = [];
+  try {
+    const snapshot = await userDb.get();
+    snapshot.forEach((doc) => {
+      const id = doc.id;
+      const data = doc.data();
+      ['LastUpdatedDate',
+        'registrationTime',
+        'regsitrationDate',
+        'LastUpdatedTime',
+        'gender',
+        'email',
+        'firstName',
+        'requestStatus',
+        'status',
+      ].forEach((e) => delete data[e]);
+      Allusers.push({id, data});
+    });
+    res.status(200).send(Allusers);
+  } catch (e) {
+    res.status(500).send(`ERROR! ${someUsers}, ${e}`);
+  }
 });
 
 app.get("/getAllUsers", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']), async (req, res) => {

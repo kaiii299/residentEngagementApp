@@ -20,8 +20,10 @@ export class uploadFileDialog {
   text: any;
   fileData: [][];
   fileName = 'user-details.xlsx';
-  data: Object[] = [];
+  data = Array();
   file: any;
+  _filter: boolean ;
+  isSaved:boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<uploadFileDialog>,
@@ -34,22 +36,26 @@ export class uploadFileDialog {
       this.data = JSON.parse(excelSheet)
     }
   }
-
-  ngOnInit(): void {}
-
   @ViewChild('default')
-    public spreadsheetObj: SpreadsheetComponent;
-    public openUrl = 'https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/open';
-    public saveUrl = 'https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/save';
+  public spreadsheetObj: SpreadsheetComponent;
+  public openUrl =
+    'https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/open';
+  public saveUrl =
+    'https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/save';
     created() {
-        this.spreadsheetObj.cellFormat({ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }, 'A1:F1');
-        this.spreadsheetObj.cellFormat({ fontWeight: 'bold' }, 'E31:F31');
-        this.spreadsheetObj.cellFormat({ textAlign: 'right' }, 'E31');
-        this.spreadsheetObj.numberFormat('$#,##0.00', 'F2:F31');
+      this.spreadsheetObj.cellFormat({ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }, 'A1:F1');
+      this.spreadsheetObj.cellFormat({ fontWeight: 'bold' }, 'E31:F31');
+      this.spreadsheetObj.cellFormat({ textAlign: 'left' }, 'E31');
+      if(this._filter == true){
+        alert(this._filter);
+        this.spreadsheetObj.sort({ sortDescriptors: { field: 'B' } }, 'A2:G51').then(() => {
+          // Filtered D(Department  field) column with value 'Services'
+          this.spreadsheetObj.applyFilter([{ field: 'C', operator: 'equal', value: '' }], 'A1:G51');
+        });
+      }
     }
 
-    beforeSave (args: BeforeSaveEventArgs) {
-  }
+  ngOnInit(): void {}
 
   onFileChange(evt: any) {
     const target: DataTransfer = <DataTransfer>evt.target;
@@ -60,13 +66,37 @@ export class uploadFileDialog {
       const wsName: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsName];
       this.data = XLSX.utils.sheet_to_json(ws, { header: 1 });
-      // console.log(this.data);
     };
     reader.readAsBinaryString(target.files[0]);
   }
 
+  beforeSave(args: BeforeSaveEventArgs) {}
+
+  filter(){
+
+  }
+
+  save(){
+    Swal.fire({
+      title: 'Save data?',
+      showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Save',
+      denyButtonText: `Don't save`,
+    }).then((res)=>{
+      if(res.isConfirmed){
+        this.isSaved = true;
+        Swal.fire('Success','changes saved','success');
+        localStorage.setItem('excelSheet', JSON.stringify(this.data));
+      }else{
+        localStorage.clear();
+        Swal.fire('','Changes not saved','error');
+      }
+    })
+  }
+
   close(): void {
-    if (this.data) {
+    if (this.data != this.data && this.isSaved == false) {
       Swal.fire({
         title: 'Save data?',
         showDenyButton: true,
@@ -88,17 +118,4 @@ export class uploadFileDialog {
     }
     this.dialogRef.close();
   }
-
-  // exportexcel(): void {
-  //   /* pass here the table id */
-  //   let element = document.getElementById('excel-table');
-  //   const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(element);
-
-  //   /* generate workbook and add the worksheet */
-  //   const wb: XLSX.WorkBook = XLSX.utils.book_new();
-  //   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-
-  //   /* save to file */
-  //   XLSX.writeFile(wb, this.fileName);
-  // }
 }

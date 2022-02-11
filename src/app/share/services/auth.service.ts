@@ -62,11 +62,10 @@ export class Authservice {
 
   async signIn(email: string, password: string) {
     return await this.firebaseAuth
-      .signInWithEmailAndPassword(email, password)
+      .signInWithEmailAndPassword(email.trim(), password)
       .then((res) => {
         if (res) {
           res.user?.getIdToken().then((jwtToken) => {
-            this.eventcbRefresh.next(this.refreshToken);
             this.eventcbJWT.next(jwtToken);
             localStorage.setItem('token', jwtToken);
 
@@ -75,17 +74,19 @@ export class Authservice {
               console.log(this.currentUserObject);
               if (
                 this.currentUserObject.userData.requestStatus == "Rejected" ||
-                this.currentUserObject.userData.requestStatus == "Inactive"
-              ) {
-                this.SwalFire('Account has been deactivated', 'error')
-              } else if (this.currentUserObject.requestStatus == "Pending" ||
-                this.currentUserObject.userData.requestStatus == "Inactive"
-              ) {
-                this.SwalFire('Account status is pending', 'error')
-              }
-              else {
-                this.refreshToken = res.user?.refreshToken;
-                localStorage.setItem('refreshToken', JSON.stringify(this.refreshToken))
+                this.currentUserObject.userData.status == "Inactive"
+                ) {
+                  this.SwalFire('Account has been deactivated', 'error')
+                } else if (this.currentUserObject.requestStatus == "Pending" ||
+                this.currentUserObject.userData.status == "Inactive"
+                ) {
+                  this.SwalFire('Account status is pending', 'error')
+                }
+                else{
+                  // (this.currentUserObject.requestStatus == "Accepted" ||
+                  //   this.currentUserObject.userData.Status == "Active"){
+                this.eventcbRefresh.next(res.user?.refreshToken);
+                localStorage.setItem('refreshToken', JSON.stringify(res.user?.refreshToken))
                 this.phoneNumber = this.currentUserObject.phoneNumber
                 this.eventCallbackuserName.next(
                   this.currentUserObject.userData.userName
@@ -98,7 +99,7 @@ export class Authservice {
                 this.eventcbRole.next(this.currentUserObject.userData.role);
                 this.eventCallbackuserName.next(this.currentUserObject.userData.userName);
                 const encryptedCommittee = this.encryptData(this.currentUserObject.userData.committee);
-+               localStorage.setItem("committee", encryptedCommittee);
+               localStorage.setItem("committee", encryptedCommittee);
               }
             });
           });

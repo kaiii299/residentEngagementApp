@@ -140,6 +140,7 @@
             <mat-label
               >Total Number of Users: <b>{{ totalCount }}</b>
             </mat-label>
+
             <div class="buttonContainer">
               <button
                 type="button"
@@ -148,17 +149,9 @@
                 *ngIf="this.allowViewAllUsers.indexOf(_role)  > -1"
                 (click)="openExcelPreviewDialog()"
               >
-                <mat-icon>cloud_download</mat-icon> Export
+                <mat-icon>cloud_download</mat-icon> Upload to Excel
               </button>
-              <span
-                mat-button
-                *ngIf="this.allowViewAllUsers.indexOf(_role)  > -1"
-                class="excel-btn"
-                (click)="uploadFile()"
-                type="button"
-              >
-                <mat-icon>attachment</mat-icon> upload
-              </span>
+
               <button
                 type="button"
                 mat-button

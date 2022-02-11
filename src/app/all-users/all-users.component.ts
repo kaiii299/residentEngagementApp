@@ -193,37 +193,25 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     console.log("user data ");
     console.log(this.userdata);
     this.dialog.open(excelPreviewDialog, {
-      width: '750px',
-      height: '650px',
+      width: '800px',
+      height: '550px',
       data: this.userdata
     })
   }
 
-  async uploadFile() {
-    this.dialog.open(uploadFileDialog,{
-      width: '750px',
-      height: '650px'
-    })
-  }
-
   async deactivate(uid: any) {
-    const decryptedid = this.authService.decryptData(uid);
     let userData: any = {}
     userData['status'] = 'Inactive'
     userData['requestStatus'] = 'Rejected'
     Swal.fire({
       title: `Deactivate user?`,
-      showDenyButton: true,
       showCancelButton: true,
       confirmButtonText: 'Deactivate',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#d33',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.userService.updateUserData(decryptedid, userData).then(() => {
+        this.userService.updateUserData(uid, userData).then(() => {
           Swal.fire('User deactivated', '', 'success').then(()=>{
-            setTimeout(() => {
-              location.reload(), 80000;
-            });
           })
         }).catch((err) => {
           Swal.fire('ERROR', `${err.message}`, 'error')

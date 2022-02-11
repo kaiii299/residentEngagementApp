@@ -36,25 +36,23 @@ export class AuthRouteGuard implements CanActivate {
       (refresh) => (this.refreshToken = refresh)
     );
 
-    // console.log(JSON.parse(this.lcRefreshToken));
-    // console.log(this.refreshToken);
-
-    // const decryptedjwt = this.authService.decryptData(this.lcjwt);
-    // console.log(decryptedjwt);
-    // console.log("jwt "+ this.jwt);
-
     if (this.jwt == undefined || !this.jwt) {
       this.jwt = this.lcjwt;
+    }else{
+      this.jwt = this.jwt
     }
     if (this.refreshToken == undefined || !this.refreshToken) {
       this.refreshToken = this.lcRefreshToken;
+    }else{
+      this.refreshToken = this.refreshToken
     }
 
     if (this.jwt && this.refreshToken) {
       return true;
+    }else{
+      this.router.navigate(['/']);
+      localStorage.clear();
+      return false;
     }
-    localStorage.clear();
-    this.router.navigate(['/']);
-    return false;
   }
 }

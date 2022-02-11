@@ -5,6 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Constants } from '../constants';
 import { Router, NavigationExtras } from '@angular/router';
 import { Authservice } from '../share/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-update-resident',
@@ -64,6 +65,8 @@ export class UpdateResidentComponent implements OnInit {
       console.log("update resident data");
       console.log(data);
       let residentDetail: any = data.residentData;
+      this.selectedZone = residentDetail.committee;
+      this.availableBlocks = this.zonesInfo.get(this.selectedZone);
       this.updateResidentForm.patchValue({
         residentNameControl: residentDetail.residentName,
         committeeControl: residentDetail.committee,
@@ -73,18 +76,27 @@ export class UpdateResidentComponent implements OnInit {
         raceControl: residentDetail.race,
         ageGpControl: residentDetail.ageGp,
         expertiseControl: residentDetail.expertise,
-      });
+      }); 
     })
-    this.activitiesList.forEach(() => this.activitiesFormArray.push(new FormControl(false)));
+    //this.activitiesList.forEach(() => this.activitiesFormArray.push(new FormControl(false)));
   }
   get activitiesFormArray() {
     return this.updateResidentForm.controls.activities as FormArray;
   }
-  onChange(value: any) {
+
+  onChangeCommittee(value: any) {
     console.log(value);
     this.selectedZone = value;
     this.availableBlocks =this.zonesInfo.get(this.selectedZone);
     console.log(this.zonesInfo.get(this.selectedZone));
+   
+    this.updateResidentForm.patchValue({
+           blkNumControl: '',
+    });
+  }
+  
+  onChangeBlkNumList(value: any){
+    console.log(value);
   }
 
   updateResidentInfo(value : any){
@@ -101,7 +113,7 @@ export class UpdateResidentComponent implements OnInit {
       }
       const decryptedResid = this.residentService.decryptData(this.resid);
       this.residentService.updateResidentInfo(decryptedResid,resident).then(res => {
-        alert("The resident's information hase been successfully updated")
+        Swal.fire("The resident's information hase been successfully updated")
         this.router.navigate(['residentinfo']);
       })
     }

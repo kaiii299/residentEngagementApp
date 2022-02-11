@@ -11,6 +11,7 @@ import { Router, NavigationExtras } from '@angular/router';
 import { DialogData } from "../user-profile/user-profile.component";
 import { HttpClient } from '@angular/common/http';
 import { ExcelExportResidents } from '../excel-export-residents/excel-export-residents';
+import { ExcelImportResidents } from '../excel-import-residents/excel-import-residents';
 export interface DialogDataResident {
   password: string;
 }
@@ -63,6 +64,10 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
 
   canDeleteResident = true;
 
+  filterCommitteeSearchField: any = null;
+  filterBlkNumSerachField: any = null;
+  filterAgeGpSearchField: any = null;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -106,9 +111,9 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   searchInput(event: KeyboardEvent) {
     let wordToSearch = this.search.trim().toUpperCase();
     if(event.keyCode === 13){
-      var body = {keyword: wordToSearch, committee: null};
+      var body = {keyword: wordToSearch, committee: this.filterCommitteeSearchField, blkNum: this.filterBlkNumSerachField, ageGp: this.filterAgeGpSearchField};
       if(!this.accessObj.viewSearchFilterAllResident){
-        body = {keyword: wordToSearch, committee: this.user_committee};
+        body = {keyword: wordToSearch, committee: this.user_committee, blkNum: this.filterBlkNumSerachField, ageGp: this.filterAgeGpSearchField};
         this.committees = new Array(this.user_committee);
       }
       
@@ -150,6 +155,9 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   onClickFilter(event: any) {
     console.log(event);
     event.blkNumControl = event.blkNumControl.trim();
+    this.filterCommitteeSearchField = event.committeeControl;
+    this.filterBlkNumSerachField = event.blkNumControl;
+    this.filterAgeGpSearchField = event.ageGpControl;
     this.residentService.filterResident({committee: event.committeeControl, blkNum: event.blkNumControl, ageGp: event.ageGpControl}).then((res:any) => {
       this.dataSource.data = res;
       this.residentdata = res;
@@ -162,7 +170,7 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     this.availableBlocks = this.zonesInfo.get(this.selectedZone);
   }
   refresh() {
-    location.reload()
+    location.reload();
   }
   openExcelExport(){
     console.log("resident data ");
@@ -189,6 +197,12 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
       width: '750px',
       height: '650px',
       data: residentData
+    })
+  }
+  openExcelImport(){
+    this.dialog.open(ExcelImportResidents, {
+      width: '750px',
+      height: '650px',
     })
   }
 

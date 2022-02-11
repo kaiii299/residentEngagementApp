@@ -57,14 +57,19 @@ export class ResidentDetailComponent implements OnInit {
     console.log(decryptedResid);
     await this.residentService.getSurveyByResidentID(decryptedResid).then((res) => {
       console.log("get survey");
-      console.log(res);
+      //console.log(res);
       var dataList:any = [];
       for (const e of res) {
-        console.log(e);
-        dataList.push(e.data);
+        let surveryData = e.data;
+        let surDate = new Date(surveryData.date);
+
+        surveryData.surveryDate = surDate;
+        dataList.push(surveryData);
       }
 
-      dataList.sort((a:any, b:any) => b.date - a.date)
+      dataList.sort((a:any, b:any) => {
+        return <any>new Date(b.surveryDate) - <any>new Date(a.surveryDate);
+      })
       console.log("sorted data...");
       console.log(dataList);
       this.surveys = dataList;

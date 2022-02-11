@@ -65,6 +65,7 @@ import { ScheduleAllModule, ScheduleModule} from '@syncfusion/ej2-angular-schedu
 import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ExcelExportResidents } from './excel-export-residents/excel-export-residents';
+import { ExcelImportResidents } from './excel-import-residents/excel-import-residents';
 import {MatBadgeModule} from '@angular/material/badge';
 
 
@@ -93,6 +94,7 @@ import {MatBadgeModule} from '@angular/material/badge';
     RequestComponent,
     DashboardComponent,
     ExcelExportResidents,
+    ExcelImportResidents
   ],
   imports: [
     CommonModule,

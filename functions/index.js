@@ -225,7 +225,23 @@ app.post("/searchResidentByName", async (req, res) => {
   snapshot.forEach((doc) => {
     const id = doc.id;
     const data = doc.data();
-    if (req.body.committee != null) {
+    if (req.body.committee != null && req.body.blkNum != null && req.body.ageGp != null) {
+      if (data.committee == req.body.committee && data.blkNum == req.body.blkNum && data.ageGp == req.body.ageGp) {
+        residents.push({id, data});
+      }
+    } else if (req.body.committee != null && req.body.blkNum != null && req.body.ageGp == null) {
+      if (data.committee == req.body.committee && data.blkNum == req.body.blkNum) {
+        residents.push({id, data});
+      }
+    } else if (req.body.committee != null && req.body.blkNum == null && req.body.ageGp != null) {
+      if (data.committee == req.body.committee && data.ageGp == req.body.ageGp) {
+        residents.push({id, data});
+      }
+    } else if (req.body.committee == null && req.body.blkNum == null && req.body.ageGp != null) {
+      if (data.ageGp == req.body.ageGp) {
+        residents.push({id, data});
+      }
+    } else if (req.body.committee != null && req.body.blkNum == null && req.body.ageGp == null) {
       if (data.committee == req.body.committee) {
         residents.push({id, data});
       }

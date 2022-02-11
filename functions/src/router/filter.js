@@ -6,7 +6,7 @@ const admin = require("firebase-admin");
 admin.initializeApp(functions.config().firebase);
 const userDb = admin.firestore().collection("Users");
 router.use(express.json());
-const {allowedUsers} = require('./src/router/authMiddleware/roleMiddleware.js');
+const {allowedUsers} = require('./authMiddleware/roleMiddleware');
 
 
 router.post("/", allowedUsers(['Admin', 'CC staff', 'Key Ccc Members', 'RN Manager', 'key RN Members']), async (req, res)=>{

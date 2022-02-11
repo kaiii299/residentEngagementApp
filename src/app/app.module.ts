@@ -21,7 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule, } from '@angular/material/dialog';
 import { AllUsersComponent} from './all-users/all-users.component';
-import { MatDividerModule } from '@angular/material/divider';
+import {MatDividerModule} from '@angular/material/divider';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
@@ -44,14 +44,9 @@ import { Authservice } from './share/services/auth.service';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {CdkTableModule} from '@angular/cdk/table';
 import {MatCardModule} from '@angular/material/card';
-// import { ScheduleModule } from '@syncfusion/ej2-angular-schedule';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
-import { MAT_DATE_LOCALE } from '@angular/material/core'
 
-
-
-//firebase
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/database'
 import { AngularFireModule } from '@angular/fire';
@@ -65,6 +60,7 @@ import { SpinnerComponent } from './share/spinner/spinner.component';
 import { RequestComponent } from './request/request.component';
 import { RequestNewUserService } from './share/services/request-new-user.service';
 import { userService } from './share/services/user.service';
+import { ScheduleAllModule, ScheduleModule} from '@syncfusion/ej2-angular-schedule';
 import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import {MatBadgeModule} from '@angular/material/badge';
@@ -95,7 +91,6 @@ import { ExcelExportResidentsComponent } from './excel-export-residents/excel-ex
     RequestComponent,
     DashboardComponent,
     ExcelExportResidentsComponent,
-
   ],
   imports: [
     CommonModule,
@@ -116,10 +111,10 @@ import { ExcelExportResidentsComponent } from './excel-export-residents/excel-ex
     MatIconModule,
     MatSidenavModule,
     MatDialogModule,
-    MatDividerModule,
     MatPaginatorModule,
     MatTableModule,
     MatSortModule,
+    MatDividerModule,
     MatExpansionModule,
     MatProgressBarModule,
     MatTooltipModule,
@@ -132,8 +127,10 @@ import { ExcelExportResidentsComponent } from './excel-export-residents/excel-ex
     MatCardModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    SpreadsheetAllModule,
+    ScheduleModule,
+    ScheduleAllModule,
     MatBadgeModule,
-    SpreadsheetAllModule
   ],
 
   providers: [
@@ -142,7 +139,6 @@ import { ExcelExportResidentsComponent } from './excel-export-residents/excel-ex
     useClass: AuthInterceptor,
     multi: true,
   },
-  { provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
     HasRoleGuard,
     Authservice,
     userService,

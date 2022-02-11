@@ -82,6 +82,11 @@
         <mat-select
           class="select"
           *ngIf="_role == 'Admin'"
+          [matBadgeHidden]="hidden"
+            matBadge={{pendingNumber}}
+            matBadgeSize="small"
+            matBadgeOverlap="true"
+            matBadgeColor="warn"
           placeholder="Request Status"
           [(ngModel)]="requestStatusValue"
           [ngModelOptions]="{ standalone: true }"
@@ -120,9 +125,9 @@
             matInput
             [(ngModel)]="searchValue"
             [ngModelOptions]="{ standalone: true }"
-            placeholder="Press enter to search"
+            placeholder="Type user name to search"
             autocomplete="off"
-            (keydown)="searchInput($event)"
+            (input)="searchInput()"
             class="search"
             #input
           />
@@ -140,12 +145,14 @@
                 type="button"
                 mat-button
                 class="excel-btn"
+                *ngIf="this.allowViewAllUsers.indexOf(_role)  > -1"
                 (click)="openExcelPreviewDialog()"
               >
                 <mat-icon>cloud_download</mat-icon> Export
               </button>
               <span
                 mat-button
+                *ngIf="this.allowViewAllUsers.indexOf(_role)  > -1"
                 class="excel-btn"
                 (click)="uploadFile()"
                 type="button"
@@ -200,8 +207,12 @@
                 >
                   View Details
                 </button>
-                <!-- <button mat-button class="edit-btn" >Edit</button> -->
-                <button mat-button class="delete-btn">Deactivate</button>
+
+                <button
+                *ngIf="_role == 'Admin'"
+                type="button"
+                (click)="deactivate(element.id)"
+                mat-button class="delete-btn">Deactivate</button>
               </div>
             </td>
           </ng-container>

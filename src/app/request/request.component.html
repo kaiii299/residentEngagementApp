@@ -26,13 +26,12 @@
               <input
                 matInput
                 placeholder="Email"
+                (input)="checkUserExist()"
                 [(ngModel)]="email"
-                (change)="checkUserExist()"
                 type="text"
                 formControlName="emailCtrl"
                 required
               />
-
               <mat-label
                 >Username
                 <p *ngIf="isExistUserName == true" class="limit">
@@ -43,7 +42,7 @@
                 matInput
                 placeholder="Username"
                 [(ngModel)]="userName"
-                (change)="checkUserExist()"
+                (input)="checkUserExist()"
                 maxlength="10"
                 type="text"
                 formControlName="usernameCtrl"
@@ -242,7 +241,7 @@
                 (click)="createNewRequestuser()"
                 [disabled]="!blockNumberValue"
               >
-                Done
+                Send Request
               </button>
             </div>
           </mat-step>

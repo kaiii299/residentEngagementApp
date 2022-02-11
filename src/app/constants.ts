@@ -55,8 +55,8 @@ export abstract class Constants {
     "CC staff",
     "Key Ccc",
     "RN Manager",
-    "Key RN Manager",
-    "Normal RN Manager"];
+    "Key RN Members",
+    "Normal RN Members"];
 
   static readonly genders: string[] = [
     'Male',
@@ -99,6 +99,14 @@ export abstract class Constants {
   ]);
 
   static readonly baseURL: string = "https://us-central1-residentappv2-affc6.cloudfunctions.net/api";
+  static readonly access_control = new Map<string, Object>([
+    ["Admin", {viewSearchFilterAllResident: true, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: true }],
+    ["CC staff", {viewSearchFilterAllResident: true, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: true }],
+    ["Key Ccc", {viewSearchFilterAllResident: true, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: false }],
+    ["RN Manager", {viewSearchFilterAllResident: false, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: true }],
+    ["Key RN Members", {viewSearchFilterAllResident: false, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: false }],
+    ["Normal RN Members", {viewSearchFilterAllResident: false, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: false}]
+  ]);
 
   static readonly secretKey: string = 'YourSecretKeyForEncryption&Descryption';
 

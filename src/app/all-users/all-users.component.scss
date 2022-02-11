@@ -54,10 +54,6 @@ body {
   cursor: pointer;
 }
 
-.upload{
-
-}
-
 .excel-btn {
   position: relative;
   bottom: 40px;
@@ -165,6 +161,24 @@ tr.example-detail-row {
 }
 
 @media (max-width: 1000px) {
+  .form .mat-select-placeholder {
+    font-size: 5px !important;
+  }
+  mat-label {
+    display: flex;
+    justify-content: center;
+    font-size: 15px;
+    color: black;
+  }
+  .total{
+    height: 90px;
+  }
+  .buttonContainer {
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    top: 30px;
+  }
   table {
     display: block;
     background-color: #f2d9c5;

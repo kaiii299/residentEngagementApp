@@ -39,7 +39,7 @@ const routes: Routes = [
   {
     path: 'addresident',
     component: AddResidentComponent,
-    // canActivate: [AuthRouteGuard, HasRoleGuard],
+    canActivate: [AuthRouteGuard],
     // data: { role: 'Admin' },
   },
   {
@@ -61,7 +61,11 @@ const routes: Routes = [
     //data: { role: 'Admin' },
   },
   { path: 'updateresident', component: UpdateResidentComponent },
-  { path: 'residentinfo', component: ResidentInfoComponent },
+  { 
+    path: 'residentinfo', 
+    component: ResidentInfoComponent ,
+    canActivate: [AuthRouteGuard],
+  },
   { path: "residentdetail", component: ResidentDetailComponent},
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full' },
 ];

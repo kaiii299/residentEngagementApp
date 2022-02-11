@@ -25,7 +25,7 @@
             title="username"
             placeholder="Username"
             maxlength="10"
-            (change)="checkUserExist()"
+            (input)="checkUserExist()"
             formControlName="usernameCtrl"
             [(ngModel)]="newUserName"
             required
@@ -56,12 +56,13 @@
           </mat-select>
 
           <mat-label>Email
-            <p *ngIf="isExistEmail == true" class="limit"> (Email is taken)</p>
+            <p *ngIf="isExistEmail == true" class="limit" > (Email is taken)</p>
           </mat-label>
           <input
             type="email"
             title="Email"
             placeholder="Email"
+            [readonly]="isOwn == false"
             value="{{ newEmail }}"
             formControlName="emailCtrl"
             (change)="checkUserExist()"
@@ -144,7 +145,7 @@
             <button
               class="forget-btn"
               type="button"
-              routerLink="/forgetpassword"
+              (click)="openForgetPassword()"
               *ngIf="requestStatus =='Accepted' "
             >
               Change Password
@@ -163,11 +164,25 @@
               (click)="delete()"
               *ngIf="
                 this.allowDeleteUser.indexOf(_role) > -1 &&
-                requestStatus == 'Accepted'
+                requestStatus == 'Accepted' && status != 'Inactive'
               "
             >
               Delete Account
             </button>
+
+            <button
+              mat-button
+              class="reactivate-btn"
+              type="button"
+              (click)="reactivate()"
+              *ngIf="
+                this.allowDeleteUser.indexOf(_role) > -1 &&
+                requestStatus == 'Accepted' && status == 'Inactive'
+              "
+            >
+              Reacivate Account
+            </button>
+
             <button
               mat-button
               type="button"

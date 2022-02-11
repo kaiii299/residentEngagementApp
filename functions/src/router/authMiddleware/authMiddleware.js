@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable no-undef */
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 
-// eslint-disable-next-line no-undef
 module.exports = validateFirebaseIdToken = (async (req, res, next)=>{
   functions.logger.log('Check if request is authorized with Firebase ID token');
 

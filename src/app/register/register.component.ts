@@ -1,14 +1,12 @@
-import { Component, ElementRef, EventEmitter, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
-import { StepperSelectionEvent, STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MatStepper } from '@angular/material/stepper';
 import { Authservice } from '../share/services/auth.service';
 import { Constants } from '../constants';
 import { Observable } from 'rxjs/internal/Observable';
-import { map, startWith } from 'rxjs/operators';
 import { userService } from '../share/services/user.service';
-import { Subject } from 'rxjs/internal/Subject';
-import { BehaviorSubject } from 'rxjs';
+
 
 @Component({
   selector: 'app-register',
@@ -85,9 +83,9 @@ export class RegisterComponent implements OnInit {
   }
 
 
-  checkUserName() {
-      this.authService.getAllUsers();
-      this.authService.eventcbUserData$.subscribe((data) => {
+ async checkUserName() {
+     await this.userService.getAllUsers();
+      this.userService.eventcbUserData$.subscribe((data) => {
         this.userDataArray = data;
         this.userDataArray.forEach((_userData) => {
           this.userNameArray.push(_userData.data.userName);

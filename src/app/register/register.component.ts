@@ -6,7 +6,8 @@ import { Authservice } from '../share/services/auth.service';
 import { Constants } from '../constants';
 import { Observable } from 'rxjs/internal/Observable';
 import { userService } from '../share/services/user.service';
-
+import Swal from 'sweetalert2';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -33,8 +34,8 @@ export class RegisterComponent implements OnInit {
   userData: any;
   userDataArray = Array();
   userNameArray = Array();
-  email: string;
-  userName = "";
+  email: string =    "";
+  userName: string = "";
   firstName: string;
   phoneNumber: string;
   password = "";
@@ -65,8 +66,10 @@ export class RegisterComponent implements OnInit {
 
   eventcbIsExist = new EventEmitter<any>();
   eventcbIsExist$ = this.eventcbIsExist.asObservable();
+  isExistUserName: boolean;
+  isExistEmail: boolean;
 
-  constructor(private userService: userService, private _formBuilder: FormBuilder, private authService: Authservice) { }
+  constructor(private router: Router,private userService: userService, private _formBuilder: FormBuilder, private authService: Authservice) { }
 
   ngOnInit(): void {
     this.firstFormGroup = this._formBuilder.group({
@@ -83,55 +86,55 @@ export class RegisterComponent implements OnInit {
   }
 
 
- async checkUserName() {
-     await this.userService.getAllUsers();
-      this.userService.eventcbUserData$.subscribe((data) => {
-        this.userDataArray = data;
-        this.userDataArray.forEach((_userData) => {
-          this.userNameArray.push(_userData.data.userName);
-        });
-        if (this.userNameArray.includes(this.userName)) {
-          this.isExist = true;
-          this.eventcbIsExist.emit(this.isExist);
+  async checkUserExist() {
+    if(this.userName){
+      this.userService.checkUserName(this.userName).subscribe((res)=>{
+        if(res.length !== 0){
+          this.isExistUserName = true;
+        }else{
+          this.isExistUserName = false;
         }
-        else {
-          this.isExist = false;
-          this.eventcbIsExist.emit(this.isExist);
-
+      });
+    }
+    else if(this.email.trim()){
+      this.userService.checkEmailExist(this.email).subscribe((res: any)=>{
+        console.log(res);
+        if(res.length !== 0){
+          this.isExistEmail = true;
+        }else{
+          this.isExistEmail = false;
         }
-        // console.log(this.userName);
-        const emptyArr = Array()
-        this.userNameArray = emptyArr;
       })
     }
+    else if(this.email == "" || this.userName == ""){
+      this.isExistEmail = false;
+      this.isExistUserName = false;
+    }
+  }
 
   getErrorMessage() {
-    if (this.email == "") {
-      this.message = "Email cannot be empty";
+    if (this.email == '') {
+      this.message = 'Email cannot be empty';
     }
-    if (this.userName == "") {
-      this.message = "Username cannot be empty";
+    if (this.userName == '') {
+      this.message = 'Username cannot be empty';
     }
-    if (this.firstName == "") {
-      this.message = "First name cannot be empty";
+    if (this.firstName == '') {
+      this.message = 'First name cannot be empty';
     }
-    if (this.password == "") {
-      this.message = "Password cannot be empty";
+    if (this.password == '') {
+      this.message = 'Password cannot be empty';
     }
     if (this.phoneNumber.length < 8) {
-      this.message = "Invalid Phone Number";
-    }
-    else if (this.isExist == true) {
-      this.message = "Username is in use";
-    }
-    else if (this.strengthColor == "red") {
-      this.message = "Password too weak.";
-    }
-    else if (this.password !== this.repeatPassword) {
-      this.message = "Password does not match";
-    }
-    else {
-      this.message = "";
+      this.message = 'Invalid Phone Number';
+    } else if (this.isExistUserName == true) {
+      this.message = 'Username is in use';
+    } else if (this.strengthColor == 'red') {
+      Swal.fire("Password too weak",'Minium 8 character. Include uppercase, numbers and special characters', 'warning')
+    } else if (this.password !== this.repeatPassword) {
+      Swal.fire('Password does not match','','error')
+    } else {
+      this.message = '';
       this.myStepper.next();
     }
   }
@@ -184,19 +187,16 @@ export class RegisterComponent implements OnInit {
       newUser['requestStatus'] = "Accepted";
       newUser['isRequested'] = false;
 
-      console.log(newUser)
       this.userService.register(this.email, this.password).then(res => {
         this.userService.createNewUser(newUser).then(res => {
-          this.message = "User created successfully."
-          this.messageColor = "Green"
+          Swal.fire('Request sent!','Reqest is now pending','success')
+          this.router.navigate(['/'])
         }).catch(error => {
-          this.message = "Failed to create user. Try again"
-          this.messageColor = "red"
+          Swal.fire('Error sending Email','','error')
           console.log(error)
         })
       }).catch(error => {
-        this.message = "The Email address is in use"
-        this.messageColor = "red"
+        Swal.fire('The email address is not valid',`${error}`,'error')
         console.log(error)
       });
     }

@@ -16,7 +16,7 @@ export class ExcelExportResidents{
   residentData = Array();
   fileName = "resident-data.xlsx"
 
-  constructor(public dialogRef: MatDialogRef<ExcelExportResidents>, 
+  constructor(public dialogRef: MatDialogRef<ExcelExportResidents>,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public _data:DialogDataResident) {
       dialogRef.disableClose = true;

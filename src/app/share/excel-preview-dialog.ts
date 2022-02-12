@@ -53,18 +53,7 @@ export class excelPreviewDialog {
     'https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/open';
   public saveUrl =
     'https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/save';
-    created() {
-      this.spreadsheetObj.cellFormat({ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }, 'A1:F1');
-      this.spreadsheetObj.cellFormat({ fontWeight: 'bold' }, 'E31:F31');
-      this.spreadsheetObj.cellFormat({ textAlign: 'left' }, 'E31');
-      if(this._filter == true){
-        alert(this._filter);
-        this.spreadsheetObj.sort({ sortDescriptors: { field: 'B' } }, 'A2:G51').then(() => {
-          // Filtered D(Department  field) column with value 'Services'
-          this.spreadsheetObj.applyFilter([{ field: 'C', operator: 'equal', value: '' }], 'A1:G51');
-        });
-      }
-    }
+
 
   ngOnInit(): void {
   }
@@ -78,12 +67,12 @@ export class excelPreviewDialog {
         denyButtonText: `Don't save`,
       }).then((result) => {
         if (result.isConfirmed) {
+          this.spreadsheetObj.save();
           Swal.fire({
             title: 'Changes saved',
             timer: 800,
             icon: 'success',
           });
-          this.spreadsheetObj.save()
           this.dialogRef.close();
         } else if (result.isDenied) {
           Swal.fire('Changes not saved','', 'error')
@@ -115,8 +104,6 @@ export class excelPreviewDialog {
   }
 
   beforeSave(args: BeforeSaveEventArgs) {
-    console.log(args);
-    args.fileName = "User data"
   }
 
 }

@@ -22,10 +22,15 @@ export class userService {
   eventcbPendingData = new Subject<Object>();
   eventcbFilterData$ = this.eventcbPendingData.asObservable();
 
-  newUserId: any | undefined;
+  newUserId: any | undefined | null;
   currentLogedInUserId: any;
 
   userNameExist = false;
+
+  currentCommittee : any | null;
+  currentRole: any;
+
+  normalRNMembers = "Normal RN Members"
 
   constructor(
     private authService: Authservice,
@@ -35,21 +40,45 @@ export class userService {
     private router: Router,
     private dialog: MatDialog
   ) {
+    this.authService.eventcbCommittee$.subscribe((committee)=>{
+      this.currentCommittee = committee
+    })
+    const _currentcommittee = localStorage.getItem('committee');
+    if(_currentcommittee){
+      this.currentCommittee = this.authService.decryptData(_currentcommittee);
+    }
+
+    this.authService.eventcbRole$.subscribe((role)=>{
+      this.currentRole = role
+    })
+    const _currentRole = localStorage.getItem('role');
+    if(_currentRole){
+      this.currentRole = this.authService.decryptData(_currentRole);
+    }
   }
 
   async getAllUsers() {
-    return await this.http
+    if(this.currentRole !== this.normalRNMembers){
+      return await this.http
       .get(this.baseUrl + '/getAllUsers')
       .toPromise()
       .then((data) => {
         this.eventcbUserData.next(data);
       })
+    }else{
+      return await this.http
+      .post(this.baseUrl + '/getAllUsersNormalRn', {'committee': this.currentCommittee})
+      .toPromise()
+      .then((data) => {
+        this.eventcbUserData.next(data);
+      })
+    }
   }
 
-  async searchUserData(body: any) {
-    console.log(body);
-    return await this.http
-      .post(this.baseUrl + '/searchUserByName', body)
+  async searchUserData(keyword: any, _committee: any) {
+    if(this.currentRole !== this.normalRNMembers){
+      return await this.http
+      .post(this.baseUrl + '/searchUserByName', {keyword: keyword})
       .toPromise()
       .then((data) => {
         this.eventcbUserData.next(data);
@@ -62,9 +91,35 @@ export class userService {
           }
         }
       });
+    }else{
+       _committee = this.currentCommittee;
+      return await this.http
+      .post(this.baseUrl + '/searchUserByNameNormalRn', {keyword: keyword,committee: _committee})
+      .toPromise()
+      .then((data) => {
+        this.eventcbUserData.next(data);
+      })
+      .catch((err) => {
+        if (err instanceof HttpErrorResponse) {
+          if (err) {
+            console.log(err);
+            Swal.fire('ERROR', `${err.message}`, 'error');
+          }
+        }
+      });
+
+    }
   }
 
   async filterUser(body:any){
+    if(this.currentRole = this.normalRNMembers){
+       return await this.http.post(this.baseUrl + '/filter', body).toPromise().then((data)=>{
+      this.eventcbUserData.next(data);
+    }).catch((err)=>{
+      Swal.fire('ERROR',`${err.message}`,'error')
+    });
+
+    }
     return await this.http.post(this.baseUrl + '/filter', body).toPromise().then((data)=>{
       this.eventcbUserData.next(data);
     }).catch((err)=>{
@@ -104,9 +159,7 @@ export class userService {
     await this.firebaseAuth.sendPasswordResetEmail(email).then((res) => {});
   }
 
-  // checkUserName(userName: any){
-  //   return this.http.get(this.baseUrl + '/checkUserName/' + userName) as Observable<any>;
-  // }
+
 
   checkUserName(userName: any){
     var residentRef = this.db.collection<any>('Users', tempRes => {

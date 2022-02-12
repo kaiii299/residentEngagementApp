@@ -21,23 +21,30 @@
             errorMessage="There are empty fields"
           >
             <form [formGroup]="firstFormGroup">
-              <mat-label>Email</mat-label>
+              <mat-label>Email
+                <p *ngIf="isExistEmail == true" class="limit">
+                  (Email is taken)
+                </p>
+              </mat-label>
               <input
                 matInput
                 placeholder="Email"
                 [(ngModel)]="email"
                 type="text"
+                (input)="checkUserExist()"
                 formControlName="emailCtrl"
                 required
               />
 
               <mat-label>Username
-                <p *ngIf="isExist == true" class="limit">(Username taken)</p>
+                <p *ngIf="isExistUserName == true" class="limit">
+                  (Username is taken)
+                </p>
               </mat-label>
               <input
                 matInput
                 placeholder="Username"
-                (input)="checkUserName()"
+                (input)="checkUserExist()"
                 [(ngModel)]="userName"
                 maxlength="10"
                 type="text"

@@ -52,6 +52,7 @@ export class UserProfileComponent implements OnInit {
   newPassword: any;
   newGender: any;
   newBlockNumber: any;
+  currentUserName: any;
   newRoleValue: any;
   oldRoleValue: any;
   newCommitteeValue: any;
@@ -93,6 +94,11 @@ export class UserProfileComponent implements OnInit {
   async ngOnInit() {
     if (this.uid == this._uid) {
       this.isOwn = true;
+    }
+
+    const _currentUserName = localStorage.getItem('username');
+    if(_currentUserName){
+      this.currentUserName = this.authService.decryptData(_currentUserName);
     }
 
     const decryptedUid = this.authService.decryptData(this._uid);
@@ -225,7 +231,7 @@ export class UserProfileComponent implements OnInit {
     const decryptedid = this.authService.decryptData(this._uid);
     let userData: any = {}
     userData['status'] = 'Inactive'
-    userData['requestStatus'] = "Accepeted"
+    userData['requestStatus'] = "Rejected"
     Swal.fire({
       title: `Deativate ${this.oldUserName}`,
       showDenyButton: true,

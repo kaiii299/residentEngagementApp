@@ -203,11 +203,10 @@ export class RequestComponent implements OnInit {
       newUser['blockNumber'] = this.blockNumberValue;
       newUser['registrationDate'] = this.registeredDate;
       newUser['registrationTime'] = this.registeredTime;
-      newUser['status'] = 'Inactive';
+      newUser['status'] = 'Pending';
       newUser['requestStatus'] = "Pending";
       newUser['isRequested'] = true;
-
-      console.log(newUser)
+      
       this.userService.register(this.email, this.password).then(res => {
         this.userService.createNewUser(newUser).then(res => {
           Swal.fire('Request sent!','Reqest is now pending','success')

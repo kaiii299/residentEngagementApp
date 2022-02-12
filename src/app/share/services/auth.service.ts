@@ -12,6 +12,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { userService } from './user.service';
 import Swal from 'sweetalert2'
 import { AngularFirestore } from '@angular/fire/firestore';
+import { OTPService } from './otp.service';
 
 @Injectable()
 export class Authservice {
@@ -32,6 +33,9 @@ export class Authservice {
   eventcbRole = new Subject<string>(); //source
   eventcbRole$ = this.eventcbRole.asObservable();
 
+  eventcbCommittee = new Subject<string>(); //source
+  eventcbCommittee$ = this.eventcbCommittee.asObservable();
+
   eventcbJWT = new BehaviorSubject<any>("");
   eventcbJWT$ = this.eventcbJWT.asObservable();
 
@@ -49,6 +53,7 @@ export class Authservice {
   otpCompleted: boolean;
 
   constructor(
+    private otpService: OTPService,
     private userService: userService,
     private http: HttpClient,
     private firebaseAuth: AngularFireAuth,
@@ -65,48 +70,54 @@ export class Authservice {
       .signInWithEmailAndPassword(email.trim(), password)
       .then((res) => {
         if (res) {
+          console.log();
           res.user?.getIdToken().then((jwtToken) => {
             this.eventcbJWT.next(jwtToken);
             localStorage.setItem('token', jwtToken);
-
-            this.CurrentUser(res.user?.uid ).subscribe((userdata) => {
+            this.CurrentUser(res.user?.uid).subscribe((userdata) => {
               this.currentUserObject = userdata;
-              console.log(this.currentUserObject);
               if (
-                this.currentUserObject.userData.requestStatus == "Rejected" ||
-                this.currentUserObject.userData.status == "Inactive"
-                ) {
-                  this.SwalFire('Account has been deactivated', 'error')
-                } else if (this.currentUserObject.requestStatus == "Pending" ||
-                this.currentUserObject.userData.status == "Inactive"
-                ) {
-                  this.SwalFire('Account status is pending', 'error')
-                }
-                else{
-                  // (this.currentUserObject.requestStatus == "Accepted" ||
-                  //   this.currentUserObject.userData.Status == "Active"){
+                this.currentUserObject.requestStatus == "Rejected" ||
+                this.currentUserObject.status == "Inactive"
+              ) {
+                this.SwalFire('Account has been deactivated', 'error')
+              } else if (this.currentUserObject.requestStatus == "Pending" ||
+                this.currentUserObject.status == "Pending"
+              ) {
+                this.SwalFire('Account status is pending', 'error')
+              }
+              else if
+              
+                (this.currentUserObject.requestStatus == "Accepted" ||
+                this.currentUserObject.Status == "Active") {
+                  //this.otpService.openOTP()
                 this.eventcbRefresh.next(res.user?.refreshToken);
                 localStorage.setItem('refreshToken', JSON.stringify(res.user?.refreshToken))
                 this.phoneNumber = this.currentUserObject.phoneNumber
                 this.eventCallbackuserName.next(
-                  this.currentUserObject.userData.userName
+                  this.currentUserObject.userName
                 );
                 var encryptedRole = this.encryptData(
-                  this.currentUserObject.userData.role
+                  this.currentUserObject.role
                 );
-
+                res.user?.updateProfile({
+                  displayName: this.currentUserObject.role
+                }).then((res)=>{
+                  console.log(res);
+                })
                 localStorage.setItem('role', encryptedRole);
-                this.eventcbRole.next(this.currentUserObject.userData.role);
-                this.eventCallbackuserName.next(this.currentUserObject.userData.userName);
-                const encryptedCommittee = this.encryptData(this.currentUserObject.userData.committee);
-               localStorage.setItem("committee", encryptedCommittee);
+                this.eventcbRole.next(this.currentUserObject.role);
+                this.eventCallbackuserName.next(this.currentUserObject.userName);
+                this.eventcbCommittee.next(this.currentUserObject.committee);
+                const encryptedCommittee = this.encryptData(this.currentUserObject.committee);
+                localStorage.setItem("committee", encryptedCommittee);
+                this.router.navigate(['events'])
               }
             });
           });
           const encryptedText = this.encryptData(res.user?.uid);
           localStorage.setItem('uid', encryptedText);
           const _uid = this.decryptData(encryptedText);
-          // this.router.navigate(['event'])
         } else {
           console.log('error');
           localStorage.clear();
@@ -116,9 +127,9 @@ export class Authservice {
       });
   }
 
-  CurrentUser(id: any){
-   return this.http.get(this.baseUrl + '/currentUser/' + id) as Observable<any>;
-    // return this.db.collection('Users').doc(id).valueChanges();
+  CurrentUser(id: any) {
+    // return this.http.get(this.baseUrl + '/currentUser/' + id) as Observable<any>;
+    return this.db.collection('Users').doc(id).valueChanges();
   }
 
 

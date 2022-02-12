@@ -6,27 +6,37 @@
     multiple="false"
   />
   <button mat-button type="button" (click)="_close()">Close</button>
+  <button mat-button type="button" (click)="save()">save</button>
   <button mat-button type="button" (click)="filter()">Filter</button>
-  <br>
-  <ejs-spreadsheet scrollSettings="true" height=80vh (beforeSave)='beforeSave($event)'  #default [openUrl]="openUrl" [saveUrl]="saveUrl" (created)="created()" allowSave='true' >
+  <br />
+  <ejs-spreadsheet
+    scrollSettings="true"
+    height="80vh"
+    (beforeSave)="beforeSave($event)"
+    #default
+    [openUrl]="openUrl"
+    [saveUrl]="saveUrl"
+    allowSave="true"
+    allowOpen="true"
+  >
     <e-sheets>
       <e-sheet name="Users report">
         <e-ranges>
-          <e-range [dataSource]="userData" ></e-range>
+          <e-range [dataSource]="userData"></e-range>
         </e-ranges>
         <e-columns>
-          <e-column [width]=140></e-column>
-          <e-column [width]=130></e-column>
-          <e-column [width]=130></e-column>
-          <e-column [width]=150></e-column>
-          <e-column [width]=130></e-column>
-          <e-column [width]=130></e-column>
-          <e-column [width]=140></e-column>
-          <e-column [width]=130></e-column>
-          <e-column [width]=130></e-column>
-          <e-column [width]=150></e-column>
-          <e-column [width]=130></e-column>
-          <e-column [width]=130></e-column>
+          <e-column [width]="140"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="150"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="140"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="150"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="130"></e-column>
         </e-columns>
       </e-sheet>
     </e-sheets>

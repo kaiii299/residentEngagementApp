@@ -208,6 +208,17 @@ app.get("/getResident/:id", async (req, res) => {
   res.status(200).send({id: resid, residentData});
 });
 
+app.post("/createResident", async (req, res) => {
+  req.header("Access-Control-Allow-Origin", 'http://localhost:4200');
+  const batch = admin.firestore().batch();
+  const residentData = req.body;
+  residentData.forEach((doc) => {
+    batch.set(residentDb.doc(), doc);
+  });
+  await batch.commit();
+  res.status(200).send(residentData);
+});
+
 app.put("/updateResident/:id", async (req, res) => {
   const residentData = req.body;
   const snapshot = residentDb.doc(req.params.id);

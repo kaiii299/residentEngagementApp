@@ -37,8 +37,30 @@ export class ResidentService {
     return bytes.toString(CryptoJS.enc.Utf8);
   }
 
-  addResident(resident: object) {
-    return this.firestore.collection('residents').add(resident);
+  // addResident(resident: object) {
+  //   return this.firestore.collection('residents').add(resident);
+  // }
+
+  async addResident(resident: object) {
+    let residentList = [];
+    residentList.push(resident);
+    return await this.http.post(this.baseUrl+"/createResident", residentList).toPromise().then((data) => {
+      console.log("resident data =>>>> ");
+      console.log(data);
+      return data;
+    }).catch(err => {
+      console.log(err);
+    });
+  }
+
+  async addResidentList(residentList:any) {
+    return await this.http.post(this.baseUrl+"/createResident", residentList).toPromise().then((data) => {
+      console.log("resident data =>>>> ");
+      console.log(data);
+      return data;
+    }).catch(err => {
+      console.log(err);
+    });
   }
 
   async getAllResidents(body: any) {

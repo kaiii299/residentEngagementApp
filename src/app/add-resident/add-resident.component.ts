@@ -50,14 +50,12 @@ export class AddResidentComponent implements OnInit {
   // }
 
   onChange(value: any) {
-    console.log(value);
     this.selectedZone = value;
     this.availableBlocks =this.zonesInfo.get(this.selectedZone);
     console.log(this.zonesInfo.get(this.selectedZone));
   }
 
   add(value: any) {
-    console.log(value);
     // let temp_activities = value.activities;
     // var selected_activities = [];
     //   for (let i = 0; i < temp_activities.length; i++) {

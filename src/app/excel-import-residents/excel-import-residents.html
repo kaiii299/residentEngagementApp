@@ -1,8 +1,8 @@
 <div class="control-selection">
-  <br />
-  <button mat-button type="button" (click)="uploadData()">Upload Data</button>
   <input title="file" type="file" (change)="onFileChange($event)" multiple="false">
-  <br>
+  <div class="upload">
+    <button mat-button type="button" (click)="uploadData()">Upload Data</button>
+  </div>
   <ejs-spreadsheet scrollSettings="true" height=90vh openUrl='https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/open'>
     <e-sheets>
       <e-sheet name="Resident Data">
@@ -15,5 +15,4 @@
       </e-sheet>
     </e-sheets>
   </ejs-spreadsheet>
-
 </div>

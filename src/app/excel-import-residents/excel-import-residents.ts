@@ -32,8 +32,8 @@ export class ExcelImportResidents {
         reader.readAsBinaryString(target.files[0]);
     }
     uploadData(){
-        console.log("importedData..")
-        console.log(this.importedData)
+        // console.log("importedData..")
+        // console.log(this.importedData)
         this.residentService.addResidentList(this.importedData).then((result) => {
             if(result){
                 location.reload();

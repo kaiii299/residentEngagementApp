@@ -75,4 +75,16 @@ form{
     font-size: 20px;
     cursor: pointer;
 }
+@media(max-width: 1000px){
+    .container{
+        height: 90vh;
+        width: 90vw;
+        overflow: hidden;
+    }
+    .surveyContainer{
+        width: 90vw;
+        overflow: hidden;
+        margin-left: 5%;
+    }
+}
 

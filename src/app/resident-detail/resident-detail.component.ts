@@ -40,8 +40,8 @@ export class ResidentDetailComponent implements OnInit {
   async ngOnInit() {
     const decryptedResid = this.residentService.decryptData(this.resid);
     await this.residentService.getResidentById(decryptedResid).toPromise().then((data) => {
-      console.log("get resident details..")
-      console.log(data);
+      // console.log("get resident details..")
+      // console.log(data);
       let residentDetail: any = data.residentData;
       this.residentDetailsForm.patchValue({
         residentNameControl: residentDetail.residentName,
@@ -56,7 +56,7 @@ export class ResidentDetailComponent implements OnInit {
     })
     console.log(decryptedResid);
     await this.residentService.getSurveyByResidentID(decryptedResid).then((res) => {
-      console.log("get survey");
+      // console.log("get survey");
       //console.log(res);
       var dataList:any = [];
       for (const e of res) {
@@ -70,8 +70,8 @@ export class ResidentDetailComponent implements OnInit {
       dataList.sort((a:any, b:any) => {
         return <any>new Date(b.surveryDate) - <any>new Date(a.surveryDate);
       })
-      console.log("sorted data...");
-      console.log(dataList);
+      // console.log("sorted data...");
+      // console.log(dataList);
       this.surveys = dataList;
       console.log(this.surveys);
     })

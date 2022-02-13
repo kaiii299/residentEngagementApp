@@ -38,27 +38,6 @@ export class UpdateResidentComponent implements OnInit {
     });
     
    }
-
-  // ngOnInit(): void {
-  //   this.residentId = this.activatedRoute.snapshot.queryParams.id;
-  //   console.log(this.residentId);
-  //   if(this.residentId){
-  //     this.residentService.getResidentById(this.residentId).subscribe(residentInfo =>{
-  //       let residentDetail:any = residentInfo;
-  //        console.log(residentDetail);
-  //       this.updateResidentForm.patchValue({
-  //         residentNameControl: residentDetail.residentName,
-  //         committeeControl: residentDetail.committee,
-  //         blkNumControl: residentDetail.blkNum,
-  //         unitNumControl: residentDetail.unitNum,
-  //         genderControl: residentDetail.gender,
-  //         raceControl: residentDetail.race,
-  //         ageGpControl: residentDetail.ageGp,
-  //         expertiseControl: residentDetail.expertise,
-  //       });
-  //      })
-  //   }
-  // }
   async ngOnInit() {
     const decryptedResid = this.residentService.decryptData(this.resid);
     await this.residentService.getResidentById(decryptedResid).toPromise().then((data) => {
@@ -85,10 +64,9 @@ export class UpdateResidentComponent implements OnInit {
   }
 
   onChangeCommittee(value: any) {
-    console.log(value);
     this.selectedZone = value;
     this.availableBlocks =this.zonesInfo.get(this.selectedZone);
-    console.log(this.zonesInfo.get(this.selectedZone));
+    // console.log(this.zonesInfo.get(this.selectedZone));
    
     this.updateResidentForm.patchValue({
            blkNumControl: '',
@@ -96,7 +74,7 @@ export class UpdateResidentComponent implements OnInit {
   }
   
   onChangeBlkNumList(value: any){
-    console.log(value);
+    // console.log(value);
   }
 
   updateResidentInfo(value : any){

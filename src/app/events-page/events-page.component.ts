@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { DayService, WeekService, WorkWeekService, MonthService, AgendaService } from '@syncfusion/ej2-angular-schedule';
+import { DayService, WeekService, WorkWeekService, MonthService, AgendaService} from '@syncfusion/ej2-angular-schedule';
 
 @Component({
   selector: 'app-events-page',
@@ -9,14 +9,15 @@ import { DayService, WeekService, WorkWeekService, MonthService, AgendaService }
   template: `<ejs-schedule> </ejs-schedule>`,
   styleUrls: ['./events-page.component.scss'],
 
-
 })
 export class EventsPageComponent implements OnInit  {
   items: any;
   public test: string | any[];
-  public currentView = "WorkWeek";
+  public currentView = "Month";
   public data: any;
   public selectedDate = new Date();
+  scheduleObj: any;
+
   constructor(db: AngularFirestore) {
     this.data = db.collection("Agenda");
     this.items = db
@@ -34,6 +35,7 @@ export class EventsPageComponent implements OnInit  {
           this.test[i].StartTime = new Date(parseInt(srtTime));
           this.test[i].EndTime = new Date(parseInt(endTime));
         }
+        
         schObj.eventSettings.dataSource = this.test;
       });
   }
@@ -80,8 +82,11 @@ export class EventsPageComponent implements OnInit  {
     } else if (args.requestType == "eventRemove") {
       this.data.doc(args.deletedRecords[0].DocumentId).delete();
     }
+
   }
+
   public GuidFun() {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   }
 }
+

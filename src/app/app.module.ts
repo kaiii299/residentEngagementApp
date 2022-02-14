@@ -65,6 +65,8 @@ import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { ExcelExportResidentsComponent } from './excel-export-residents/excel-export-residents.component';
+import { DropDownListModule }from '@syncfusion/ej2-angular-dropdowns';
+import { DateTimePickerModule }from '@syncfusion/ej2-angular-calendars';
 
 @NgModule({
   declarations: [
@@ -131,6 +133,8 @@ import { ExcelExportResidentsComponent } from './excel-export-residents/excel-ex
     ScheduleModule,
     ScheduleAllModule,
     MatBadgeModule,
+    DropDownListModule,
+    DateTimePickerModule,
   ],
 
   providers: [

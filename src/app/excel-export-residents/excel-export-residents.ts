@@ -1,30 +1,33 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import * as XLSX from 'xlsx';
-import { DialogData } from "../user-profile/user-profile.component";
 import { SpreadsheetComponent, BeforeSaveEventArgs } from '@syncfusion/ej2-angular-spreadsheet';
+import { DialogDataResident } from '../resident-info/resident-info.component';
 
 @Component({
-  selector: 'app-excel-export-residents',
-  templateUrl: './excel-export-residents.component.html',
-  styleUrls: ['./excel-export-residents.component.scss']
+  selector: 'excel-export-residents',
+  templateUrl: './excel-export-residents.html',
+  styleUrls: ['./excel-export-residents.scss']
 })
-export class ExcelExportResidentsComponent implements OnInit {
-
+export class ExcelExportResidents{
   data: any;
   dataArray = Array();
   tempArray = Array();
   residentData = Array();
   fileName = "resident-data.xlsx"
 
-  constructor(public dialogRef: MatDialogRef<ExcelExportResidentsComponent>, private dialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA) public dialogData: DialogData) {
-      this.data = dialogData
-      this.dataArray = this.data
+  constructor(public dialogRef: MatDialogRef<ExcelExportResidents>,
+    private dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public _data:DialogDataResident) {
+      dialogRef.disableClose = true;
+      this.data = _data;
+      this.dataArray = this.data;
       this.dataArray.forEach((doc)=>{
         const data = doc
         this.data = data
         delete this.data.id
+        console.log("this.data");
+        console.log(this.data);
         this.tempArray.push(this.data)
       })
       this.tempArray.forEach((doc)=>{
@@ -34,6 +37,11 @@ export class ExcelExportResidentsComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  close(): void {
+    this.dialogRef.close();
+  }
+
 
   beforeSave (args: BeforeSaveEventArgs) {
   }

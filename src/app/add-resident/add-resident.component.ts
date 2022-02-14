@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@ang
 import { Constants } from '../constants';
 import { ResidentService } from '../resident.service';
 import { Router, NavigationExtras } from '@angular/router';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -36,38 +37,36 @@ export class AddResidentComponent implements OnInit {
       race: new FormControl('', [Validators.required]),
       ageGp: new FormControl('', [Validators.required]),
       expertise: new FormControl('', [Validators.required]),
-      activities: new FormArray([], [Validators.required]),
+      // activities: new FormArray([], [Validators.required]),
       noblk: new FormControl()
     });
 
     //console.log(this.addResidentForm.controls.activities);
-    this.activitiesList.forEach(() => this.activitiesFormArray.push(new FormControl(false)));
+    // this.activitiesList.forEach(() => this.activitiesFormArray.push(new FormControl(false)));
   }
 
-  get activitiesFormArray() {
-    return this.addResidentForm.controls.activities as FormArray;
-  }
+  // get activitiesFormArray() {
+  //   return this.addResidentForm.controls.activities as FormArray;
+  // }
 
   onChange(value: any) {
-    console.log(value);
     this.selectedZone = value;
     this.availableBlocks =this.zonesInfo.get(this.selectedZone);
     console.log(this.zonesInfo.get(this.selectedZone));
   }
 
   add(value: any) {
-    console.log(value);
-    let temp_activities = value.activities;
-    var selected_activities = [];
-      for (let i = 0; i < temp_activities.length; i++) {
-        let get_activity = this.activitiesList[i];
-        if (temp_activities[i]) {
-          selected_activities.push(get_activity);
-        }
-      }
-      console.log(selected_activities.length);
-    if (this.addResidentForm.valid && selected_activities.length != 0) {
-       value.activities = selected_activities;
+    // let temp_activities = value.activities;
+    // var selected_activities = [];
+    //   for (let i = 0; i < temp_activities.length; i++) {
+    //     let get_activity = this.activitiesList[i];
+    //     if (temp_activities[i]) {
+    //       selected_activities.push(get_activity);
+    //     }
+    //   }
+    //   console.log(selected_activities.length);
+    if (this.addResidentForm.valid) {
+      //  value.activities = selected_activities;
       let resident = {
         residentName: value.residentName,
         committee: value.committee,
@@ -77,17 +76,17 @@ export class AddResidentComponent implements OnInit {
         race: value.race,
         ageGp: value.ageGp,
         expertise: value.expertise,
-        activities: value.activities,
+        // activities: value.activities,
       }
       this.residentService.addResident(resident).then(results => {
-        alert("Resident has been added to database")
+        Swal.fire("Resident has been added to database")
         //console.log(results);
         //console.log(results.id);
         this.router.navigate(['residentinfo']);
       });
 
     } else {
-      alert("Missing information !");
+      Swal.fire("Missing information !");
     }
   }
 }

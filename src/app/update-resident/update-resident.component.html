@@ -6,7 +6,7 @@
                 <label>Resident Name :</label>
                 <input title="residentName" class='form-control' type="text" oninput="this.value = this.value.toUpperCase()" formControlName="residentNameControl">
                 <label>Committee :</label>
-                <select title="committee" class='form-control' formControlName="committeeControl">
+                <select title="committee" class='form-control' formControlName="committeeControl" (change)="onChangeCommittee($event.target.value)">
                     <option *ngFor="let c of committees">
                         {{c}}
                     </option>
@@ -14,7 +14,7 @@
                 <label>Block Number :</label>
                 <select title="blkNum" class='form-control' formControlName="blkNumControl">
                     <option value="" disabled selected hidden>Select Block</option>
-                    <option *ngFor="let blk of availableBlocks" >
+                    <option *ngFor="let blk of availableBlocks" [ngValue]="blk">
                         {{blk}}
                     </option>
                 </select>

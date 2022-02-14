@@ -49,7 +49,6 @@ export class InputSurveyComponent implements OnInit {
     return this.surveyForm.controls.activities as FormArray;
   }
   submit(value: any){
-    console.log(value);
     let temp_contact = value.contact;
     var selected_contact = [];
       for (let i = 0; i < temp_contact.length; i++){
@@ -67,8 +66,8 @@ export class InputSurveyComponent implements OnInit {
       }
     }
     let formattedDate = value.date.toLocaleDateString();
-    console.log("Formatted Date")
-    console.log(formattedDate);
+    // console.log("Formatted Date")
+    // console.log(formattedDate);
     if (this.surveyForm.valid && selected_contact.length !=0 && selected_activities.length !=0){
       value.contact = selected_contact;
       value.activities = selected_activities;

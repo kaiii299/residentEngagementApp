@@ -52,7 +52,8 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   selectedZone: string;
   blockValue: string;
   filter_form: FormGroup;
-  _role: any;
+  normalRnMembers: string = 'Normal RN Members'
+  _role:any;
   userdata = Array();
   filterData = Array();
   totalCount: any;
@@ -87,18 +88,19 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
 
   async ngOnInit() {
     this.checkPending();
-    this.getAllusers();
     const role = localStorage.getItem("role");
     this._role = this.authService.decryptData(role);
+      this.getAllusers();
   }
 
+
   getAllusers(){
-    this.userService.getAllUsers();
-    this.userService.eventcbUserData$.subscribe((data) => {
-      this.dataSource.data = data;
-      this.userdata = data;
-      this.totalCount = this.userdata.length
-    })
+      this.userService.getAllUsers();
+      this.userService.eventcbUserData$.subscribe((data) => {
+        this.dataSource.data = data;
+        this.userdata = data;
+        this.totalCount = this.userdata.length
+      })
   }
 
   checkPending(){
@@ -119,20 +121,20 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   searchInput() {
-    if (this.searchValue) {
-      let wordToSearch = this.searchValue.charAt(0).toUpperCase() + this.searchValue.slice(1);
-      this.userService.searchUserData({ keyword: wordToSearch });
-      this.userService.eventcbUserData$.subscribe((res) => {
-        this.dataSource.data = res;
-        this.userdata = res;
-        this.totalCount = this.userdata.length;
-      })
-      if (this.dataSource.paginator) {
-        this.dataSource.paginator.firstPage();
+      if (this.searchValue) {
+        let wordToSearch = this.searchValue.charAt(0).toUpperCase() + this.searchValue.slice(1);
+        this.userService.searchUserData(wordToSearch ,this.userService.currentCommittee);
+        this.userService.eventcbUserData$.subscribe((res) => {
+          this.dataSource.data = res;
+          this.userdata = res;
+          this.totalCount = this.userdata.length;
+        })
+        if (this.dataSource.paginator) {
+          this.dataSource.paginator.firstPage();
+        }
+      } else if (!this.searchValue){
+        this.getAllusers();
       }
-    } else if (!this.searchValue){
-      this.getAllusers();
-    }
   }
 
   userInfo(uid: any) {
@@ -162,7 +164,6 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
       this.userdata = data;
       this.totalCount = this.userdata.length;
     });
-
   }
 
   clearFilter() {
@@ -181,8 +182,12 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   onChange(value: any) {
-    this.selectedZone = value;
-    this.availableBlocks = this.zonesInfo.get(this.selectedZone);
+    if(this._role == this.normalRnMembers){
+      this.selectedZone = value;
+      this.availableBlocks = this.zonesInfo.get(this.selectedZone);
+    }
+      this.selectedZone = value;
+      this.availableBlocks = this.zonesInfo.get(this.selectedZone);
   }
 
   refresh() {
@@ -190,38 +195,28 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   openExcelPreviewDialog() {
+    console.log("user data ");
+    console.log(this.userdata);
     this.dialog.open(excelPreviewDialog, {
-      width: '750px',
-      height: '650px',
+      width: '800px',
+      height: '550px',
       data: this.userdata
     })
   }
 
-  async uploadFile() {
-    this.dialog.open(uploadFileDialog,{
-      width: '750px',
-      height: '650px'
-    })
-  }
-
   async deactivate(uid: any) {
-    const decryptedid = this.authService.decryptData(uid);
     let userData: any = {}
     userData['status'] = 'Inactive'
     userData['requestStatus'] = 'Rejected'
     Swal.fire({
       title: `Deactivate user?`,
-      showDenyButton: true,
       showCancelButton: true,
       confirmButtonText: 'Deactivate',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#d33',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.userService.updateUserData(decryptedid, userData).then(() => {
+        this.userService.updateUserData(uid, userData).then(() => {
           Swal.fire('User deactivated', '', 'success').then(()=>{
-            setTimeout(() => {
-              location.reload(), 80000;
-            });
           })
         }).catch((err) => {
           Swal.fire('ERROR', `${err.message}`, 'error')

@@ -5,6 +5,7 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
 import { InputSurveyComponent } from '../input-survey/input-survey.component';
 import { Constants } from '../constants';
+import { Router, NavigationExtras } from '@angular/router';
 
 
 @Component({
@@ -20,7 +21,8 @@ export class ResidentDetailComponent implements OnInit {
 
   resid = this.activatedRoute.snapshot.queryParams.id;
 
-  constructor(private residentService: ResidentService, private activatedRoute: ActivatedRoute, public dialog: MatDialog) {
+  constructor(private residentService: ResidentService, private activatedRoute: ActivatedRoute, public dialog: MatDialog,
+    private router: Router) {
     this.residentDetailsForm = new FormGroup({
       residentNameControl: new FormControl('', [Validators.required]),
       committeeControl: new FormControl('', [Validators.required]),
@@ -38,8 +40,8 @@ export class ResidentDetailComponent implements OnInit {
   async ngOnInit() {
     const decryptedResid = this.residentService.decryptData(this.resid);
     await this.residentService.getResidentById(decryptedResid).toPromise().then((data) => {
-      console.log("get resident details..")
-      console.log(data);
+      // console.log("get resident details..")
+      // console.log(data);
       let residentDetail: any = data.residentData;
       this.residentDetailsForm.patchValue({
         residentNameControl: residentDetail.residentName,
@@ -54,20 +56,29 @@ export class ResidentDetailComponent implements OnInit {
     })
     console.log(decryptedResid);
     await this.residentService.getSurveyByResidentID(decryptedResid).then((res) => {
-      console.log("get survey");
-      console.log(res);
+      // console.log("get survey");
+      //console.log(res);
       var dataList:any = [];
       for (const e of res) {
-        console.log(e);
-        dataList.push(e.data);
+        let surveryData = e.data;
+        let surDate = new Date(surveryData.date);
+
+        surveryData.surveryDate = surDate;
+        dataList.push(surveryData);
       }
 
-      dataList.sort((a:any, b:any) => b.date - a.date)
-      console.log("sorted data...");
-      console.log(dataList);
+      dataList.sort((a:any, b:any) => {
+        return <any>new Date(b.surveryDate) - <any>new Date(a.surveryDate);
+      })
+      // console.log("sorted data...");
+      // console.log(dataList);
       this.surveys = dataList;
       console.log(this.surveys);
     })
+  }
+  onClickEdit(){
+    let navigationExtras: NavigationExtras = {queryParams: {id : this.resid}}
+    this.router.navigate(['updateresident'], navigationExtras)
   }
 
   openSurveyDialog() {

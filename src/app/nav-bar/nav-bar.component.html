@@ -15,7 +15,6 @@
       <div class="dropdown">
         <a class="headings">Resident Info</a>
         <div class="dropdown-content">
-          <a href="#">Dashboard</a>
           <a routerLink="residentinfo" routerLinkActive="active"
             >All Residents</a
           >
@@ -79,7 +78,8 @@
           <a href="/" *ngIf="!displayName">Home</a>
           <a routerLinkActive="active" (click)="userProfile()">My Profile</a>
           <a href="events">Events</a>
-          <a>Resident Info</a>
+          <a href="residentinfo">All Residents</a>
+          <a href="addresident">New Resident</a>
           <a href="createnewuser" routerLinkActive="active">New Account</a>
           <a href="allusers" routerLinkActive="active">All users</a>
           <a class="logout" *ngIf="displayName" (click)="openLogoutDialog()">

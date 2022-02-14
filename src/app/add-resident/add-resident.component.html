@@ -89,7 +89,7 @@
                             Expertise is required.
                         </div>
                     </div>
-                    <label>Preferred Activity (Select All That Apply)</label>
+                    <!-- <label>Preferred Activity (Select All That Apply)</label>
                     <div formArrayName="activities" *ngFor="let activity of activitiesFormArray.controls; let i = index">
                         <label>
                             <input type="checkbox" [formControlName]="i">
@@ -101,7 +101,7 @@
                         <div *ngIf="addResidentForm.controls['activities'].errors.required">
                             Preferred Activity is required.
                         </div>
-                    </div>
+                    </div> -->
                 </form>
                 <div class="button">
                     <button type="submit" class="btn-success" (click)="add(addResidentForm.value)">Add</button>

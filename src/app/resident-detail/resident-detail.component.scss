@@ -34,6 +34,21 @@ h1{
     padding-top: 20px;
     text-align: center;
     }
+.edit{
+    text-align: end;
+    padding-right: 20px;
+}
+.edit-btn{
+    text-transform: uppercase;
+    outline: 0;
+    background: #4b6cb7;
+    border: 0;
+    border-radius: 5px;
+    padding: 1px 15px 5px 15px ;
+    color: #FFFFFF;
+    font-size: 20px;
+    cursor: pointer;
+}
 label{
     font-size: 20px;
     padding-top: 10px;
@@ -59,5 +74,17 @@ form{
     color: #FFFFFF;
     font-size: 20px;
     cursor: pointer;
+}
+@media(max-width: 1000px){
+    .container{
+        height: 90vh;
+        width: 90vw;
+        overflow: hidden;
+    }
+    .surveyContainer{
+        width: 90vw;
+        overflow: hidden;
+        margin-left: 5%;
+    }
 }
 

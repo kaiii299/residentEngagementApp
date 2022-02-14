@@ -2,6 +2,9 @@
     <div class="panelContainer1">
         <div class="container">
             <h1>Resident Details</h1>
+            <div class="edit">
+                <button class="edit-btn" (click)=onClickEdit()>Edit</button>
+            </div>
             <form [formGroup]="residentDetailsForm">
                 <label>Resident Name :</label>
                 <input title="residentName" class='form-control' type="text" formControlName="residentNameControl"
@@ -32,7 +35,7 @@
             <div class="surveyContainer" *ngFor="let survey of surveys">
                 <mat-expansion-panel hideToggle>
                     <mat-expansion-panel-header>
-                        <mat-panel-title>Feedback from {{survey.date}}</mat-panel-title>
+                        <mat-panel-title>Feedback from {{survey.surveryDate  | date: 'dd-MMM-yyyy'}}</mat-panel-title>
                     </mat-expansion-panel-header>
                     <form>
                         <label class="question">How can we regularly get your feedback and update you on what's

@@ -8,10 +8,13 @@ import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dial
 import { ResidentService } from '../resident.service';
 import { Constants } from '../constants';
 import { Router, NavigationExtras } from '@angular/router';
-import { DialogData } from "../user-profile/user-profile.component";
 import { HttpClient } from '@angular/common/http';
-import { ExcelExportResidentsComponent } from '../excel-export-residents/excel-export-residents.component';
-
+import { ExcelExportResidents } from '../excel-export-residents/excel-export-residents';
+import { ExcelImportResidents } from '../excel-import-residents/excel-import-residents';
+import Swal from 'sweetalert2';
+export interface DialogDataResident {
+  password: string;
+}
 
 @Component({
   selector: 'app-resident-info',
@@ -61,6 +64,10 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
 
   canDeleteResident = true;
 
+  filterCommitteeSearchField: any = null;
+  filterBlkNumSerachField: any = null;
+  filterAgeGpSearchField: any = null;
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -78,12 +85,8 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   async ngOnInit(){
     this.user_role = this.residentService.decryptData(localStorage.getItem("role"));
     this.user_committee = this.residentService.decryptData(localStorage.getItem("committee"));
-    console.log("user role -> "+this.user_role);
-    console.log("user committee -> "+this.user_committee);
     this.accessObj = this.accessControlList.get(this.user_role);
     this.canDeleteResident = this.accessObj.deleteResident;
-    console.log("access obj")
-    console.log(this.accessObj);
     var body = {committee: null};
     if(!this.accessObj.viewSearchFilterAllResident){
       body = {committee: this.user_committee};
@@ -98,18 +101,17 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
-    this.dataSource.data.sort = this.sort;
+    this.dataSource.sort = this.sort;
   }
 
   searchInput(event: KeyboardEvent) {
     let wordToSearch = this.search.trim().toUpperCase();
     if(event.keyCode === 13){
-      var body = {keyword: wordToSearch, committee: null};
+      var body = {keyword: wordToSearch, committee: this.filterCommitteeSearchField, blkNum: this.filterBlkNumSerachField, ageGp: this.filterAgeGpSearchField};
       if(!this.accessObj.viewSearchFilterAllResident){
-        body = {keyword: wordToSearch, committee: this.user_committee};
+        body = {keyword: wordToSearch, committee: this.user_committee, blkNum: this.filterBlkNumSerachField, ageGp: this.filterAgeGpSearchField};
         this.committees = new Array(this.user_committee);
       }
-      
       this.residentService.searchResidentData(body).then((res:any) => {
         this.dataSource.data = res;
         this.residentdata = res;
@@ -123,31 +125,47 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   }
 
   onClickViewDetails(id: any) {
-    console.log(id);
     var encryptedResid = this.residentService.encryptData(id)
     let navigationExtras: NavigationExtras = {queryParams: {id: encryptedResid}}
     this.router.navigate(['residentdetail'], navigationExtras)
   }
 
   onClickEdit(id: any){
-    console.log(id);
     var encryptedResid = this.residentService.encryptData(id)
     let navigationExtras: NavigationExtras = {queryParams: {id: encryptedResid}}
     this.router.navigate(['updateresident'], navigationExtras)
   }
-
-  openDeleteDialog(obj: any) {
-    console.log("obj");
-    console.log(obj);
-    this.dialog.open(DeleteResidentConfirmationDialog, {
-      width: '300px',
-      height: '150px',
-      data: { deleteId: obj.id },
+  delete(id: any){
+    console.log(id);
+    Swal.fire({
+      title: 'Are you sure you want to delete this resident from records?',
+      showCancelButton: true,
+      confirmButtonText: 'Remove',
+      denyButtonText: 'Cancel'
+    }).then((result) => {
+      if (result.isConfirmed){
+        this.residentService.deleteResident(id);
+        Swal.fire({
+          title: 'Resident has been removed from records',
+          timer: 800,
+          icon: 'success',
+        });
+      }else if (result.isDenied){
+        Swal.fire('Error removing resident !!')
+      }
     })
   }
   onClickFilter(event: any) {
-    console.log(event);
     event.blkNumControl = event.blkNumControl.trim();
+    if(event.committeeControl.trim().length != 0){
+      this.filterCommitteeSearchField = event.committeeControl;
+    }
+    if(event.blkNumControl.trim().length != 0){
+      this.filterBlkNumSerachField = event.blkNumControl;
+    }
+    if(event.ageGpControl.trim().length != 0){
+      this.filterAgeGpSearchField = event.ageGpControl;
+    }
     this.residentService.filterResident({committee: event.committeeControl, blkNum: event.blkNumControl, ageGp: event.ageGpControl}).then((res:any) => {
       this.dataSource.data = res;
       this.residentdata = res;
@@ -160,44 +178,40 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     this.availableBlocks = this.zonesInfo.get(this.selectedZone);
   }
   refresh() {
-    location.reload()
+    location.reload();
   }
   openExcelExport(){
-    this.dialog.open(ExcelExportResidentsComponent, {
+    let residentData = this.residentdata;
+    // residentData.forEach(residentD => {
+    //   let str ='';
+    //   let activitiesArr = residentD.data.activities;
+    //   for(let i=1; i<activitiesArr.length; i++){
+    //     let activityStr = activitiesArr[i];
+    //     str += activityStr;
+    //     if(i != activitiesArr.length){
+    //       str += " ,";
+    //     }
+    //   }
+    //   activitiesArr.forEach(activityStr => {
+    //     str += activityStr;
+    //   });
+    //   residentD.data.activities = str;
+    //   console.log(residentD);
+    // });
+    console.log(residentData);
+    this.dialog.open(ExcelExportResidents, {
       width: '750px',
       height: '650px',
-      data: this.residentdata
+      data: residentData
+    })
+  }
+  openExcelImport(){
+    this.dialog.open(ExcelImportResidents, {
+      width: '750px',
+      height: '650px',
     })
   }
 
 }
 
-@Component({
-  selector: 'delete-resident-confirmation-dialog',
-  templateUrl: './deleteResident-dialog.html',
-})
-export class DeleteResidentConfirmationDialog {
-  deleteId = '';
-  data: any;
-  constructor(public dialogRef: MatDialogRef<ResidentInfoComponent>, private residentService: ResidentService, @Inject(MAT_DIALOG_DATA) public dialogData: DialogData) {
-    dialogRef.disableClose = true;
-    
-  }
 
-  ngOnInit(): void {
-    this.data = this.dialogData;
-  }
-
-  onNoClick() {
-    this.dialogRef.close();
-
-  }
-
-  delete() {
-    console.log("delete id ..");
-    console.log(this.data);
-    this.residentService.deleteResident(this.data.deleteId);
-    this.dialogRef.close();
-  }
-
-}

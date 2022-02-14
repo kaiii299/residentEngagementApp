@@ -21,7 +21,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDialogModule, } from '@angular/material/dialog';
 import { AllUsersComponent} from './all-users/all-users.component';
-import {MatDividerModule} from '@angular/material/divider';
+
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
@@ -46,6 +46,7 @@ import {CdkTableModule} from '@angular/cdk/table';
 import {MatCardModule} from '@angular/material/card';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
+import {MatDividerModule} from '@angular/material/divider';
 
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireDatabaseModule } from '@angular/fire/database'
@@ -63,10 +64,16 @@ import { userService } from './share/services/user.service';
 import { ScheduleAllModule, ScheduleModule} from '@syncfusion/ej2-angular-schedule';
 import { SpreadsheetAllModule } from '@syncfusion/ej2-angular-spreadsheet';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ExcelExportResidents } from './excel-export-residents/excel-export-residents';
+import { ExcelImportResidents } from './excel-import-residents/excel-import-residents';
 import {MatBadgeModule} from '@angular/material/badge';
+<<<<<<< HEAD
 import { ExcelExportResidentsComponent } from './excel-export-residents/excel-export-residents.component';
 import { DropDownListModule }from '@syncfusion/ej2-angular-dropdowns';
 import { DateTimePickerModule }from '@syncfusion/ej2-angular-calendars';
+=======
+
+>>>>>>> 4bd95bd792ac7beb4add4912237e770c1c4e2ea8
 
 @NgModule({
   declarations: [
@@ -92,7 +99,8 @@ import { DateTimePickerModule }from '@syncfusion/ej2-angular-calendars';
     SpinnerComponent,
     RequestComponent,
     DashboardComponent,
-    ExcelExportResidentsComponent,
+    ExcelExportResidents,
+    ExcelImportResidents
   ],
   imports: [
     CommonModule,

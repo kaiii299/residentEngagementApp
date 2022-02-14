@@ -44,18 +44,6 @@ app.use('/sendOTP', sendMessage);
 app.options("*", cors());
 app.options("/deleteUser/:id", cors());
 
-// ---------------------------------------------------------------------------------------------------Encrypty&& Decrypt---------------------------------------------------------------------------------
-
-// encrypting and decrypting increase the loading speed by 15s so iv decide to remove it.
-function ecryptData(value) {
-  return CryptoJS.AES.encrypt(value, secretKey).toString();
-}
-
-function decryptData(value) {
-  const bytes = CryptoJS.AES.decrypt(value, secretKey.trim());
-  return bytes.toString(CryptoJS.enc.Utf8);
-}
-
 // ----------------------------------------------------------------------------------------------------USERS-----------------------------------------------------------------------------------------------
 app.all("/*", function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -69,27 +57,45 @@ app.all("/*", function(req, res, next) {
 
 app.get("/getAllUsers", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']), async (req, res) => {
   const Allusers = [];
-  try {
-    const snapshot = await userDb.get();
-    snapshot.forEach((doc) => {
-      const id = doc.id;
-      const data = doc.data();
-      ['LastUpdatedDate',
-        'registrationTime',
-        'regsitrationDate',
-        'LastUpdatedTime',
-        'gender',
-        'email',
-        'firstName',
-        'requestStatus',
-        'status',
-      ].forEach((e) => delete data[e]); // delete all this data
-      Allusers.push({id, data});
-    });
-    res.status(200).send(Allusers);
-  } catch (e) {
-    res.status(500).send(`ERROR! ${someUsers}, ${e}`);
-  }
+  const snapshot = await userDb.get();
+  snapshot.forEach((doc) => {
+    const id = doc.id;
+    const data = doc.data();
+    ['LastUpdatedDate',
+      'registrationTime',
+      'regsitrationDate',
+      'LastUpdatedTime',
+      'gender',
+      'email',
+      'firstName',
+      'requestStatus',
+      'status',
+    ].forEach((e) => delete data[e]);
+    Allusers.push({id, data});
+  });
+  res.status(200).send(Allusers);
+});
+
+app.post("/getAllUsersNormalRn", allowedUsers(['Normal RN Members']), async (req, res) =>{
+  const committee = req.body.committee;
+  const Allusers = [];
+  const snapShot = await userDb.where('committee', '==', committee).get();
+  snapShot.forEach((doc)=>{
+    const id = doc.id;
+    const data = doc.data();
+    ['LastUpdatedDate',
+      'registrationTime',
+      'regsitrationDate',
+      'LastUpdatedTime',
+      'gender',
+      'email',
+      'firstName',
+      'requestStatus',
+      'status',
+    ].forEach((e) => delete data[e]);
+    Allusers.push({id, data});
+  });
+  res.status(200).send(Allusers);
 });
 
 app.get("/currentUser/:id", async (req, res) => {
@@ -97,9 +103,9 @@ app.get("/currentUser/:id", async (req, res) => {
   const id = snapshot.id;
   const userData = snapshot.data();
   ['LastUpdatedDate',
+    'LastUpdatedTime',
     'registrationTime',
     'regsitrationDate',
-    'LastUpdatedTime',
     'gender',
     'email',
     'firstName',
@@ -113,12 +119,17 @@ app.get("/getUser/:id", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manage
   const snapshot = await userDb.doc(req.params.id).get();
   const id = snapshot.id;
   const userData = snapshot.data();
-  ['LastUpdatedDate', 'registrationTime', 'regsitrationDate', 'LastUpdtedTime'].forEach((e) => delete userData[e]);
+  ['LastUpdatedDate',
+    'registrationTime',
+    'regsitrationDate',
+    'LastUpdtedTime',
+    'isRequest',
+  ].forEach((e) => delete userData[e]);
   res.status(200).send({id, userData});
 });
 
 
-app.post("/searchUserByName", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']), async (req, res) => {
+app.post("/searchUserByName", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']), async (req, res) => { // allow everyone
   const users = [];
   const searchKeyword = req.body.keyword;
   const snapshot = await userDb
@@ -131,6 +142,33 @@ app.post("/searchUserByName", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN 
     users.push({id, data});
   });
   res.status(200).send(users);
+});
+
+app.post("/searchUserByNameNormalRn", allowedUsers(['Normal RN Members']), async (req, res) => { // allow everyone
+  const users = [];
+  const newUsers = [];
+  const searchKeyword = req.body.keyword;
+  const _Committee = req.body.committee;
+  const snapshot = await userDb
+      .where("userName", ">=", searchKeyword)
+      .where("userName", "<=", searchKeyword + "~")
+      .get();
+  snapshot.forEach((doc) => {
+    const id = doc.id;
+    const data = doc.data();
+    users.push({id, data});
+  });
+  const obj = users.find((o) => o.committee === _Committee); // find protype/items in array
+  newUsers.push(obj);
+  res.status(200).send(newUsers);
+});
+
+
+app.put("/update/:uid", async (req, res) => {
+  const userData = req.body;
+  const uid = req.params.uid;
+  await userDb.doc(uid).update(userData);
+  res.status(200).send("User successfully updated");
 });
 
 app.put("/update/:uid", async (req, res) => {
@@ -156,7 +194,7 @@ app.delete("/deleteUser/:id", allowedUsers(["Admin", "Cc staff"]), async (req, r
             .delete()
             .then(() => {
               console.log("Success Deleting User Data");
-              res.status(500).send("Success Deleting User Data");
+              res.status(200).send("Success Deleting User Data");
             })
             .catch((err) => {
               console.log("Error Deleting User Data");
@@ -195,6 +233,17 @@ app.get("/getResident/:id", async (req, res) => {
   res.status(200).send({id: resid, residentData});
 });
 
+app.post("/createResident", async (req, res) => {
+  req.header("Access-Control-Allow-Origin", 'http://localhost:4200');
+  const batch = admin.firestore().batch();
+  const residentData = req.body;
+  residentData.forEach((doc) => {
+    batch.set(residentDb.doc(), doc);
+  });
+  await batch.commit();
+  res.status(200).send(residentData);
+});
+
 app.put("/updateResident/:id", async (req, res) => {
   const residentData = req.body;
   const snapshot = residentDb.doc(req.params.id);
@@ -212,7 +261,23 @@ app.post("/searchResidentByName", async (req, res) => {
   snapshot.forEach((doc) => {
     const id = doc.id;
     const data = doc.data();
-    if (req.body.committee != null) {
+    if (req.body.committee != null && req.body.blkNum != null && req.body.ageGp != null) {
+      if (data.committee == req.body.committee && data.blkNum == req.body.blkNum && data.ageGp == req.body.ageGp) {
+        residents.push({id, data});
+      }
+    } else if (req.body.committee != null && req.body.blkNum != null && req.body.ageGp == null) {
+      if (data.committee == req.body.committee && data.blkNum == req.body.blkNum) {
+        residents.push({id, data});
+      }
+    } else if (req.body.committee != null && req.body.blkNum == null && req.body.ageGp != null) {
+      if (data.committee == req.body.committee && data.ageGp == req.body.ageGp) {
+        residents.push({id, data});
+      }
+    } else if (req.body.committee == null && req.body.blkNum == null && req.body.ageGp != null) {
+      if (data.ageGp == req.body.ageGp) {
+        residents.push({id, data});
+      }
+    } else if (req.body.committee != null && req.body.blkNum == null && req.body.ageGp == null) {
       if (data.committee == req.body.committee) {
         residents.push({id, data});
       }
@@ -325,33 +390,32 @@ exports.onUserCreatedSendEmail = functions.firestore
           });
     });
 
-exports.onUserRquestedSendEmail = functions.firestore.document('Users/{userId}')
-    .onUpdate((snap, context) => {
-      const newValue = snap.after.data();
-      const previousValue = snap.before.data();
-
-      if (newValue.requestStatus !== previousValue.requestStatus) {
-        const user = snap.data();
-        const msg = {
-          to: user.email,
-          from: "residentappv2@gmail.com",
-          templateId: "d-670dcc0a3fc4493a8a727226970ca884",
-          dynamic_template_data: {
-            Subject: 'Your account status has been updated',
-            name: user.userName,
-            requestStatus: user.requestStatus,
-          },
-        };
-        sgMail
-            .send(msg)
-            .then(() => {
-              console.log(`Email sent to ${user.email}`);
-            })
-            .catch((err) => {
-              console.log("There is an error sending Email" + err);
-            });
-      }
-    });
+// exports.onUserRquestedSendEmail = functions.firestore.document('Users/{userId}')
+//     .onUpdate((snap, context) => {
+//       const newValue = snap.after.data();
+//       const previousValue = snap.before.data();
+//       const user = userDb.doc("/{userId}").get();
+//       if (newValue.requestStatus !== previousValue.requestStatus) {
+//         const msg = {
+//           to: user.email,
+//           from: "residentappv2@gmail.com",
+//           templateId: "d-670dcc0a3fc4493a8a727226970ca884",
+//           dynamic_template_data: {
+//             Subject: 'Your account status has been updated',
+//             name: user.userName,
+//             requestStatus: user.requestStatus,
+//           },
+//         };
+//         sgMail
+//             .send(msg)
+//             .then(() => {
+//               console.log(`Email sent to ${user.email}`);
+//             })
+//             .catch((err) => {
+//               console.log("There is an error sending Email" + err);
+//             });
+//       }
+//     });
 
 exports.onUserDeletedSendEmail = functions.firestore
     .document("Users/{userId}")

@@ -30,13 +30,13 @@ export class uploadFileDialog {
   uploadedData = Array();
   file: any;
   _filter: boolean;
-  isUploaded: boolean = false;
+  isUploaded = false;
   isUploadFile = false;
   noEmptyArray = Array();
   _role: any;
-  data:any;
+  data: any;
   email: any;
-  password:any;
+  password: any;
   userId: any;
   newUserData = Array();
 
@@ -50,7 +50,7 @@ export class uploadFileDialog {
     @Inject(MAT_DIALOG_DATA) public _data: DialogData
   ) {
     dialogRef.disableClose = true;
-    let excelSheet = localStorage.getItem('excelSheet');
+    const excelSheet = localStorage.getItem('excelSheet');
     if (excelSheet) {
       this.uploadedData = JSON.parse(excelSheet);
     }
@@ -64,11 +64,11 @@ export class uploadFileDialog {
 
   ngOnInit(): void {
     this.data = this._data;
-    this._role = this.data.role
+    this._role = this.data.role;
   }
 
   onFileChange(evt: any) {
-    const target: DataTransfer = <DataTransfer>evt.target;
+    const target: DataTransfer = evt.target as DataTransfer;
     const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
       const bstr: string = e.target.result;
@@ -88,40 +88,40 @@ export class uploadFileDialog {
     Swal.fire({
       showConfirmButton: true,
       showDenyButton: true,
-      confirmButtonText:'Create',
-      title:`Do you want to create ${this.noEmptyArray.length} users?`
-    }).then((res)=>{
-      if(res.isConfirmed){
+      confirmButtonText: 'Create',
+      title: `Do you want to create ${this.noEmptyArray.length} users?`
+    }).then((res) => {
+      if (res.isConfirmed){
         this.noEmptyArray.forEach((doc) => {
-          this.uploadedData.shift(); //removes the header aka first item
+          this.uploadedData.shift(); // removes the header aka first item
           JSON.stringify(doc);
-      let userObject: any = {}
-      if(this._role == "Admin") {
-        userObject['requestStatus'] = "Accepted";
-        userObject['status'] = "Active";
+          const userObject: any = {};
+          if (this._role == 'Admin') {
+        userObject.requestStatus = 'Accepted';
+        userObject.status = 'Active';
       }
-      userObject['userName'] = doc[0];
-      userObject['phoneNumber'] = doc[1];
-      userObject['role'] = doc[2];
-      userObject['committee'] = doc[3];
-      userObject['blockNumber'] = doc[4];
-      userObject['requestStatus'] = "Pending"
-      userObject['status'] = "Inactive"
-      this.email = userObject['email'] = doc[0] + '@gmail.com'
-      this.password = userObject['password'] = doc[0] + 'password'
+          userObject.userName = doc[0];
+          userObject.phoneNumber = doc[1];
+          userObject.role = doc[2];
+          userObject.committee = doc[3];
+          userObject.blockNumber = doc[4];
+          userObject.requestStatus = 'Pending';
+          userObject.status = 'Inactive';
+          this.email = userObject.email = doc[0] + '@gmail.com';
+          this.password = userObject.password = doc[0] + 'password';
       // this.userService.register(this.email, this.password).then(res => {
-        delete userObject.password; // remove password
-        this.newUserData.push(userObject)
+          delete userObject.password; // remove password
+          this.newUserData.push(userObject);
       //   console.log(userObject);
       // }).catch(error => {
       //   Swal.fire('The email address is not valid',`${error}`,'error')
       //   console.log(error)
       // });
-      this.userService.createNewuserBatch(this.newUserData)
-      this.dialogRef.close();
-    })
+          this.userService.createNewuserBatch(this.newUserData);
+          this.dialogRef.close();
+    });
   }
-  })
+  });
 }
 
 

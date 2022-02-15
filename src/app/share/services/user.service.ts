@@ -30,10 +30,10 @@ export class userService {
 
   userNameExist = false;
 
-  currentCommittee : any | null;
+  currentCommittee: any | null;
   currentRole: any;
 
-  normalRNMembers = "Normal RN Members"
+  normalRNMembers = 'Normal RN Members';
 
   length: any;
 
@@ -44,52 +44,52 @@ export class userService {
 
   constructor(
     private authService: Authservice,
-  private http: HttpClient,
+    private http: HttpClient,
     private firebaseAuth: AngularFireAuth,
     private db: AngularFirestore,
     private router: Router,
     private dialog: MatDialog
   ) {
-    this.authService.eventcbCommittee$.subscribe((committee)=>{
-      this.currentCommittee = committee
-    })
+    this.authService.eventcbCommittee$.subscribe((committee) => {
+      this.currentCommittee = committee;
+    });
     const _currentcommittee = localStorage.getItem('committee');
-    if(_currentcommittee){
+    if (_currentcommittee){
       this.currentCommittee = this.authService.decryptData(_currentcommittee);
     }
 
-    this.authService.eventcbRole$.subscribe((role)=>{
-      this.currentRole = role
-    })
+    this.authService.eventcbRole$.subscribe((role) => {
+      this.currentRole = role;
+    });
     const _currentRole = localStorage.getItem('role');
-    if(_currentRole){
+    if (_currentRole){
       this.currentRole = this.authService.decryptData(_currentRole);
     }
   }
 
   async getAllUsers() {
-    if(this.currentRole !== this.normalRNMembers){
+    if (this.currentRole !== this.normalRNMembers){
       return await this.http
       .get(this.baseUrl + '/getAllUsers')
       .toPromise()
       .then((data) => {
         this.eventcbUserData.next(data);
-      })
+      });
     }else{
       return await this.http
-      .post(this.baseUrl + '/getAllUsersNormalRn', {'committee': this.currentCommittee})
+      .post(this.baseUrl + '/getAllUsersNormalRn', {committee: this.currentCommittee})
       .toPromise()
       .then((data) => {
         this.eventcbUserData.next(data);
-      })
+      });
     }
   }
 
 
   async searchUserData(keyword: any, _committee: any) {
-    if(this.currentRole !== this.normalRNMembers){
+    if (this.currentRole !== this.normalRNMembers){
       return await this.http
-      .post(this.baseUrl + '/searchUserByName', {keyword: keyword})
+      .post(this.baseUrl + '/searchUserByName', {keyword})
       .toPromise()
       .then((data) => {
         this.eventcbUserData.next(data);
@@ -105,7 +105,7 @@ export class userService {
     }else{
       _committee = this.currentCommittee;
       return await this.http
-      .post(this.baseUrl + '/searchUserByNameNormalRn', {keyword: keyword,committee: _committee})
+      .post(this.baseUrl + '/searchUserByNameNormalRn', {keyword, committee: _committee})
       .toPromise()
       .then((data) => {
         this.eventcbUserData.next(data);
@@ -122,19 +122,19 @@ export class userService {
     }
   }
 
-  async filterUser(body:any){
-    if(this.currentRole = this.normalRNMembers){
-      return await this.http.post(this.baseUrl + '/filter', body).toPromise().then((data)=>{
+  async filterUser(body: any){
+    if (this.currentRole = this.normalRNMembers){
+      return await this.http.post(this.baseUrl + '/filter', body).toPromise().then((data) => {
         this.eventcbUserData.next(data);
-      }).catch((err)=>{
-        Swal.fire('ERROR',`${err.message}`,'error')
+      }).catch((err) => {
+        Swal.fire('ERROR', `${err.message}`, 'error');
       });
 
     }
-    return await this.http.post(this.baseUrl + '/filter', body).toPromise().then((data)=>{
+    return await this.http.post(this.baseUrl + '/filter', body).toPromise().then((data) => {
       this.eventcbUserData.next(data);
-    }).catch((err)=>{
-      Swal.fire('ERROR',`${err.message}`,'error')
+    }).catch((err) => {
+      Swal.fire('ERROR', `${err.message}`, 'error');
     });
   }
 
@@ -153,11 +153,11 @@ export class userService {
   async createNewuserBatch(_userData: any){
     // console.log(_userData);
     try {
-      const res = await this.http.post(this.baseUrl + "/createUsersBatch", {data: _userData}).toPromise().then((res)=>{
+      const res = await this.http.post(this.baseUrl + '/createUsersBatch', {data: _userData}).toPromise().then((res) => {
       });
-      Swal.fire("Success", "Users created", 'success');
+      Swal.fire('Success', 'Users created', 'success');
     } catch (err) {
-      Swal.fire("Error", "Users not created", 'error');
+      Swal.fire('Error', 'Users not created', 'error');
     }
   }
 
@@ -182,25 +182,25 @@ export class userService {
   }
 
   checkUserName(userName: any){
-    var residentRef = this.db.collection<any>('Users', tempRes => {
+    const residentRef = this.db.collection<any>('Users', tempRes => {
       return tempRes
-        .where('userName', '==', userName)
+        .where('userName', '==', userName);
     });
     return residentRef.valueChanges();
   }
 
   checkPendingUsers(){
-    var residentRef = this.db.collection<any>('Users', tempRes => {
+    const residentRef = this.db.collection<any>('Users', tempRes => {
       return tempRes
-        .where('requestStatus', '==', 'Pending')
+        .where('requestStatus', '==', 'Pending');
     });
     return residentRef.valueChanges();
   }
 
    checkEmailExist(email: any){
-    var residentRef = this.db.collection<any>('Users', tempRes => {
+    const residentRef = this.db.collection<any>('Users', tempRes => {
       return tempRes
-        .where('email', '==', email)
+        .where('email', '==', email);
     });
     return residentRef.valueChanges();
   }
@@ -214,7 +214,7 @@ export class userService {
 
       })
       .catch((err) => {
-        Swal.fire('Error Deleting account',`${err.message}`,'error');
+        Swal.fire('Error Deleting account', `${err.message}`, 'error');
       });
     if (uid != this.currentLogedInUserId) {
       this.authService.goback;
@@ -224,10 +224,10 @@ export class userService {
   }
 
   deleteUserData(uid: any){
-    this.db.collection('Users').doc(uid).delete().then(()=>{
+    this.db.collection('Users').doc(uid).delete().then(() => {
       console.log('User Data DELETED');
-    }).catch((err)=>{
-      Swal.fire('Error Deleting Data',`${err}`,'error');
-    })
+    }).catch((err) => {
+      Swal.fire('Error Deleting Data', `${err}`, 'error');
+    });
   }
 }

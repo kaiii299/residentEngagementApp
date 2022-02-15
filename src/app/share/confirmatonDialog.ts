@@ -23,7 +23,7 @@ export class confirmationDialog {
 
   ngOnInit(): void {
     this.data = this.dialogData;
-    this.dataToBeCreated = this.data.dataToBeCreated
+    this.dataToBeCreated = this.data.dataToBeCreated;
     this.message = this.data.message;
     this.reload = this.data.reload;
   }

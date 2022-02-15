@@ -49,7 +49,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatDividerModule} from '@angular/material/divider';
 
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireDatabaseModule } from '@angular/fire/database'
+import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { windowService } from './share/services/window.service';

@@ -24,7 +24,7 @@ eventcbRequestUserData$ = this.eventcbRequestUserData.asObservable();
   ) { }
 
   async rejectRequestUser(uid: any){
-    //delete the user
+    // delete the user
   }
 
 }

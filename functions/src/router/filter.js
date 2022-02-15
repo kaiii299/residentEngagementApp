@@ -8,7 +8,6 @@ const userDb = admin.firestore().collection("Users");
 router.use(express.json());
 const {allowedUsers} = require('./authMiddleware/roleMiddleware');
 
-
 router.post("/", allowedUsers(['Admin', 'CC staff', 'Key Ccc Members', 'RN Manager', 'key RN Members', 'Normal RN Members']), async (req, res)=>{
   const users = [];
   const reqBody = req.body;

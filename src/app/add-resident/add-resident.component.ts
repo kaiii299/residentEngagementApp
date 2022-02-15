@@ -20,7 +20,7 @@ export class AddResidentComponent implements OnInit {
 
   committees = Array.from(this.zonesInfo.keys());
   selectedZone: string;
-  availableBlocks :any = [];
+  availableBlocks: any = [];
 
 
   constructor(private formBuilder: FormBuilder, private residentService: ResidentService, private router: Router) {
@@ -41,7 +41,7 @@ export class AddResidentComponent implements OnInit {
       noblk: new FormControl()
     });
 
-    //console.log(this.addResidentForm.controls.activities);
+    // console.log(this.addResidentForm.controls.activities);
     // this.activitiesList.forEach(() => this.activitiesFormArray.push(new FormControl(false)));
   }
 
@@ -51,7 +51,7 @@ export class AddResidentComponent implements OnInit {
 
   onChange(value: any) {
     this.selectedZone = value;
-    this.availableBlocks =this.zonesInfo.get(this.selectedZone);
+    this.availableBlocks = this.zonesInfo.get(this.selectedZone);
     console.log(this.zonesInfo.get(this.selectedZone));
   }
 
@@ -67,7 +67,7 @@ export class AddResidentComponent implements OnInit {
     //   console.log(selected_activities.length);
     if (this.addResidentForm.valid) {
       //  value.activities = selected_activities;
-      let resident = {
+      const resident = {
         residentName: value.residentName,
         committee: value.committee,
         blkNum: value.blkNum,
@@ -77,16 +77,16 @@ export class AddResidentComponent implements OnInit {
         ageGp: value.ageGp,
         expertise: value.expertise,
         // activities: value.activities,
-      }
+      };
       this.residentService.addResident(resident).then(results => {
-        Swal.fire("Resident has been added to database")
-        //console.log(results);
-        //console.log(results.id);
+        Swal.fire('Resident has been added to database');
+        // console.log(results);
+        // console.log(results.id);
         this.router.navigate(['residentinfo']);
       });
 
     } else {
-      Swal.fire("Missing information !");
+      Swal.fire('Missing information !');
     }
   }
 }

@@ -20,8 +20,8 @@ export class ResidentService {
   eventcbResidentData = new Subject<any>();
   eventcbResidentData$ = this.eventcbResidentData.asObservable();
 
-  searchOption= []
-  public residentsData : Resident[]
+  searchOption = [];
+  public residentsData: Resident[];
 
   constructor(private firestore: AngularFirestore, private http: HttpClient, private router: Router) { }
 
@@ -32,15 +32,15 @@ export class ResidentService {
   decryptData(textToDecrypt: any) {
     // console.log("decrpt");
     // console.log(textToDecrypt);
-    var bytes = CryptoJS.AES.decrypt(textToDecrypt, this.secretKey.trim());
+    const bytes = CryptoJS.AES.decrypt(textToDecrypt, this.secretKey.trim());
     console.log(bytes);
     return bytes.toString(CryptoJS.enc.Utf8);
   }
 
   async addResident(resident: object) {
-    let residentList = [];
+    const residentList = [];
     residentList.push(resident);
-    return await this.http.post(this.baseUrl+"/createResident", residentList).toPromise().then((data) => {
+    return await this.http.post(this.baseUrl + '/createResident', residentList).toPromise().then((data) => {
       // console.log("resident data =>>>> ");
       // console.log(data);
       return data;
@@ -49,8 +49,8 @@ export class ResidentService {
     });
   }
 
-  async addResidentList(residentList:any) {
-    return await this.http.post(this.baseUrl+"/createResident", residentList).toPromise().then((data) => {
+  async addResidentList(residentList: any) {
+    return await this.http.post(this.baseUrl + '/createResident', residentList).toPromise().then((data) => {
       // console.log("resident data =>>>> ");
       // console.log(data);
       return data;
@@ -60,8 +60,8 @@ export class ResidentService {
   }
 
   async getAllResidents(body: any) {
-    //return this.firestore.collection('residents').valueChanges({ idField: 'id' });
-    return await this.http.post(this.baseUrl + "/getAllResidents",body).toPromise().then((data) => {
+    // return this.firestore.collection('residents').valueChanges({ idField: 'id' });
+    return await this.http.post(this.baseUrl + '/getAllResidents', body).toPromise().then((data) => {
       return data;
     }).catch(err => {
       if (err instanceof HttpErrorResponse) {
@@ -70,73 +70,73 @@ export class ResidentService {
           // console.log("user not loged in");
         }
       }
-    })
+    });
   }
 
   getResidentById(id: any){
     // return this.firestore.collection('residents').doc(id).valueChanges();
-    return this.http.get(this.baseUrl + "/getResident/" + id) as Observable<any>
+    return this.http.get(this.baseUrl + '/getResident/' + id) as Observable<any>;
   }
 
   getResidentByFilter(commiittee: string, ageGp: string) {
-    //console.log("filter");
-    var residentRef = this.firestore.collection<any>('residents', tempRes => {
+    // console.log("filter");
+    const residentRef = this.firestore.collection<any>('residents', tempRes => {
       return tempRes
         .where('committee', '==', commiittee)
-        .where('ageGp', '==', ageGp)
+        .where('ageGp', '==', ageGp);
     });
     return residentRef.valueChanges({ idField: 'id' });
   }
 
   async updateResidentInfo(id: string, resident: Object) {
-    //return this.firestore.collection('residents').doc(id).update(resident);
-    return await this.http.put(this.baseUrl + "/updateResident/" + id,resident, {responseType: 'text'}).toPromise().then((data)=>{
-      //console.log(resident)
-    })
+    // return this.firestore.collection('residents').doc(id).update(resident);
+    return await this.http.put(this.baseUrl + '/updateResident/' + id, resident, {responseType: 'text'}).toPromise().then((data) => {
+      // console.log(resident)
+    });
 
   }
 
   deleteResident(id: string) {
-    this.firestore.collection('residents').doc(id).delete().then(function () {
-      Swal.fire("Resident has been removed from the records!");
+    this.firestore.collection('residents').doc(id).delete().then(function() {
+      Swal.fire('Resident has been removed from the records!');
       setTimeout(function(){
-        location.reload(),80000;
-      })
+        location.reload(), 80000;
+      });
     }).catch(
-      function (error) {
-        console.error("Error removing document: ", error);
+      function(error) {
+        console.error('Error removing document: ', error);
       });
   }
 
 
   async searchResidentData(body: any) {
-    return await this.http.post(this.baseUrl +"/searchResidentByName ", body).toPromise().then((data) => {
+    return await this.http.post(this.baseUrl + '/searchResidentByName ', body).toPromise().then((data) => {
       return data;
     }).catch(err => {
       if (err instanceof HttpErrorResponse) {
         if (err) {
           console.log(err);
-          //console.log("user not loged in");
+          // console.log("user not loged in");
         }
       }
-    })
+    });
   }
 
   async filterResident(body: any) {
-    return await this.http.post(this.baseUrl +"/filterResident ", body).toPromise().then((data) => {
+    return await this.http.post(this.baseUrl + '/filterResident ', body).toPromise().then((data) => {
       return data;
     }).catch(err => {
       if (err instanceof HttpErrorResponse) {
         if (err) {
           console.log(err);
-          //console.log("user not loged in");
+          // console.log("user not loged in");
         }
       }
-    })
+    });
   }
 
   async addSurvey(survey: object) {
-    return await this.http.post(this.baseUrl+"/createSurvey", survey).toPromise().then((data) => {
+    return await this.http.post(this.baseUrl + '/createSurvey', survey).toPromise().then((data) => {
       // console.log("svury data =>>>> ");
       // console.log(data);
       return data;
@@ -146,7 +146,7 @@ export class ResidentService {
   }
 
   async getSurveyByResidentID(residentId: String) {
-    return await this.http.get(this.baseUrl+"/getSurveyByResidentId/"+residentId).toPromise().then((response:any) => {
+    return await this.http.get(this.baseUrl + '/getSurveyByResidentId/' + residentId).toPromise().then((response: any) => {
       return response;
     }).catch(err => {
       console.log(err);

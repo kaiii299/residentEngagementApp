@@ -19,7 +19,7 @@ export class HasRoleGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: any
   ): Observable<boolean> | Promise<boolean> | boolean {
-    const permission = next.data['permission'];
+    const permission = next.data.permission;
 
     const _role = localStorage.getItem('role');
     this.role = this.authService.decryptData(_role);
@@ -27,13 +27,13 @@ export class HasRoleGuard implements CanActivate {
     if (this.role == 'Admin') {
       return true;
     }
-    Swal.fire("Error","Unthorized Access",'error').then((res)=>{
-      if(res.isConfirmed){
+    Swal.fire('Error', 'Unthorized Access', 'error').then((res) => {
+      if (res.isConfirmed){
         this.authService.goback();
       }else{
         this.authService.goback();
       }
-    })
+    });
     return false;
   }
 }

@@ -10,7 +10,7 @@ import { Location } from '@angular/common';
 import { Constants } from 'src/app/constants';
 import { MatDialog } from '@angular/material/dialog';
 import { userService } from './user.service';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { OTPService } from './otp.service';
 
@@ -27,27 +27,27 @@ export class Authservice {
   secretKey = Constants.secretKey;
   refreshToken: any;
 
-  eventCallbackuserName = new Subject<string>(); //source
+  eventCallbackuserName = new Subject<string>(); // source
   eventCallbackuserName$ = this.eventCallbackuserName.asObservable();
 
-  eventcbRole = new Subject<string>(); //source
+  eventcbRole = new Subject<string>(); // source
   eventcbRole$ = this.eventcbRole.asObservable();
 
-  eventcbCommittee = new Subject<string>(); //source
+  eventcbCommittee = new Subject<string>(); // source
   eventcbCommittee$ = this.eventcbCommittee.asObservable();
 
-  eventcbJWT = new BehaviorSubject<any>("");
+  eventcbJWT = new BehaviorSubject<any>('');
   eventcbJWT$ = this.eventcbJWT.asObservable();
 
-  eventcbRefresh = new BehaviorSubject<any>("");
+  eventcbRefresh = new BehaviorSubject<any>('');
   eventcbRefresh$ = this.eventcbRefresh.asObservable();
 
   encryptedToken = localStorage.getItem('token');
 
   baseUrl = Constants.baseURL;
 
-  lastLoggedInTime : any;
-  currentTime = new Date
+  lastLoggedInTime: any;
+  currentTime = new Date;
 
   OTP: any;
   phoneNumber: any;
@@ -74,46 +74,46 @@ export class Authservice {
     .then((res) => {
       if (res) {
         this.lastLoggedInTime = res.user?.metadata.lastSignInTime;
-          res.user?.getIdToken().then((jwtToken) => {
+        res.user?.getIdToken().then((jwtToken) => {
             this.eventcbJWT.next(jwtToken);
             localStorage.setItem('token', jwtToken);
             this.CurrentUser(res.user?.uid).subscribe((userdata) => {
               this.currentUserObject = userdata;
               if (
-                this.currentUserObject.requestStatus == "Rejected" ||
-                this.currentUserObject.status == "Inactive"
+                this.currentUserObject.requestStatus == 'Rejected' ||
+                this.currentUserObject.status == 'Inactive'
               ) {
-                this.SwalFire('Account has been deactivated', 'error')
-              } else if (this.currentUserObject.requestStatus == "Pending" ||
-                this.currentUserObject.status == "Pending"
+                this.SwalFire('Account has been deactivated', 'error');
+              } else if (this.currentUserObject.requestStatus == 'Pending' ||
+                this.currentUserObject.status == 'Pending'
               ) {
-                this.SwalFire('Account status is pending', 'error')
+                this.SwalFire('Account status is pending', 'error');
               }
               else if
-                (this.currentUserObject.requestStatus == "Accepted" ||
-                this.currentUserObject.Status == "Active") {
+                (this.currentUserObject.requestStatus == 'Accepted' ||
+                this.currentUserObject.Status == 'Active') {
                 this.eventcbRefresh.next(res.user?.refreshToken);
                 this.eventcbRole.next(this.currentUserObject.role);
-                localStorage.setItem('refreshToken', JSON.stringify(res.user?.refreshToken))
-                this.phoneNumber = this.currentUserObject.phoneNumber
+                localStorage.setItem('refreshToken', JSON.stringify(res.user?.refreshToken));
+                this.phoneNumber = this.currentUserObject.phoneNumber;
                 this.eventCallbackuserName.next(
                   this.currentUserObject.userName
                 );
-                var encryptedRole = this.encryptData(
+                const encryptedRole = this.encryptData(
                   this.currentUserObject.role
                 );
                 localStorage.setItem('role', encryptedRole);
                 this.eventCallbackuserName.next(this.currentUserObject.userName);
                 this.eventcbCommittee.next(this.currentUserObject.committee);
                 const encryptedCommittee = this.encryptData(this.currentUserObject.committee);
-                localStorage.setItem("committee", encryptedCommittee);
-                this.router.navigate(['events'])
+                localStorage.setItem('committee', encryptedCommittee);
+                this.router.navigate(['events']);
               }
             });
           });
-          const encryptedText = this.encryptData(res.user?.uid);
-          localStorage.setItem('uid', encryptedText);
-          const _uid = this.decryptData(encryptedText);
+        const encryptedText = this.encryptData(res.user?.uid);
+        localStorage.setItem('uid', encryptedText);
+        const _uid = this.decryptData(encryptedText);
         } else {
           // console.log('error');
           localStorage.clear();
@@ -134,7 +134,7 @@ export class Authservice {
 
   SwalFire(title: string, icon: string) {
     Swal.fire({
-      title: title,
+      title,
       html: `Contact <a href="mailto:ResidentEngagement@gmail.com">us</a> to find out more`,
       icon: 'error',
       showCancelButton: false,
@@ -148,9 +148,9 @@ export class Authservice {
     }).then((res) => {
       if (res.isConfirmed) {
         localStorage.clear();
-        this.router.navigate(['/'])
+        this.router.navigate(['/']);
       }
-    })
+    });
   }
 
   logout() {
@@ -165,7 +165,7 @@ export class Authservice {
   }
 
   decryptData(textToDecrypt: any) {
-    var bytes = CryptoJS.AES.decrypt(textToDecrypt, this.secretKey.trim());
+    const bytes = CryptoJS.AES.decrypt(textToDecrypt, this.secretKey.trim());
     this.currentLogedInUserId = bytes.toString(CryptoJS.enc.Utf8);
     return bytes.toString(CryptoJS.enc.Utf8);
   }

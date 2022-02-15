@@ -10,33 +10,33 @@ import { ForgetPasswordService } from '../share/services/forget-password.service
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-message= " "
+message = ' ';
 email: any;
 password: any;
-hide = true
-  constructor(private forgetPasswordService: ForgetPasswordService,private authService: Authservice,private route: Router) { }
+hide = true;
+  constructor(private forgetPasswordService: ForgetPasswordService, private authService: Authservice, private route: Router) { }
 
   ngOnInit(): void {
   }
 
    Login(){
-    if(this.email == ""){
-      this.message ="Please provide email"
+    if (this.email == ''){
+      this.message = 'Please provide email';
     }
 
-    else if(this.password == ""){
-      this.message ="Please provide Password"
+    else if (this.password == ''){
+      this.message = 'Please provide Password';
     }
 
     else{
-      this.authService.signIn(this.email, this.password).then((res)=>{
+      this.authService.signIn(this.email, this.password).then((res) => {
 
-     }).catch(error=>{
-       this.message = "Wrong username or password"
-     })
+     }).catch(error => {
+       this.message = 'Wrong username or password';
+     });
     }
   }
   openForgetPassword(){
-    this.forgetPasswordService.openForgetpassword(this.email)
+    this.forgetPasswordService.openForgetpassword(this.email);
   }
 }

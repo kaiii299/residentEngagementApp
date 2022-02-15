@@ -1,11 +1,11 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
-import { Injectable, Injector } from "@angular/core";
-import { Router } from "@angular/router";
-import { Observable, throwError } from "rxjs";
-import { catchError, finalize, switchMap } from "rxjs/operators";
-import Swal from "sweetalert2";
-import { SpinnerService } from "../../spinner.service";
-import { Authservice } from "../auth.service";
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from '@angular/common/http';
+import { Injectable, Injector } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable, throwError } from 'rxjs';
+import { catchError, finalize, switchMap } from 'rxjs/operators';
+import Swal from 'sweetalert2';
+import { SpinnerService } from '../../spinner.service';
+import { Authservice } from '../auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -22,15 +22,15 @@ export class AuthInterceptor implements HttpInterceptor {
       this.role = authservice.decryptData(_role);
     }
     this.authService.eventcbRole$.subscribe((role) => {
-      this.role = role
-    })
+      this.role = role;
+    });
 
     const tokenizeReq = req.clone({
       setHeaders: {
         Authorization: `Bearer ${_jwt}`,
         role: `${this.role}`,
       }
-    })
+    });
 
     this.spinnerService.requestStarted();
     return next.handle(tokenizeReq).pipe(
@@ -60,6 +60,6 @@ export class AuthInterceptor implements HttpInterceptor {
       finalize(() => {
         this.spinnerService.requestEnded();
       })
-    )
+    );
   }
 }

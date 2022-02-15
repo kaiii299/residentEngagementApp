@@ -22,7 +22,7 @@ export class ResidentDetailComponent implements OnInit {
   resid = this.activatedRoute.snapshot.queryParams.id;
 
   constructor(private residentService: ResidentService, private activatedRoute: ActivatedRoute, public dialog: MatDialog,
-    private router: Router) {
+              private router: Router) {
     this.residentDetailsForm = new FormGroup({
       residentNameControl: new FormControl('', [Validators.required]),
       committeeControl: new FormControl('', [Validators.required]),
@@ -42,7 +42,7 @@ export class ResidentDetailComponent implements OnInit {
     await this.residentService.getResidentById(decryptedResid).toPromise().then((data) => {
       // console.log("get resident details..")
       // console.log(data);
-      let residentDetail: any = data.residentData;
+      const residentDetail: any = data.residentData;
       this.residentDetailsForm.patchValue({
         residentNameControl: residentDetail.residentName,
         committeeControl: residentDetail.committee,
@@ -53,32 +53,32 @@ export class ResidentDetailComponent implements OnInit {
         ageGpControl: residentDetail.ageGp,
         expertiseControl: residentDetail.expertise,
       });
-    })
+    });
     // console.log(decryptedResid);
     await this.residentService.getSurveyByResidentID(decryptedResid).then((res) => {
       // console.log("get survey");
-      //console.log(res);
-      var dataList:any = [];
+      // console.log(res);
+      const dataList: any = [];
       for (const e of res) {
-        let surveryData = e.data;
-        let surDate = new Date(surveryData.date);
+        const surveryData = e.data;
+        const surDate = new Date(surveryData.date);
 
         surveryData.surveryDate = surDate;
         dataList.push(surveryData);
       }
 
-      dataList.sort((a:any, b:any) => {
-        return <any>new Date(b.surveryDate) - <any>new Date(a.surveryDate);
-      })
+      dataList.sort((a: any, b: any) => {
+        return (new Date(b.surveryDate) as any) - (new Date(a.surveryDate) as any);
+      });
       // console.log("sorted data...");
       // console.log(dataList);
       this.surveys = dataList;
       // console.log(this.surveys);
-    })
+    });
   }
   onClickEdit(){
-    let navigationExtras: NavigationExtras = {queryParams: {id : this.resid}}
-    this.router.navigate(['updateresident'], navigationExtras)
+    const navigationExtras: NavigationExtras = {queryParams: {id : this.resid}};
+    this.router.navigate(['updateresident'], navigationExtras);
   }
 
   openSurveyDialog() {

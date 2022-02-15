@@ -60,11 +60,11 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   roleValue: string | null;
   statusValue: string | null;
   requestStatusValue: string | null;
-  searchValue: string = '';
+  searchValue = '';
   selectedZone: string;
   blockValue: string;
   filter_form: FormGroup;
-  normalRnMembers: string = 'Normal RN Members';
+  normalRnMembers = 'Normal RN Members';
   _role: any;
   userdata = Array();
   filterData = Array();
@@ -109,15 +109,15 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   async ngOnInit() {
     this.checkPending();
     this.getAllusers();
-    this.authService.eventcbRole$.subscribe((res)=>{
-      this._role = res
+    this.authService.eventcbRole$.subscribe((res) => {
+      this._role = res;
     });
-     const Role = localStorage.getItem('role');
-     if (Role) {
+    const Role = localStorage.getItem('role');
+    if (Role) {
        this._role = this.authService.decryptData(Role);
      }
     this.authService.eventcbCommittee$.subscribe((_com) => {
-      this.currentCommittee = _com; //curret committeee
+      this.currentCommittee = _com; // curret committeee
     });
 
     if (!this.currentCommittee || this.currentCommittee == undefined) {
@@ -162,7 +162,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
 
   searchInput() {
     if (this.searchValue) {
-      let wordToSearch =
+      const wordToSearch =
         this.searchValue.charAt(0).toUpperCase() + this.searchValue.slice(1);
       this.userService.searchUserData(
         wordToSearch,
@@ -182,7 +182,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   userInfo(uid: any) {
-    var encryptedUid = this.authService.encryptData(uid);
+    const encryptedUid = this.authService.encryptData(uid);
     const navigationExtras: NavigationExtras = {
       queryParams: { id: encryptedUid },
     };
@@ -192,12 +192,12 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   filter() {
     localStorage.setItem('filterValue', JSON.stringify(this.variableValue));
     this.columnsToDisplay = this.variableValue;
-    let userData: any = {};
-    (userData['committee'] = this.committeesValue),
-      (userData['blockNumber'] = this.blockNumberValue),
-      (userData['role'] = this.roleValue),
-      (userData['status'] = this.statusValue),
-      (userData['requestStatus'] = this.requestStatusValue),
+    const userData: any = {};
+    (userData.committee = this.committeesValue),
+      (userData.blockNumber = this.blockNumberValue),
+      (userData.role = this.roleValue),
+      (userData.status = this.statusValue),
+      (userData.requestStatus = this.requestStatusValue),
       this.userService.filterUser(userData);
     this.userService.eventcbUserData$.subscribe((data) => {
       this.dataSource.data = data;
@@ -246,16 +246,16 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     this.dialog.open(uploadFileDialog, {
       width: '5000px',
       height: '850px',
-      data:{
+      data: {
         role: this._role
       }
     });
   }
 
   async deactivate(uid: any) {
-    let userData: any = {};
-    userData['status'] = 'Inactive';
-    userData['requestStatus'] = 'Rejected';
+    const userData: any = {};
+    userData.status = 'Inactive';
+    userData.requestStatus = 'Rejected';
     Swal.fire({
       title: `Deactivate user?`,
       showCancelButton: true,

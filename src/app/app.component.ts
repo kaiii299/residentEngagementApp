@@ -7,9 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
 
-  ngOnInit(): void {
-  }
-
   showFiller = false;
   title = 'resident-engagement-app';
+
+  ngOnInit(): void {
+  }
 }

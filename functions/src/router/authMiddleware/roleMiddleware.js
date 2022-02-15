@@ -9,7 +9,6 @@ const allowedUsers = (permissions) =>{
   };
 };
 
-
 module.exports = {
   allowedUsers,
 };

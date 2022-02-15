@@ -30,7 +30,7 @@ export class NavBarComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {
-    var encrypted = localStorage.getItem('username');
+    const encrypted = localStorage.getItem('username');
     // console.log(encrypted);
     if (encrypted) {
       this.displayName = this.authService.decryptData(encrypted);
@@ -40,7 +40,7 @@ export class NavBarComponent implements OnInit {
   ngOnInit() {
     this.authService.eventCallbackuserName$.subscribe((userName) => {
       this.displayName = userName;
-      var encrypted = this.authService.encryptData(this.displayName);
+      const encrypted = this.authService.encryptData(this.displayName);
       localStorage.setItem('username', encrypted);
 
     });
@@ -49,8 +49,8 @@ export class NavBarComponent implements OnInit {
       this.role = role;
     });
     if (!this.role || this.role == undefined) {
-      let _role = localStorage.getItem('role');
-      if(_role){
+      const _role = localStorage.getItem('role');
+      if (_role){
         this.role = this.authService.decryptData(_role);
       }
     }
@@ -58,14 +58,14 @@ export class NavBarComponent implements OnInit {
   }
 
   checkPending(){
-    this.userService.checkPendingUsers().subscribe((res)=>{
-      if(res.length !== 0){
-        this.pendingNumber = res.length
+    this.userService.checkPendingUsers().subscribe((res) => {
+      if (res.length !== 0){
+        this.pendingNumber = res.length;
       }
       else{
-        this.hidden = true
+        this.hidden = true;
       }
-    })
+    });
   }
 
   userProfile() {

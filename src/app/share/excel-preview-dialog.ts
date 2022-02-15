@@ -29,8 +29,8 @@ export class excelPreviewDialog {
   data: any;
   importUserData = Array();
   fileName = 'user-details.xlsx';
-  allowEdit:boolean = true;
-  role: any
+  allowEdit = true;
+  role: any;
   allowDelete = Constants.allowDeleteUser;
 
   constructor(
@@ -62,12 +62,12 @@ export class excelPreviewDialog {
 
 
   ngOnInit(): void {
-    this.authService.eventcbRole$.subscribe((role)=>{
-      this.role = role
-    })
+    this.authService.eventcbRole$.subscribe((role) => {
+      this.role = role;
+    });
     const _role = localStorage.getItem('role');
     this.role = this.authService.decryptData(_role);
-    if(this.allowDelete.indexOf(this.role) > -1){
+    if (this.allowDelete.indexOf(this.role) > -1){
       this.allowEdit == true;
     }
   }
@@ -79,7 +79,7 @@ export class excelPreviewDialog {
         showCancelButton: true,
         confirmButtonText: 'Save',
         denyButtonText: `Don't save`,
-        icon:"question",
+        icon: 'question',
       }).then((result) => {
         if (result.isConfirmed) {
           this.spreadsheetObj.save();
@@ -95,7 +95,7 @@ export class excelPreviewDialog {
   }
 
   onFileChange(evt: any) {
-    const target: DataTransfer = <DataTransfer>evt.target;
+    const target: DataTransfer = evt.target as DataTransfer;
     const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
       const bstr: string = e.target.result;
@@ -112,7 +112,7 @@ export class excelPreviewDialog {
   }
 
   beforeSave(args: BeforeSaveEventArgs) {
-    args.fileName ="User Data"
+    args.fileName = 'User Data';
   }
 
 }

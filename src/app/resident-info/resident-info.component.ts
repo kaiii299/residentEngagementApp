@@ -41,16 +41,16 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   genders = Constants.genders;
   ageGps = Constants.ageGps;
 
-  committeeControl: string = ''
-  blkNumControl: string = ' '
-  ageGpControl: string = ''
+  committeeControl = '';
+  blkNumControl = ' ';
+  ageGpControl = '';
 
 
   panelOpenState = false;
-  search = ""
+  search = '';
 
-  totalCount: any
-  filterValue: any
+  totalCount: any;
+  filterValue: any;
   residentdata = Array();
   dataSource: any = new MatTableDataSource();
 
@@ -72,7 +72,7 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private residentService: ResidentService, private formBuilder: FormBuilder, private router: Router,
-    public dialog: MatDialog, private http: HttpClient) {
+              public dialog: MatDialog, private http: HttpClient) {
 
     this.filter_form = this.formBuilder.group({
       committeeControl: new FormControl,
@@ -83,16 +83,16 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   }
 
   async ngOnInit(){
-    this.user_role = this.residentService.decryptData(localStorage.getItem("role"));
-    this.user_committee = this.residentService.decryptData(localStorage.getItem("committee"));
+    this.user_role = this.residentService.decryptData(localStorage.getItem('role'));
+    this.user_committee = this.residentService.decryptData(localStorage.getItem('committee'));
     this.accessObj = this.accessControlList.get(this.user_role);
     this.canDeleteResident = this.accessObj.deleteResident;
-    var body = {committee: null};
-    if(!this.accessObj.viewSearchFilterAllResident){
+    let body = {committee: null};
+    if (!this.accessObj.viewSearchFilterAllResident){
       body = {committee: this.user_committee};
       this.committees = new Array(this.user_committee);
     }
-    this.residentService.getAllResidents(body).then((res:any) =>{
+    this.residentService.getAllResidents(body).then((res: any) => {
       this.dataSource.data = res;
       this.residentdata = res;
       this.totalCount = this.residentdata.length;
@@ -105,14 +105,14 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   }
 
   searchInput(event: KeyboardEvent) {
-    let wordToSearch = this.search.trim().toUpperCase();
-    if(event.keyCode === 13){
-      var body = {keyword: wordToSearch, committee: this.filterCommitteeSearchField, blkNum: this.filterBlkNumSerachField, ageGp: this.filterAgeGpSearchField};
-      if(!this.accessObj.viewSearchFilterAllResident){
+    const wordToSearch = this.search.trim().toUpperCase();
+    if (event.keyCode === 13){
+      let body = {keyword: wordToSearch, committee: this.filterCommitteeSearchField, blkNum: this.filterBlkNumSerachField, ageGp: this.filterAgeGpSearchField};
+      if (!this.accessObj.viewSearchFilterAllResident){
         body = {keyword: wordToSearch, committee: this.user_committee, blkNum: this.filterBlkNumSerachField, ageGp: this.filterAgeGpSearchField};
         this.committees = new Array(this.user_committee);
       }
-      this.residentService.searchResidentData(body).then((res:any) => {
+      this.residentService.searchResidentData(body).then((res: any) => {
         this.dataSource.data = res;
         this.residentdata = res;
         this.totalCount = this.residentdata.length;
@@ -125,15 +125,15 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
   }
 
   onClickViewDetails(id: any) {
-    var encryptedResid = this.residentService.encryptData(id)
-    let navigationExtras: NavigationExtras = {queryParams: {id: encryptedResid}}
-    this.router.navigate(['residentdetail'], navigationExtras)
+    const encryptedResid = this.residentService.encryptData(id);
+    const navigationExtras: NavigationExtras = {queryParams: {id: encryptedResid}};
+    this.router.navigate(['residentdetail'], navigationExtras);
   }
 
   onClickEdit(id: any){
-    var encryptedResid = this.residentService.encryptData(id)
-    let navigationExtras: NavigationExtras = {queryParams: {id: encryptedResid}}
-    this.router.navigate(['updateresident'], navigationExtras)
+    const encryptedResid = this.residentService.encryptData(id);
+    const navigationExtras: NavigationExtras = {queryParams: {id: encryptedResid}};
+    this.router.navigate(['updateresident'], navigationExtras);
   }
   delete(id: any){
     // console.log(id);
@@ -151,22 +151,22 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
           icon: 'success',
         });
       }else if (result.isDenied){
-        Swal.fire('Error removing resident !!')
+        Swal.fire('Error removing resident !!');
       }
-    })
+    });
   }
   onClickFilter(event: any) {
     event.blkNumControl = event.blkNumControl.trim();
-    if(event.committeeControl.trim().length != 0){
+    if (event.committeeControl.trim().length != 0){
       this.filterCommitteeSearchField = event.committeeControl;
     }
-    if(event.blkNumControl.trim().length != 0){
+    if (event.blkNumControl.trim().length != 0){
       this.filterBlkNumSerachField = event.blkNumControl;
     }
-    if(event.ageGpControl.trim().length != 0){
+    if (event.ageGpControl.trim().length != 0){
       this.filterAgeGpSearchField = event.ageGpControl;
     }
-    this.residentService.filterResident({committee: event.committeeControl, blkNum: event.blkNumControl, ageGp: event.ageGpControl}).then((res:any) => {
+    this.residentService.filterResident({committee: event.committeeControl, blkNum: event.blkNumControl, ageGp: event.ageGpControl}).then((res: any) => {
       this.dataSource.data = res;
       this.residentdata = res;
       this.totalCount = this.residentdata.length;
@@ -181,7 +181,7 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     location.reload();
   }
   openExcelExport(){
-    let residentData = this.residentdata;
+    const residentData = this.residentdata;
     // residentData.forEach(residentD => {
     //   let str ='';
     //   let activitiesArr = residentD.data.activities;
@@ -203,13 +203,13 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
       width: '750px',
       height: '650px',
       data: residentData
-    })
+    });
   }
   openExcelImport(){
     this.dialog.open(ExcelImportResidents, {
       width: '750px',
       height: '650px',
-    })
+    });
   }
 
 }

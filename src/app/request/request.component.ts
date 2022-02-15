@@ -46,7 +46,7 @@ export class RequestComponent implements OnInit {
   isExistUserName: any;
   isExistEmail: any;
   message: string;
-  email ='';
+  email = '';
   userName = '';
   firstName: string;
   phoneNumber: string;
@@ -105,26 +105,26 @@ export class RequestComponent implements OnInit {
   }
 
   async checkUserExist() {
-    if(this.userName){
-      this.userService.checkUserName(this.userName).subscribe((res)=>{
-        if(res.length !== 0){
+    if (this.userName){
+      this.userService.checkUserName(this.userName).subscribe((res) => {
+        if (res.length !== 0){
           this.isExistUserName = true;
         }else{
           this.isExistUserName = false;
         }
       });
     }
-    else if(this.email.trim()){
-      this.userService.checkEmailExist(this.email).subscribe((res: any)=>{
+    else if (this.email.trim()){
+      this.userService.checkEmailExist(this.email).subscribe((res: any) => {
         // console.log(res);
-        if(res.length !== 0){
+        if (res.length !== 0){
           this.isExistEmail = true;
         }else{
           this.isExistEmail = false;
         }
-      })
+      });
     }
-    else if(this.email == "" || this.userName == ""){
+    else if (this.email == '' || this.userName == ''){
       this.isExistEmail = false;
       this.isExistUserName = false;
     }
@@ -148,9 +148,9 @@ export class RequestComponent implements OnInit {
     } else if (this.isExistUserName == true) {
       this.message = 'Username is in use';
     } else if (this.strengthColor == 'red') {
-      Swal.fire("Password too weak",'Minium 8 character. Include uppercase, numbers and special characters', 'warning')
+      Swal.fire('Password too weak', 'Minium 8 character. Include uppercase, numbers and special characters', 'warning');
     } else if (this.password !== this.repeatPassword) {
-      Swal.fire('Password does not match','','error')
+      Swal.fire('Password does not match', '', 'error');
     } else {
       this.message = '';
       this.myStepper.next();
@@ -158,7 +158,7 @@ export class RequestComponent implements OnInit {
   }
 
   checkPasswordStrength(event: Event) {
-    var format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    const format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
     const passwordValue = (event.target as HTMLInputElement).lang;
     if (this.password.length == 0) {
       this.message = '';
@@ -187,36 +187,36 @@ export class RequestComponent implements OnInit {
       this.secondFormGroup.invalid,
       !this.blockNumberValue)
     ) {
-      Swal.fire('There are still missing fields','','error')
+      Swal.fire('There are still missing fields', '', 'error');
     } else {
       this.registeredDate = new Date().toLocaleDateString();
       this.registeredTime = new Date().toLocaleTimeString();
 
-      let newUser: any = {};
-      newUser['email'] = this.email.trim();
-      newUser['userName'] = this.userName;
-      newUser['firstName'] = this.firstName;
-      newUser['phoneNumber'] = this.phoneNumber;
-      newUser['gender'] = this.gender;
-      newUser['role'] = this.roleValue;
-      newUser['committee'] = this.committeesValue;
-      newUser['blockNumber'] = this.blockNumberValue;
-      newUser['registrationDate'] = this.registeredDate;
-      newUser['registrationTime'] = this.registeredTime;
-      newUser['status'] = 'Pending';
-      newUser['requestStatus'] = "Pending";
-      newUser['isRequested'] = true;
+      const newUser: any = {};
+      newUser.email = this.email.trim();
+      newUser.userName = this.userName;
+      newUser.firstName = this.firstName;
+      newUser.phoneNumber = this.phoneNumber;
+      newUser.gender = this.gender;
+      newUser.role = this.roleValue;
+      newUser.committee = this.committeesValue;
+      newUser.blockNumber = this.blockNumberValue;
+      newUser.registrationDate = this.registeredDate;
+      newUser.registrationTime = this.registeredTime;
+      newUser.status = 'Pending';
+      newUser.requestStatus = 'Pending';
+      newUser.isRequested = true;
 
       this.userService.register(this.email.trim(), this.password).then(res => {
         this.userService.createNewUser(newUser).then(res => {
-          Swal.fire('Request sent!','Reqest is now pending','success')
-          this.router.navigate(['/'])
+          Swal.fire('Request sent!', 'Reqest is now pending', 'success');
+          this.router.navigate(['/']);
         }).catch(error => {
-          Swal.fire('Error sending Email','','error')
+          Swal.fire('Error sending Email', '', 'error');
           // console.log(error)
-        })
+        });
       }).catch(error => {
-        Swal.fire('The email address is not valid',`${error}`,'error')
+        Swal.fire('The email address is not valid', `${error}`, 'error');
         // console.log(error)
       });
     }

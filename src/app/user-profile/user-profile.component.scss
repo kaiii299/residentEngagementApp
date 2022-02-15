@@ -61,13 +61,32 @@ body{
   height: 100vh;
 }
 
+// .img-web{ //for girl
+//   position: absolute;
+//   left: 12vw ;
+//   height: 90vh;
+//   top: 4vw;
+//   // transform: scaleX(-1);
+// }
+
 .img-web{
   position: absolute;
-  left: 246px ;
-  height: 90vh;
-  top: 4vw;
-  // transform: scaleX(-1);
+  top: 80vh;
+  left: 20vw;
+  transform: translate(-50%,-50%);
+  height: 40vh;
+  width: 30vw;
 }
+
+.img-web2{
+  position: absolute;
+  top: 75vh;
+  left: 85vw;
+  transform: translate(-50%,-50%);
+  height: 40vh;
+  width: 30vw;
+}
+
 
 
 .img-phone{

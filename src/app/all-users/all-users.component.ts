@@ -112,8 +112,8 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   async ngOnInit() {
-    console.log(this.variableValue);
-    console.log(this.columnsToDisplay);
+    // console.log(this.variableValue);
+    // console.log(this.columnsToDisplay);
     this.checkPending();
     this.getAllusers();
     this.authService.eventcbRole$.subscribe((res) => {
@@ -197,7 +197,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   filter() {
-    console.log(this.variableValue.value);
+    // console.log(this.variableValue.value);
     localStorage.setItem('filterValue', JSON.stringify(this.variableValue));
     this.columnsToDisplay = this.variableValue;
     const userData: any = {};
@@ -206,7 +206,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
       (userData.role = this.roleValue),
       (userData.status = this.statusValue),
       (userData.requestStatus = this.requestStatusValue),
-      console.log(userData);
+      // console.log(userData);
 
       this.userService.filterUser(userData);
     this.userService.eventcbUserData$.subscribe((data) => {

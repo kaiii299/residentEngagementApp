@@ -63,9 +63,12 @@ body{
 
 .img-web{
   position: absolute;
-  right: 360px;
-  height: 100vh;
+  left: 246px ;
+  height: 90vh;
+  top: 4vw;
+  // transform: scaleX(-1);
 }
+
 
 .img-phone{
   display: none;
@@ -115,9 +118,8 @@ body{
 
 .login {
   position: absolute;
-  top: 55%;
-  left: 60%;
-  transform: translate(50%, -50%);
+  top: 10%;
+  left: 25vw;
 }
 
 .forget{
@@ -138,13 +140,13 @@ body{
 .form  {   //card
   position: relative;
   z-index: 1;
-  left: 0vw;
-  background: #f2d9c5;
+  right: -10vw;
+  width: 35vw;
+  background: #F2D9C5;
   border-radius: 10px;
-  max-width: 380px;
-  margin: 10 auto 100px;
+  margin: 50 auto 100px;
   padding: 45px;
-  height: 70vh;
+  height: 85vh;
   text-align: center;
   box-shadow: 0 9px 18px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
   overflow-x: hidden;
@@ -320,8 +322,9 @@ body{
 
   .login {
     position: relative;
-    top: 50%;
+    top: 2vh;
     left: 50%;
+    width: 100%;
     transform: translate(-50%, 14%);
     overflow: hidden;
   }
@@ -330,17 +333,8 @@ body{
     position: relative;
     left: 0vw;
     height: 83vh;
+    width: 95vw;
     // overflow: auto;
-  }
-
-  .welcome-container{
-    display: none;
-  }
-
-  .welcome{
-    position: relative;
-    color: rgb(255, 255, 255);
-    font-size: 2rem;
   }
 
   .login-form{
@@ -354,7 +348,7 @@ body{
     display: none;
   }
 
-  .img-web{
+  .img-web, .img-web2{
     display: none;
   }
 

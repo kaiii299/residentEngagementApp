@@ -120,7 +120,7 @@ export abstract class Constants {
 
   static readonly variables = [
 
-    { name: 'User name', value: 'userName' },
+    { name: 'Username', value: 'userName' },
     { name: 'Status', value: 'status' },
     { name: 'Email', value: 'email' },
     { name: 'First name', value: 'firstName' },
@@ -137,7 +137,7 @@ export abstract class Constants {
   ];
 
   static readonly defaultValues = [
-    { name: 'User name', value: 'userName' },
+    { name: 'Username', value: 'userName' },
     { name: 'Committee', value: 'committee' },
     { name: 'Block number', value: 'blockNumber' },
     { name: 'Role', value: 'role' },

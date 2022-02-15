@@ -1,7 +1,6 @@
 {
   "hosting": {
-    "site": "residentapp",
-    "public": "dist/resident-engagement-app",
+    "public": "dist",
     "ignore": [
       "firebase.json",
       "**/.*",

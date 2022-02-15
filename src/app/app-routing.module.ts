@@ -45,7 +45,7 @@ const routes: Routes = [
   {
     path: 'events',
     component: EventsPageComponent,
-    //canActivate: [AuthRouteGuard, HasRoleGuard],
+    canActivate: [AuthRouteGuard],
     //data: { role: 'Admin' },
   },
   {

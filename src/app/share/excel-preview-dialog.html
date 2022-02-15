@@ -1,23 +1,15 @@
 <div class="control-selection">
-  <input
-    title="file"
-    type="file"
-    (change)="onFileChange($event)"
-    multiple="false"
-  />
   <button mat-button type="button" (click)="_close()">Close</button>
-  <button mat-button type="button" (click)="save()">save</button>
+  <button mat-button type="button" (click)="save()">Save</button>
   <button mat-button type="button" (click)="filter()">Filter</button>
   <br />
   <ejs-spreadsheet
     scrollSettings="true"
-    height="80vh"
+    height="110vh"
     (beforeSave)="beforeSave($event)"
     #default
-    [openUrl]="openUrl"
     [saveUrl]="saveUrl"
     allowSave="true"
-    allowOpen="true"
   >
     <e-sheets>
       <e-sheet name="Users report">

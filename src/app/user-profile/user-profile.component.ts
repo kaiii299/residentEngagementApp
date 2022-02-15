@@ -132,6 +132,9 @@ export class UserProfileComponent implements OnInit {
       blockNumberCtrl: ['', Validators.required],
     });
 
+    this.authService.eventcbRole$.subscribe((role)=>{
+      this._role = role;
+    })
     const _role = localStorage.getItem('role');
     this._role = this.authService.decryptData(_role);
   }
@@ -285,11 +288,6 @@ export class UserProfileComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.userService.deleteUserbyId(decryptedid);
-        Swal.fire(
-          'Deleted!',
-          'This user has been deleted.',
-          'success'
-        )
       }
     })
   }
@@ -451,7 +449,7 @@ export class saveChangesDialog {
         position: 'center',
         icon: 'success',
         title: 'User Rejected',
-        showConfirmButton: false,
+        showConfirmButton: true,
       }).then((res)=>{
         setTimeout(() => {
           location.reload(), 80000;

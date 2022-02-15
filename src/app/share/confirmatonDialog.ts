@@ -12,6 +12,7 @@ export class confirmationDialog {
   text: any;
   data: any;
   reload: boolean;
+  dataToBeCreated = Array();
 
   constructor(
     public dialogRef: MatDialogRef<confirmationDialog>,
@@ -22,6 +23,7 @@ export class confirmationDialog {
 
   ngOnInit(): void {
     this.data = this.dialogData;
+    this.dataToBeCreated = this.data.dataToBeCreated
     this.message = this.data.message;
     this.reload = this.data.reload;
   }

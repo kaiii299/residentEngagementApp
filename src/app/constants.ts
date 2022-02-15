@@ -111,9 +111,7 @@ export abstract class Constants {
 
   static readonly secretKey: string = 'YourSecretKeyForEncryption&Descryption';
 
-  static readonly allowDeleteUser = ['Admin', 'CC staff', 'RN Manager'];
-
-  static readonly allowDeleteCommitteUser = ['Admin','CC staff', 'RN Manager'];
+  static readonly allowDeleteUser = ['Admin', 'CC staff', 'RN Manager']; // can update committe types also
 
   static readonly allowViewAllUsers = ['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']
 }

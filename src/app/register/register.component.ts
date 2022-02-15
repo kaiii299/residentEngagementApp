@@ -98,7 +98,6 @@ export class RegisterComponent implements OnInit {
     }
     else if(this.email.trim()){
       this.userService.checkEmailExist(this.email).subscribe((res: any)=>{
-        console.log(res);
         if(res.length !== 0){
           this.isExistEmail = true;
         }else{
@@ -126,7 +125,7 @@ export class RegisterComponent implements OnInit {
       this.message = 'Password cannot be empty';
     }
     if (this.phoneNumber.length < 8) {
-      this.message = 'Invalid Phone Number';
+      Swal.fire('Invalid phone number')
     } else if (this.isExistUserName == true) {
       this.message = 'Username is in use';
     } else if (this.strengthColor == 'red') {
@@ -189,8 +188,7 @@ export class RegisterComponent implements OnInit {
 
       this.userService.register(this.email, this.password).then(res => {
         this.userService.createNewUser(newUser).then(res => {
-          Swal.fire('Request sent!','Reqest is now pending','success')
-          this.router.navigate(['/'])
+          Swal.fire('Success!','User Created  ','success')
         }).catch(error => {
           Swal.fire('Error sending Email','','error')
           console.log(error)
@@ -204,7 +202,6 @@ export class RegisterComponent implements OnInit {
 
   onChange(event: any) {
     this.committeesValue = event;
-    console.log(this.committeesValue);
     this.availableBlocks = this.zonesInfo.get(this.committeesValue);
     console.log(this.zonesInfo.get(this.committeesValue));
   }

@@ -46,6 +46,9 @@ export class Authservice {
 
   baseUrl = Constants.baseURL;
 
+  lastLoggedInTime : any;
+  currentTime = new Date
+
   OTP: any;
   phoneNumber: any;
   isSent = false;
@@ -67,10 +70,10 @@ export class Authservice {
 
   async signIn(email: string, password: string) {
     return await this.firebaseAuth
-      .signInWithEmailAndPassword(email.trim(), password)
-      .then((res) => {
-        if (res) {
-          console.log();
+    .signInWithEmailAndPassword(email.trim(), password)
+    .then((res) => {
+      if (res) {
+        this.lastLoggedInTime = res.user?.metadata.lastSignInTime;
           res.user?.getIdToken().then((jwtToken) => {
             this.eventcbJWT.next(jwtToken);
             localStorage.setItem('token', jwtToken);
@@ -87,11 +90,10 @@ export class Authservice {
                 this.SwalFire('Account status is pending', 'error')
               }
               else if
-              
                 (this.currentUserObject.requestStatus == "Accepted" ||
                 this.currentUserObject.Status == "Active") {
-                  //this.otpService.openOTP()
                 this.eventcbRefresh.next(res.user?.refreshToken);
+                this.eventcbRole.next(this.currentUserObject.role);
                 localStorage.setItem('refreshToken', JSON.stringify(res.user?.refreshToken))
                 this.phoneNumber = this.currentUserObject.phoneNumber
                 this.eventCallbackuserName.next(
@@ -100,13 +102,7 @@ export class Authservice {
                 var encryptedRole = this.encryptData(
                   this.currentUserObject.role
                 );
-                res.user?.updateProfile({
-                  displayName: this.currentUserObject.role
-                }).then((res)=>{
-                  console.log(res);
-                })
                 localStorage.setItem('role', encryptedRole);
-                this.eventcbRole.next(this.currentUserObject.role);
                 this.eventCallbackuserName.next(this.currentUserObject.userName);
                 this.eventcbCommittee.next(this.currentUserObject.committee);
                 const encryptedCommittee = this.encryptData(this.currentUserObject.committee);
@@ -132,7 +128,9 @@ export class Authservice {
     return this.db.collection('Users').doc(id).valueChanges();
   }
 
+  getTimeDifference(){
 
+  }
 
   SwalFire(title: string, icon: string) {
     Swal.fire({

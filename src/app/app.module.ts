@@ -67,14 +67,9 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ExcelExportResidents } from './excel-export-residents/excel-export-residents';
 import { ExcelImportResidents } from './excel-import-residents/excel-import-residents';
 import {MatBadgeModule} from '@angular/material/badge';
-<<<<<<< HEAD
-import { ExcelExportResidentsComponent } from './excel-export-residents/excel-export-residents.component';
+// import { ExcelExportResidentsComponent } from './excel-export-residents/excel-export-residents.component';
 import { DropDownListModule }from '@syncfusion/ej2-angular-dropdowns';
 import { DateTimePickerModule }from '@syncfusion/ej2-angular-calendars';
-=======
-
->>>>>>> 4bd95bd792ac7beb4add4912237e770c1c4e2ea8
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -100,7 +95,7 @@ import { DateTimePickerModule }from '@syncfusion/ej2-angular-calendars';
     RequestComponent,
     DashboardComponent,
     ExcelExportResidents,
-    ExcelImportResidents
+    ExcelImportResidents,
   ],
   imports: [
     CommonModule,

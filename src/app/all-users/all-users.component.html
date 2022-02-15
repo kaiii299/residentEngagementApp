@@ -150,7 +150,17 @@
                 class="excel-btn"
                 (click)="openExcelPreviewDialog()"
               >
-                <mat-icon>cloud_download</mat-icon> Upload to Excel
+                <mat-icon>cloud_download</mat-icon> Export
+              </button>
+
+              <button
+                type="button"
+                mat-button
+                class="excel-btn"
+                *ngIf="this.allowDeleteUser.indexOf(_role) > -1"
+                (click)="openUploadFileDialog()"
+              >
+                <mat-icon>attachment</mat-icon> upload
               </button>
 
               <button
@@ -203,7 +213,7 @@
                 </button>
 
                 <button
-                *ngIf="_role == 'Admin'"
+                *ngIf="this.allowDeleteUser.indexOf(_role) > -1"
                 type="button"
                 (click)="deactivate(element.id)"
                 mat-button class="delete-btn">Deactivate</button>

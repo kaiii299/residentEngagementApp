@@ -42,7 +42,9 @@ app.use(morgan("tiny"));
 app.use('/filter', router);
 app.use('/sendOTP', sendMessage);
 app.options("*", cors());
-app.options("/deleteUser/:id", cors());
+app.options("/deleteUserEmail/:id", cors());
+app.options("/createUsersBatch", cors());
+app.options("/createUsers", cors());
 
 // ----------------------------------------------------------------------------------------------------USERS-----------------------------------------------------------------------------------------------
 app.all("/*", function(req, res, next) {
@@ -55,6 +57,7 @@ app.all("/*", function(req, res, next) {
   next();
 });
 
+
 app.get("/getAllUsers", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']), async (req, res) => {
   const Allusers = [];
   const snapshot = await userDb.get();
@@ -62,8 +65,10 @@ app.get("/getAllUsers", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manage
     const id = doc.id;
     const data = doc.data();
     ['LastUpdatedDate',
+      'isRequested',
+      'isAccept',
       'registrationTime',
-      'regsitrationDate',
+      'registrationDate',
       'LastUpdatedTime',
       'gender',
       'email',
@@ -76,7 +81,26 @@ app.get("/getAllUsers", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manage
   res.status(200).send(Allusers);
 });
 
-app.post("/getAllUsersNormalRn", allowedUsers(['Normal RN Members']), async (req, res) =>{
+app.post("/createUsersBatch", allowedUsers(['Admin', 'CC staff', 'RN Manager']), async (req, res) => {
+  req.header("Access-Control-Allow-Origin", 'http://localhost:4200');
+  const batch = admin.firestore().batch();
+  const userData = req.body.data;
+  userData.forEach((doc) => {
+    batch.set(userDb.doc(), doc);
+  });
+  await batch.commit();
+  res.status(200).send(userData);
+});
+
+app.post("/createUsers", allowedUsers(['Admin', 'CC staff', 'RN Manager']), async (req, res) => {
+  req.header("Access-Control-Allow-Origin", 'http://localhost:4200');
+  const userData = req.body;
+  const uid = req.body.id;
+  await admin.firestore().collection("Users").doc(uid).create(userData);
+  res.status(200).send(userData);
+});
+
+app.post("/getAllUsersNormalRn", allowedUsers(['Normal RN Members', 'Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']), async (req, res) =>{ // Allows everyone
   const committee = req.body.committee;
   const Allusers = [];
   const snapShot = await userDb.where('committee', '==', committee).get();
@@ -129,7 +153,12 @@ app.get("/getUser/:id", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manage
 });
 
 
-app.post("/searchUserByName", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN Manager', 'Key RN Members']), async (req, res) => { // allow everyone
+app.post("/searchUserByName", allowedUsers([
+  'Admin',
+  'CC staff',
+  'Key Ccc',
+  'RN Manager',
+  'Key RN Members']), async (req, res) => { // search everyone
   const users = [];
   const searchKeyword = req.body.keyword;
   const snapshot = await userDb
@@ -144,9 +173,15 @@ app.post("/searchUserByName", allowedUsers(['Admin', 'CC staff', 'Key Ccc', 'RN 
   res.status(200).send(users);
 });
 
-app.post("/searchUserByNameNormalRn", allowedUsers(['Normal RN Members']), async (req, res) => { // allow everyone
+app.post("/searchUserByNameNormalRn", allowedUsers([
+  'Normal RN Members',
+  'Admin',
+  'CC staff',
+  'Key Ccc',
+  'RN Manager',
+  'Key RN Members']), async (req, res) => { // only people in the committee
   const users = [];
-  const newUsers = [];
+  // const newUsers = [];
   const searchKeyword = req.body.keyword;
   const _Committee = req.body.committee;
   const snapshot = await userDb
@@ -158,8 +193,7 @@ app.post("/searchUserByNameNormalRn", allowedUsers(['Normal RN Members']), async
     const data = doc.data();
     users.push({id, data});
   });
-  const obj = users.find((o) => o.committee === _Committee); // find protype/items in array
-  newUsers.push(obj);
+  const newUsers = users.filter((o) => o.data.committee = _Committee );
   res.status(200).send(newUsers);
 });
 
@@ -178,29 +212,19 @@ app.put("/update/:uid", async (req, res) => {
   res.status(200).send("User successfully updated");
 });
 
-app.delete("/deleteUser/:id", allowedUsers(["Admin", "Cc staff"]), async (req, res) => {
-  await admin
-      .auth()
-      .deleteUser(req.params.id)
-      .then(() => {
-        res.status(200).send("Both Success");
-      })
-      .catch((err) => {
-        res.status(500).send("Both Failed");
-      })
-      .then(() => {
-        userDb
-            .doc(req.params.id)
-            .delete()
-            .then(() => {
-              console.log("Success Deleting User Data");
-              res.status(200).send("Success Deleting User Data");
-            })
-            .catch((err) => {
-              console.log("Error Deleting User Data");
-              res.status(500).send("Error Deleting User Data");
-            });
-      });
+app.delete("/deleteUserEmail/:id", allowedUsers(["Admin", "Cc staff", "RN Manager"]), async (req, res) => {
+  const id = req.params.id;
+  return admin.auth().deleteUser(id).then((res)=>{
+    userDb.doc(id).delete().then((res)=>{
+      res.status(200).send("User data successfully delete");
+      return;
+    }).catch((err)=>{
+      console.log("Error deleting user data", err);
+    });
+  }).catch((err)=>{
+    console.log('Error deleting user', err);
+    res.status(500).send("Failed to delete user . User may not exist");
+  });
 });
 
 // -----------------------------------------RESIDENT------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -389,33 +413,6 @@ exports.onUserCreatedSendEmail = functions.firestore
             console.log("There is an error sending Email" + err);
           });
     });
-
-// exports.onUserRquestedSendEmail = functions.firestore.document('Users/{userId}')
-//     .onUpdate((snap, context) => {
-//       const newValue = snap.after.data();
-//       const previousValue = snap.before.data();
-//       const user = userDb.doc("/{userId}").get();
-//       if (newValue.requestStatus !== previousValue.requestStatus) {
-//         const msg = {
-//           to: user.email,
-//           from: "residentappv2@gmail.com",
-//           templateId: "d-670dcc0a3fc4493a8a727226970ca884",
-//           dynamic_template_data: {
-//             Subject: 'Your account status has been updated',
-//             name: user.userName,
-//             requestStatus: user.requestStatus,
-//           },
-//         };
-//         sgMail
-//             .send(msg)
-//             .then(() => {
-//               console.log(`Email sent to ${user.email}`);
-//             })
-//             .catch((err) => {
-//               console.log("There is an error sending Email" + err);
-//             });
-//       }
-//     });
 
 exports.onUserDeletedSendEmail = functions.firestore
     .document("Users/{userId}")

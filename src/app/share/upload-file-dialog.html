@@ -7,22 +7,36 @@
   />
   <button mat-button type="button" (click)="close()">Close</button>
   <button mat-button type="button" (click)="save()">Save</button>
+  <button mat-button type="button" (click)="filter()">Filter</button>
+  <button mat-button type="button" [disabled]="isUploadFile == false " (click)="upload()">Upload</button>
   <br />
   <ejs-spreadsheet
     scrollSettings="true"
-    height="90vh"
+    height="110vh"
     (beforeSave)="beforeSave($event)"
-    saveUrl="https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/save"
-    allowOpen="true"
+    #default
+    [openUrl]="openUrl"
+    [saveUrl]="saveUrl"
     allowSave="true"
   >
     <e-sheets>
       <e-sheet name="Users report">
         <e-ranges>
-          <e-range [dataSource]="data"></e-range>
+          <e-range [dataSource]="uploadedData"></e-range>
         </e-ranges>
         <e-columns>
-          <e-column></e-column>
+          <e-column [width]="140"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="150"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="140"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="150"></e-column>
+          <e-column [width]="130"></e-column>
+          <e-column [width]="130"></e-column>
         </e-columns>
       </e-sheet>
     </e-sheets>

@@ -1,9 +1,15 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { userDataInterface } from 'src/app/share/services/Users'
+import { userDataInterface } from 'src/app/share/services/Users';
 import { Constants } from '../constants';
 import { Authservice } from '../share/services/auth.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -23,11 +29,13 @@ import Swal from 'sweetalert2';
     trigger('detailExpand', [
       state('collapsed', style({ height: '0px', minHeight: '0' })),
       state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+      transition(
+        'expanded <=> collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+      ),
     ]),
   ],
 })
-
 export class AllUsersComponent implements AfterViewInit, OnInit {
   columnsToDisplay = Array();
   expandedElement: null;
@@ -39,11 +47,15 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   requestStatus = Constants.requestStatus;
   zonesInfo = Constants.zones;
   allowViewAllUsers = Constants.allowViewAllUsers;
+  allowDeleteUser = Constants.allowDeleteUser;
   panelOpenState = false;
 
   availableBlocks: any = [];
+  bufferArray = Array();
   variableValue: any | null = '';
   committeesValue: string | null = '';
+  newCommitteeArray: string[];
+  currentCommittee: any;
   blockNumberValue: string | null;
   roleValue: string | null;
   statusValue: string | null;
@@ -52,17 +64,17 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   selectedZone: string;
   blockValue: string;
   filter_form: FormGroup;
-  normalRnMembers: string = 'Normal RN Members'
-  _role:any;
+  normalRnMembers: string = 'Normal RN Members';
+  _role: any;
   userdata = Array();
   filterData = Array();
   totalCount: any;
   filterValue: any;
 
-  uid = localStorage.getItem("uid");
+  uid = localStorage.getItem('uid');
   defaultValue = ['userName', 'committee', 'blockNumber', 'role'];
   dataSource: any = new MatTableDataSource();
-  encryptedUserData = localStorage.getItem("userData");
+  encryptedUserData = localStorage.getItem('userData');
   decryptedUid: any;
   pendingNumber: any;
   hidden = false;
@@ -70,17 +82,25 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private userService: userService, private authService: Authservice, private formBuilder: FormBuilder, private router: Router, private dialog: MatDialog, private http: HttpClient) {
+  constructor(
+    private userService: userService,
+    private authService: Authservice,
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private dialog: MatDialog,
+    private http: HttpClient
+  ) {
+    this.uid = authService.decryptData(this.uid);
 
-    this.uid = authService.decryptData(this.uid)
-
-    if (localStorage.getItem("filterValue")) {
-      const stringValue = JSON.stringify(localStorage.getItem("filterValue"));
-      const parseValue = JSON.parse(JSON.parse(stringValue))
+    if (localStorage.getItem('filterValue')) {
+      const stringValue = JSON.stringify(localStorage.getItem('filterValue'));
+      const parseValue = JSON.parse(JSON.parse(stringValue));
       this.columnsToDisplay = parseValue;
       this.variableValue = parseValue;
-    }
-    else if (!localStorage.getItem("filterValue") || this.variableValue == '') {
+    } else if (
+      !localStorage.getItem('filterValue') ||
+      this.variableValue == ''
+    ) {
       this.variableValue = this.defaultValue;
       this.columnsToDisplay = this.defaultValue;
     }
@@ -88,32 +108,52 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
 
   async ngOnInit() {
     this.checkPending();
-    const role = localStorage.getItem("role");
-    this._role = this.authService.decryptData(role);
-      this.getAllusers();
-  }
+    this.getAllusers();
+    this.authService.eventcbRole$.subscribe((res)=>{
+      this._role = res
+    });
+     const Role = localStorage.getItem('role');
+     if (Role) {
+       this._role = this.authService.decryptData(Role);
+     }
+    this.authService.eventcbCommittee$.subscribe((_com) => {
+      this.currentCommittee = _com; //curret committeee
+    });
 
-
-  getAllusers(){
-      this.userService.getAllUsers();
-      this.userService.eventcbUserData$.subscribe((data) => {
-        this.dataSource.data = data;
-        this.userdata = data;
-        this.totalCount = this.userdata.length
-      })
-  }
-
-  checkPending(){
-    this.userService.checkPendingUsers().subscribe((res)=>{
-      if(res.length !== 0){
-        this.pendingNumber = res.length
+    if (!this.currentCommittee || this.currentCommittee == undefined) {
+      const _com = localStorage.getItem('committee');
+      if (_com) {
+        // to prevent errors
+        this.currentCommittee = this.authService.decryptData(_com);
       }
-      else{
-        this.hidden = true
-      }
-    })
+    }
+    if (this._role != this.normalRnMembers) {
+    }else{
+      const obj = this.committees.find((o: any) => o === this.currentCommittee);
+      this.bufferArray.push(obj);
+      this.committees = this.bufferArray;
+
+    }
   }
 
+  getAllusers() {
+    this.userService.getAllUsers();
+    this.userService.eventcbUserData$.subscribe((data) => {
+      this.dataSource.data = data;
+      this.userdata = data;
+      this.totalCount = this.userdata.length;
+    });
+  }
+
+  checkPending() {
+    this.userService.checkPendingUsers().subscribe((res) => {
+      if (res.length !== 0) {
+        this.pendingNumber = res.length;
+      } else {
+        this.hidden = true;
+      }
+    });
+  }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -121,45 +161,45 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   searchInput() {
-      if (this.searchValue) {
-        let wordToSearch = this.searchValue.charAt(0).toUpperCase() + this.searchValue.slice(1);
-        this.userService.searchUserData(wordToSearch ,this.userService.currentCommittee);
-        this.userService.eventcbUserData$.subscribe((res) => {
-          this.dataSource.data = res;
-          this.userdata = res;
-          this.totalCount = this.userdata.length;
-        })
-        if (this.dataSource.paginator) {
-          this.dataSource.paginator.firstPage();
-        }
-      } else if (!this.searchValue){
-        this.getAllusers();
+    if (this.searchValue) {
+      let wordToSearch =
+        this.searchValue.charAt(0).toUpperCase() + this.searchValue.slice(1);
+      this.userService.searchUserData(
+        wordToSearch,
+        this.userService.currentCommittee
+      );
+      this.userService.eventcbUserData$.subscribe((res) => {
+        this.dataSource.data = res;
+        this.userdata = res;
+        this.totalCount = this.userdata.length;
+      });
+      if (this.dataSource.paginator) {
+        this.dataSource.paginator.firstPage();
       }
+    } else if (!this.searchValue) {
+      this.getAllusers();
+    }
   }
 
   userInfo(uid: any) {
-    var encryptedUid = this.authService.encryptData(uid)
-    const navigationExtras: NavigationExtras = { queryParams: { id: encryptedUid } }
-    this.router.navigate(['userprofile'], navigationExtras)
-  }
-
-  getData(data: any) {
-    console.log(data);
+    var encryptedUid = this.authService.encryptData(uid);
+    const navigationExtras: NavigationExtras = {
+      queryParams: { id: encryptedUid },
+    };
+    this.router.navigate(['userprofile'], navigationExtras);
   }
 
   filter() {
-    localStorage.setItem("filterValue", JSON.stringify(this.variableValue))
-    this.columnsToDisplay = this.variableValue
-    let userData: any = {}
-    userData['committee'] = this.committeesValue,
-      userData['blockNumber'] = this.blockNumberValue,
-      userData['role'] = this.roleValue,
-      userData['status'] = this.statusValue,
-      userData['requestStatus'] = this.requestStatusValue,
+    localStorage.setItem('filterValue', JSON.stringify(this.variableValue));
+    this.columnsToDisplay = this.variableValue;
+    let userData: any = {};
+    (userData['committee'] = this.committeesValue),
+      (userData['blockNumber'] = this.blockNumberValue),
+      (userData['role'] = this.roleValue),
+      (userData['status'] = this.statusValue),
+      (userData['requestStatus'] = this.requestStatusValue),
       this.userService.filterUser(userData);
-      this.userService.eventcbUserData$.subscribe((data) => {
-      console.log(userData);
-      console.log(data);
+    this.userService.eventcbUserData$.subscribe((data) => {
       this.dataSource.data = data;
       this.userdata = data;
       this.totalCount = this.userdata.length;
@@ -168,46 +208,54 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
 
   clearFilter() {
     this.getAllusers();
-    this.committeesValue = "";
+    this.committeesValue = '';
     this.roleValue = '';
     this.statusValue = '';
     this.requestStatusValue = '';
     this.searchValue = '';
     this.variableValue = this.defaultValue;
     this.columnsToDisplay = this.defaultValue;
-    localStorage.removeItem("filterValue");
-    localStorage.removeItem("filterData");
-    this.searchValue = "";
-    this.blockNumberValue = "";
+    localStorage.removeItem('filterValue');
+    localStorage.removeItem('filterData');
+    this.searchValue = '';
+    this.blockNumberValue = '';
   }
 
   onChange(value: any) {
-    if(this._role == this.normalRnMembers){
+    if (this._role == this.normalRnMembers) {
       this.selectedZone = value;
       this.availableBlocks = this.zonesInfo.get(this.selectedZone);
     }
-      this.selectedZone = value;
-      this.availableBlocks = this.zonesInfo.get(this.selectedZone);
+    this.selectedZone = value;
+    this.availableBlocks = this.zonesInfo.get(this.selectedZone);
   }
 
   refresh() {
-    location.reload()
+    location.reload();
   }
 
   openExcelPreviewDialog() {
-    console.log("user data ");
-    console.log(this.userdata);
     this.dialog.open(excelPreviewDialog, {
-      width: '800px',
-      height: '550px',
-      data: this.userdata
-    })
+      width: '5000px',
+      height: '850px',
+      data: this.userdata,
+    });
+  }
+
+  openUploadFileDialog() {
+    this.dialog.open(uploadFileDialog, {
+      width: '5000px',
+      height: '850px',
+      data:{
+        role: this._role
+      }
+    });
   }
 
   async deactivate(uid: any) {
-    let userData: any = {}
-    userData['status'] = 'Inactive'
-    userData['requestStatus'] = 'Rejected'
+    let userData: any = {};
+    userData['status'] = 'Inactive';
+    userData['requestStatus'] = 'Rejected';
     Swal.fire({
       title: `Deactivate user?`,
       showCancelButton: true,
@@ -215,14 +263,15 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
       confirmButtonColor: '#d33',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.userService.updateUserData(uid, userData).then(() => {
-          Swal.fire('User deactivated', '', 'success').then(()=>{
+        this.userService
+          .updateUserData(uid, userData)
+          .then(() => {
+            Swal.fire('User deactivated', '', 'success').then(() => {});
           })
-        }).catch((err) => {
-          Swal.fire('ERROR', `${err.message}`, 'error')
-        })
+          .catch((err) => {
+            Swal.fire('ERROR', `${err.message}`, 'error');
+          });
       }
-    })
+    });
   }
 }
-

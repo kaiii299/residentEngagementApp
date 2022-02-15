@@ -155,7 +155,7 @@ export class UserProfileComponent implements OnInit {
     }
     else if(this.newEmail.trim() !== this.oldEmail.trim()){
       this.userService.checkEmailExist(this.newEmail).subscribe((res: any)=>{
-        console.log(res);
+        // console.log(res);
         if(res.length !== 0){
           this.isExistEmail = true;
         }else{
@@ -288,6 +288,7 @@ export class UserProfileComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.userService.deleteUserbyId(decryptedid);
+        this.userService.deleteUserData(decryptedid);
       }
     })
   }
@@ -378,7 +379,7 @@ export class saveChangesDialog {
   }
 
   update() {
-    console.log(this._data);
+    // console.log(this._data);
     this.userService
       .updateUserData(this.decryptedParamsId, this._data)
       .then(() => {
@@ -399,7 +400,7 @@ export class saveChangesDialog {
         })
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         this.dialogRef.close();
         Swal.fire({
           position: 'center',

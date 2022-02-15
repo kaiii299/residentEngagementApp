@@ -115,7 +115,7 @@ export class Authservice {
           localStorage.setItem('uid', encryptedText);
           const _uid = this.decryptData(encryptedText);
         } else {
-          console.log('error');
+          // console.log('error');
           localStorage.clear();
           Swal.fire('Oops something went wrong', 'please log in again', 'error');
           this.router.navigate(['/']);

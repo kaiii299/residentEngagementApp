@@ -34,7 +34,7 @@ export class ResidentDetailComponent implements OnInit {
       expertiseControl: new FormControl('', [Validators.required]),
     });
 
-    
+
   }
 
   async ngOnInit() {
@@ -54,7 +54,7 @@ export class ResidentDetailComponent implements OnInit {
         expertiseControl: residentDetail.expertise,
       });
     })
-    console.log(decryptedResid);
+    // console.log(decryptedResid);
     await this.residentService.getSurveyByResidentID(decryptedResid).then((res) => {
       // console.log("get survey");
       //console.log(res);
@@ -73,7 +73,7 @@ export class ResidentDetailComponent implements OnInit {
       // console.log("sorted data...");
       // console.log(dataList);
       this.surveys = dataList;
-      console.log(this.surveys);
+      // console.log(this.surveys);
     })
   }
   onClickEdit(){

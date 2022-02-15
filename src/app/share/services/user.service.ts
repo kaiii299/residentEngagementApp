@@ -97,7 +97,7 @@ export class userService {
       .catch((err) => {
         if (err instanceof HttpErrorResponse) {
           if (err) {
-            console.log(err);
+            // console.log(err);
             Swal.fire('ERROR', `${err.message}`, 'error');
           }
         }
@@ -113,7 +113,7 @@ export class userService {
       .catch((err) => {
         if (err instanceof HttpErrorResponse) {
           if (err) {
-            console.log(err);
+            // console.log(err);
             Swal.fire('ERROR', `${err.message}`, 'error');
           }
         }
@@ -151,7 +151,7 @@ export class userService {
   }
 
   async createNewuserBatch(_userData: any){
-    console.log(_userData);
+    // console.log(_userData);
     try {
       const res = await this.http.post(this.baseUrl + "/createUsersBatch", {data: _userData}).toPromise().then((res)=>{
       });
@@ -174,7 +174,7 @@ export class userService {
     const data = await this.http
       .put(this.baseUrl + '/update/' + uid, userData, { responseType: 'text' })
       .toPromise();
-    console.log(data);
+    // console.log(data);
   }
 
   async forgetPassword(email: string) {
@@ -211,8 +211,7 @@ export class userService {
       .delete(this.baseUrl + '/deleteUserEmail/' + uid)
       .toPromise()
       .then((res) => {
-        console.log(res);
-        this.deleteUserData(uid)
+
       })
       .catch((err) => {
         Swal.fire('Error Deleting account',`${err.message}`,'error');

@@ -23,7 +23,7 @@ export class UpdateResidentComponent implements OnInit {
   availableBlocks :any = [];
 
   resid = this.activatedRoute.snapshot.queryParams.id;
-  
+
 
   constructor(private formBuilder: FormBuilder, private residentService: ResidentService,private activatedRoute: ActivatedRoute, private router: Router) {
     this.updateResidentForm = new FormGroup({
@@ -36,13 +36,13 @@ export class UpdateResidentComponent implements OnInit {
         ageGpControl: new FormControl('', [Validators.required]),
         expertiseControl: new FormControl('', [Validators.required]),
     });
-    
+
    }
   async ngOnInit() {
     const decryptedResid = this.residentService.decryptData(this.resid);
     await this.residentService.getResidentById(decryptedResid).toPromise().then((data) => {
-      console.log("update resident data");
-      console.log(data);
+      // console.log("update resident data");
+      // console.log(data);
       let residentDetail: any = data.residentData;
       this.selectedZone = residentDetail.committee;
       this.availableBlocks = this.zonesInfo.get(this.selectedZone);
@@ -55,7 +55,7 @@ export class UpdateResidentComponent implements OnInit {
         raceControl: residentDetail.race,
         ageGpControl: residentDetail.ageGp,
         expertiseControl: residentDetail.expertise,
-      }); 
+      });
     })
     //this.activitiesList.forEach(() => this.activitiesFormArray.push(new FormControl(false)));
   }
@@ -67,12 +67,12 @@ export class UpdateResidentComponent implements OnInit {
     this.selectedZone = value;
     this.availableBlocks =this.zonesInfo.get(this.selectedZone);
     // console.log(this.zonesInfo.get(this.selectedZone));
-   
+
     this.updateResidentForm.patchValue({
            blkNumControl: '',
     });
   }
-  
+
   onChangeBlkNumList(value: any){
     // console.log(value);
   }

@@ -136,7 +136,7 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     this.router.navigate(['updateresident'], navigationExtras)
   }
   delete(id: any){
-    console.log(id);
+    // console.log(id);
     Swal.fire({
       title: 'Are you sure you want to delete this resident from records?',
       showCancelButton: true,
@@ -198,7 +198,7 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     //   residentD.data.activities = str;
     //   console.log(residentD);
     // });
-    console.log(residentData);
+    // console.log(residentData);
     this.dialog.open(ExcelExportResidents, {
       width: '750px',
       height: '650px',

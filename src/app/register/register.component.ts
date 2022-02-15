@@ -191,11 +191,11 @@ export class RegisterComponent implements OnInit {
           Swal.fire('Success!','User Created  ','success')
         }).catch(error => {
           Swal.fire('Error sending Email','','error')
-          console.log(error)
-        })
+            // console.log(error)
+          })
       }).catch(error => {
         Swal.fire('The email address is not valid',`${error}`,'error')
-        console.log(error)
+        // console.log(error)
       });
     }
   }
@@ -203,7 +203,7 @@ export class RegisterComponent implements OnInit {
   onChange(event: any) {
     this.committeesValue = event;
     this.availableBlocks = this.zonesInfo.get(this.committeesValue);
-    console.log(this.zonesInfo.get(this.committeesValue));
+    // console.log(this.zonesInfo.get(this.committeesValue));
   }
 
   back() {

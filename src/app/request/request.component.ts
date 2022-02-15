@@ -116,7 +116,7 @@ export class RequestComponent implements OnInit {
     }
     else if(this.email.trim()){
       this.userService.checkEmailExist(this.email).subscribe((res: any)=>{
-        console.log(res);
+        // console.log(res);
         if(res.length !== 0){
           this.isExistEmail = true;
         }else{
@@ -213,20 +213,20 @@ export class RequestComponent implements OnInit {
           this.router.navigate(['/'])
         }).catch(error => {
           Swal.fire('Error sending Email','','error')
-          console.log(error)
+          // console.log(error)
         })
       }).catch(error => {
         Swal.fire('The email address is not valid',`${error}`,'error')
-        console.log(error)
+        // console.log(error)
       });
     }
   }
 
   onChange(event: any) {
     this.committeesValue = event;
-    console.log(this.committeesValue);
+    // console.log(this.committeesValue);
     this.availableBlocks = this.zonesInfo.get(this.committeesValue);
-    console.log(this.zonesInfo.get(this.committeesValue));
+    // console.log(this.zonesInfo.get(this.committeesValue));
   }
 
   back() {

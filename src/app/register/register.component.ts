@@ -186,7 +186,7 @@ export class RegisterComponent implements OnInit {
       newUser['requestStatus'] = "Accepted";
       newUser['isRequested'] = false;
 
-      this.userService.register(this.email, this.password).then(res => {
+      this.userService.register(this.email.trim(), this.password).then(res => {
         this.userService.createNewUser(newUser).then(res => {
           Swal.fire('Success!','User Created  ','success')
         }).catch(error => {

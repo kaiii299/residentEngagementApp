@@ -23,6 +23,8 @@ export class NavBarComponent implements OnInit {
   role: any;
   hidden = false;
   pendingNumber: any;
+  isAdmin = false;
+
   constructor(
     public userService: userService,
     public authService: Authservice,
@@ -43,6 +45,13 @@ export class NavBarComponent implements OnInit {
       const encrypted = this.authService.encryptData(this.displayName);
       localStorage.setItem('username', encrypted);
 
+      this.authService.eventcbRole$.subscribe((role)=>{
+        if(role =="Admin"){
+          this.isAdmin = true;
+        }
+      })
+      const _role = localStorage.getItem('role');
+
     });
 
     this.authService.eventcbRole$.subscribe((role) => {
@@ -59,7 +68,7 @@ export class NavBarComponent implements OnInit {
 
   checkPending(){
     this.userService.checkPendingUsers().subscribe((res) => {
-      if (res.length !== 0){
+      if (res.length !== 0 && this.role == "Admin"){
         this.pendingNumber = res.length;
       }
       else{

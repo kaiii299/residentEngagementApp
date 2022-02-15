@@ -30,17 +30,21 @@ export class userService {
 
   userNameExist = false;
 
-  currentCommittee: any | null;
+  currentCommittee: any ;
   currentRole: any;
 
   normalRNMembers = 'Normal RN Members';
+
+  allowViewAllUsers = Constants.allowViewAllUsers;
 
   length: any;
 
   numberOfUserArray = Array();
 
-  eventCbNumberOfUsers = new Subject<any>();
-  eventCbNumberOfUsers$ = this.eventCbNumberOfUsers.asObservable();
+  bufferArray = Array();
+
+  // eventCbNumberOfUsers = new Subject<any>();
+  // eventCbNumberOfUsers$ = this.eventCbNumberOfUsers.asObservable();
 
   constructor(
     private authService: Authservice,
@@ -68,16 +72,17 @@ export class userService {
   }
 
   async getAllUsers() {
-    if (this.currentRole !== this.normalRNMembers){
+    if (this.allowViewAllUsers.indexOf(this.currentRole) == -1){
       return await this.http
-      .get(this.baseUrl + '/getAllUsers')
+      .post(this.baseUrl + '/getAllUsersNormalRn', {committee: this.currentCommittee})
       .toPromise()
-      .then((data) => {
+      .then((data: any) => {
+        this.bufferArray = data
         this.eventcbUserData.next(data);
       });
     }else{
       return await this.http
-      .post(this.baseUrl + '/getAllUsersNormalRn', {committee: this.currentCommittee})
+      .get(this.baseUrl + '/getAllUsers')
       .toPromise()
       .then((data) => {
         this.eventcbUserData.next(data);
@@ -87,7 +92,8 @@ export class userService {
 
 
   async searchUserData(keyword: any, _committee: any) {
-    if (this.currentRole !== this.normalRNMembers){
+    if (this.allowViewAllUsers.indexOf(this.currentRole) > -1){
+      // console.log(this.currentRole);
       return await this.http
       .post(this.baseUrl + '/searchUserByName', {keyword})
       .toPromise()
@@ -102,8 +108,8 @@ export class userService {
           }
         }
       });
-    }else{
-      _committee = this.currentCommittee;
+    }else if(this.allowViewAllUsers.indexOf(this.currentRole) == -1){
+      console.log(_committee);
       return await this.http
       .post(this.baseUrl + '/searchUserByNameNormalRn', {keyword, committee: _committee})
       .toPromise()
@@ -123,19 +129,22 @@ export class userService {
   }
 
   async filterUser(body: any){
-    if (this.currentRole = this.normalRNMembers){
+    if (this.currentRole !== this.normalRNMembers){
       return await this.http.post(this.baseUrl + '/filter', body).toPromise().then((data) => {
         this.eventcbUserData.next(data);
       }).catch((err) => {
         Swal.fire('ERROR', `${err.message}`, 'error');
       });
 
+    }else{
+      body.committee = this.currentCommittee
+      return await this.http.post(this.baseUrl + '/filter/normalRN', body).toPromise().then((data) => {
+        this.eventcbUserData.next(data);
+      }).catch((err) => {
+        Swal.fire('ERROR', `${err.message}`, 'error');
+      });
+
     }
-    return await this.http.post(this.baseUrl + '/filter', body).toPromise().then((data) => {
-      this.eventcbUserData.next(data);
-    }).catch((err) => {
-      Swal.fire('ERROR', `${err.message}`, 'error');
-    });
   }
 
   async register(email: string, password: string) {
@@ -151,11 +160,12 @@ export class userService {
   }
 
   async createNewuserBatch(_userData: any){
+    this.numberOfUserArray = _userData
     // console.log(_userData);
     try {
       const res = await this.http.post(this.baseUrl + '/createUsersBatch', {data: _userData}).toPromise().then((res) => {
       });
-      Swal.fire('Success', 'Users created', 'success');
+      Swal.fire('Success', `${_userData.length == 2 ? "user" : "users"}`, 'success');
     } catch (err) {
       Swal.fire('Error', 'Users not created', 'error');
     }

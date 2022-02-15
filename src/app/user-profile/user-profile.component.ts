@@ -415,7 +415,7 @@ export class saveChangesDialog {
 
   accept() {
     this._data.requestStatus = 'Accepted';
-    this._data.status = 'Acctive';
+    this._data.status = 'Active';
     this.userService.updateUserData(this.decryptedParamsId, this._data).then(() => {
       this.dialogRef.close();
       Swal.fire({

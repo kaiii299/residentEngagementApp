@@ -48,11 +48,13 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   zonesInfo = Constants.zones;
   allowViewAllUsers = Constants.allowViewAllUsers;
   allowDeleteUser = Constants.allowDeleteUser;
+  defaultValue = Constants.defaultValues;
+  // defaultValue =  ['userName', 'committee', 'blockNumber', 'role'];
   panelOpenState = false;
 
   availableBlocks: any = [];
   bufferArray = Array();
-  variableValue: any | null = '';
+  variableValue: any  = '';
   committeesValue: string | null = '';
   newCommitteeArray: string[];
   currentCommittee: any;
@@ -72,7 +74,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   filterValue: any;
 
   uid = localStorage.getItem('uid');
-  defaultValue = ['userName', 'committee', 'blockNumber', 'role'];
+  // defaultValueNames = Array();
   dataSource: any = new MatTableDataSource();
   encryptedUserData = localStorage.getItem('userData');
   decryptedUid: any;
@@ -101,12 +103,17 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
       !localStorage.getItem('filterValue') ||
       this.variableValue == ''
     ) {
-      this.variableValue = this.defaultValue;
-      this.columnsToDisplay = this.defaultValue;
+      this.defaultValue.forEach((doc)=>{
+        this.bufferArray.push(doc.value)
+      })
+      this.variableValue = this.bufferArray;
+      this.columnsToDisplay = this.bufferArray;
     }
   }
 
   async ngOnInit() {
+    console.log(this.variableValue);
+    console.log(this.columnsToDisplay);
     this.checkPending();
     this.getAllusers();
     this.authService.eventcbRole$.subscribe((res) => {
@@ -190,6 +197,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   filter() {
+    console.log(this.variableValue.value);
     localStorage.setItem('filterValue', JSON.stringify(this.variableValue));
     this.columnsToDisplay = this.variableValue;
     const userData: any = {};
@@ -198,6 +206,8 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
       (userData.role = this.roleValue),
       (userData.status = this.statusValue),
       (userData.requestStatus = this.requestStatusValue),
+      console.log(userData);
+
       this.userService.filterUser(userData);
     this.userService.eventcbUserData$.subscribe((data) => {
       this.dataSource.data = data;
@@ -213,8 +223,8 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     this.statusValue = '';
     this.requestStatusValue = '';
     this.searchValue = '';
-    this.variableValue = this.defaultValue;
-    this.columnsToDisplay = this.defaultValue;
+    this.variableValue = this.bufferArray;
+    this.columnsToDisplay = this.bufferArray;
     localStorage.removeItem('filterValue');
     localStorage.removeItem('filterData');
     this.searchValue = '';

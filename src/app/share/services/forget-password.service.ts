@@ -53,16 +53,16 @@ export class ForgetPasswordService implements OnInit {
     }
     await Swal.fire({
       title: 'Reset password',
-      showCancelButton: false,
+      showCancelButton: true,
       showConfirmButton: true,
-      showCloseButton: true,
+      showCloseButton: false,
       reverseButtons: false,
       confirmButtonText: 'Send Email',
       showLoaderOnConfirm: true,
+      // allowOutsideClick: false,
+      focusConfirm: false,
       html:
         `<input id="email" placeholder="Email" value=${this.email} class="swal2-input" type="email">`,
-      focusConfirm: false,
-      allowOutsideClick: false,
       preConfirm: () => {
         (this.email = document.getElementById('email')),
           (this.phoneNumber = document.getElementById('phoneNumber'));

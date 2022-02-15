@@ -37,7 +37,9 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error.status == 401) {
           this.spinnerService.requestEnded();
-          Swal.fire('Error', 'User unthorized', 'error');
+          Swal.fire('Error', 'User unthorized', 'error').then(()=>{
+            location.reload();
+          });
         } else if (error.status == 403) {
           Swal.fire('Error', 'Token expired. Please log in again', 'error').then((res) => {
             if (res.isConfirmed) {

@@ -174,14 +174,8 @@ app.post("/searchUserByName", allowedUsers([
 });
 
 app.post("/searchUserByNameNormalRn", allowedUsers([
-  'Normal RN Members',
-  'Admin',
-  'CC staff',
-  'Key Ccc',
-  'RN Manager',
-  'Key RN Members']), async (req, res) => { // only people in the committee
+  'Normal RN Members']), async (req, res) => { // only people in the committee
   const users = [];
-  // const newUsers = [];
   const searchKeyword = req.body.keyword;
   const _Committee = req.body.committee;
   const snapshot = await userDb
@@ -193,7 +187,7 @@ app.post("/searchUserByNameNormalRn", allowedUsers([
     const data = doc.data();
     users.push({id, data});
   });
-  const newUsers = users.filter((o) => o.data.committee = _Committee );
+  const newUsers = users.filter((o) => o.data.committee === _Committee );
   res.status(200).send(newUsers);
 });
 

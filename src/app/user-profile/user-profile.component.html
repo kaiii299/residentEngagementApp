@@ -149,10 +149,10 @@
             >
               Change Password
             </button>
-            <button class="forget-btn" type="button" *ngIf="requestStatus == 'Pending' && status == 'Inactive' " (click)="openAcceptDialog()">
+            <button class="forget-btn" type="button" *ngIf="requestStatus == 'Pending' && status == 'Pending' " (click)="openAcceptDialog()">
               Accept
             </button>
-            <button class="delete-btn" type="button" *ngIf="requestStatus == 'Pending' && status == 'Inactive' " (click)="openRejectDialog()">
+            <button class="delete-btn" type="button" *ngIf="requestStatus == 'Pending' && status == 'Pending' " (click)="openRejectDialog()">
               Reject
             </button>
 

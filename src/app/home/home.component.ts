@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Authservice } from '../share/services/auth.service';
 import * as CryptoJS from 'crypto-js';
 import { ForgetPasswordService } from '../share/services/forget-password.service';
+import Swal from 'sweetalert2';
+import { title } from 'process';
 
 @Component({
   selector: 'app-home',
@@ -21,18 +23,28 @@ hide = true;
 
    Login(){
     if (this.email == ''){
-      this.message = 'Please provide email';
+      Swal.fire("Error","Please provide email","error")
     }
 
     else if (this.password == ''){
-      this.message = 'Please provide Password';
+     Swal.fire("Error","Please provide password","error")
     }
 
     else{
-      this.authService.signIn(this.email, this.password).then((res) => {
+      this.authService.signIn(this.email.trim(), this.password).then((res) => {
 
      }).catch(error => {
-       this.message = 'Wrong username or password';
+       Swal.fire({
+         title:"Wrong email or passoword",
+         icon:'error',
+         showDenyButton: true,
+         denyButtonText:"Forget password?",
+         denyButtonColor: "#505050"
+       }).then((res)=>{
+         if(res.isDenied){
+           this.openForgetPassword();
+         }
+       })
      });
     }
   }

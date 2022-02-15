@@ -70,6 +70,7 @@ import {MatBadgeModule} from '@angular/material/badge';
 // import { ExcelExportResidentsComponent } from './excel-export-residents/excel-export-residents.component';
 import { DropDownListModule }from '@syncfusion/ej2-angular-dropdowns';
 import { DateTimePickerModule }from '@syncfusion/ej2-angular-calendars';
+import { FilterPipe } from './pipes/filter.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -96,6 +97,7 @@ import { DateTimePickerModule }from '@syncfusion/ej2-angular-calendars';
     DashboardComponent,
     ExcelExportResidents,
     ExcelImportResidents,
+    FilterPipe,
   ],
   imports: [
     CommonModule,

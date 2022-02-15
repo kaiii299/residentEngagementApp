@@ -206,8 +206,8 @@ export class RequestComponent implements OnInit {
       newUser['status'] = 'Pending';
       newUser['requestStatus'] = "Pending";
       newUser['isRequested'] = true;
-      
-      this.userService.register(this.email, this.password).then(res => {
+
+      this.userService.register(this.email.trim(), this.password).then(res => {
         this.userService.createNewUser(newUser).then(res => {
           Swal.fire('Request sent!','Reqest is now pending','success')
           this.router.navigate(['/'])

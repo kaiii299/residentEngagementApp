@@ -72,7 +72,6 @@ export class ResidentDetailComponent implements OnInit {
           expertiseControl: residentDetail.expertise,
         });
       });
-    })
     console.log(decryptedResid);
     await this.residentService.getSurveyByResidentId(decryptedResid).then((res) => {
 

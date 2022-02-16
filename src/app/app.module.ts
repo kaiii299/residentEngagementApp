@@ -137,7 +137,7 @@ import { FilterPipe } from './pipes/filter.pipe';
     SpreadsheetAllModule,
     ScheduleModule,
     ScheduleAllModule,
-    MatBadgeModule
+    MatBadgeModule,
     DropDownListModule,
     DateTimePickerModule,
   ],

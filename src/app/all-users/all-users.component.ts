@@ -20,6 +20,7 @@ import { uploadFileDialog } from '../share/upload-file';
 import { HttpClient } from '@angular/common/http';
 import { userService } from '../share/services/user.service';
 import Swal from 'sweetalert2';
+import { NavserviceService } from '../share/navservice.service';
 
 @Component({
   selector: 'app-all-users',
@@ -48,8 +49,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   zonesInfo = Constants.zones;
   allowViewAllUsers = Constants.allowViewAllUsers;
   allowDeleteUser = Constants.allowDeleteUser;
-  defaultValue = Constants.defaultValues;
-  // defaultValue =  ['userName', 'committee', 'blockNumber', 'role'];
+  defaultValue =  ['userName', 'committee', 'blockNumber', 'role'];
   panelOpenState = false;
 
   availableBlocks: any = [];
@@ -85,6 +85,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(
+    private navService: NavserviceService,
     private userService: userService,
     private authService: Authservice,
     private formBuilder: FormBuilder,
@@ -103,17 +104,15 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
       !localStorage.getItem('filterValue') ||
       this.variableValue == ''
     ) {
-      this.defaultValue.forEach((doc)=>{
-        this.bufferArray.push(doc.value)
-      })
-      this.variableValue = this.bufferArray;
-      this.columnsToDisplay = this.bufferArray;
+      this.variableValue = this.defaultValue;
+      this.columnsToDisplay = this.defaultValue;
     }
   }
 
   async ngOnInit() {
     // console.log(this.variableValue);
     // console.log(this.columnsToDisplay);
+    this.navService.eventcbTitle.next('All users');
     this.checkPending();
     this.getAllusers();
     this.authService.eventcbRole$.subscribe((res) => {
@@ -139,7 +138,6 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
       const obj = this.committees.find((o: any) => o === this.currentCommittee);
       this.bufferArray.push(obj);
       this.committees = this.bufferArray;
-
     }
   }
 
@@ -206,7 +204,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
       (userData.role = this.roleValue),
       (userData.status = this.statusValue),
       (userData.requestStatus = this.requestStatusValue),
-      // console.log(userData);
+      console.log(userData);
 
       this.userService.filterUser(userData);
     this.userService.eventcbUserData$.subscribe((data) => {
@@ -223,8 +221,8 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     this.statusValue = '';
     this.requestStatusValue = '';
     this.searchValue = '';
-    this.variableValue = this.bufferArray;
-    this.columnsToDisplay = this.bufferArray;
+    this.variableValue = this.defaultValue;
+    this.columnsToDisplay = this.defaultValue;
     localStorage.removeItem('filterValue');
     localStorage.removeItem('filterData');
     this.searchValue = '';

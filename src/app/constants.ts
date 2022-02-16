@@ -116,7 +116,7 @@ export abstract class Constants {
 
   static readonly status: string[] = ['Active', 'Inactive'];
 
-  static readonly requestStatus: string[] = ['Pending', 'Accepted', 'Rejected'];
+  static readonly requestStatus: string[] = ['Accepted', 'Rejected'];
 
   static readonly variables = [
 

@@ -1,5 +1,10 @@
 import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { MatStepper } from '@angular/material/stepper';
 import { Authservice } from '../share/services/auth.service';
@@ -8,6 +13,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { userService } from '../share/services/user.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { NavserviceService } from '../share/navservice.service';
 
 @Component({
   selector: 'app-register',
@@ -34,7 +40,7 @@ export class RegisterComponent implements OnInit {
   userData: any;
   userDataArray = Array();
   userNameArray = Array();
-  email =    '';
+  email = '';
   userName = '';
   firstName: string;
   phoneNumber: string;
@@ -69,43 +75,47 @@ export class RegisterComponent implements OnInit {
   isExistUserName: boolean;
   isExistEmail: boolean;
 
-  constructor(private router: Router, private userService: userService, private _formBuilder: FormBuilder, private authService: Authservice) { }
+  constructor(
+    private navService: NavserviceService,
+    private router: Router,
+    private userService: userService,
+    private _formBuilder: FormBuilder,
+    private authService: Authservice
+  ) {}
 
   ngOnInit(): void {
+    this.navService.eventcbTitle.next('Add new user');
     this.firstFormGroup = this._formBuilder.group({
-      emailCtrl: ['', Validators.required, ],
-      usernameCtrl: ['', Validators.required, ],
-      firstNameCtrl: ['', Validators.required, ],
-      phoneNumberCtrl: ['', Validators.required, ],
-      passwordCtrl: ['', Validators.required, ],
-      repeatPasswordCtrl: ['', Validators.required, ],
+      emailCtrl: ['', Validators.required],
+      usernameCtrl: ['', Validators.required],
+      firstNameCtrl: ['', Validators.required],
+      phoneNumberCtrl: ['', Validators.required],
+      passwordCtrl: ['', Validators.required],
+      repeatPasswordCtrl: ['', Validators.required],
     });
     this.secondFormGroup = this._formBuilder.group({
       roleCtrl: ['', Validators.required],
     });
   }
 
-
   async checkUserExist() {
-    if (this.userName){
+    if (this.userName) {
       this.userService.checkUserName(this.userName).subscribe((res) => {
-        if (res.length !== 0){
+        if (res.length !== 0) {
           this.isExistUserName = true;
-        }else{
+        } else {
           this.isExistUserName = false;
         }
       });
-    }
-    else if (this.email.trim()){
+    } else if (this.email.trim()) {
       this.userService.checkEmailExist(this.email).subscribe((res: any) => {
-        if (res.length !== 0){
+        if (res.length !== 0) {
           this.isExistEmail = true;
-        }else{
+        } else {
           this.isExistEmail = false;
         }
       });
-    }
-    else if (this.email == '' || this.userName == ''){
+    } else if (this.email == '' || this.userName == '') {
       this.isExistEmail = false;
       this.isExistUserName = false;
     }
@@ -129,7 +139,11 @@ export class RegisterComponent implements OnInit {
     } else if (this.isExistUserName == true) {
       this.message = 'Username is in use';
     } else if (this.strengthColor == 'red') {
-      Swal.fire('Password too weak', 'Minium 8 character. Include uppercase, numbers and special characters', 'warning');
+      Swal.fire(
+        'Password too weak',
+        'Minium 8 character. Include uppercase, numbers and special characters',
+        'warning'
+      );
     } else if (this.password !== this.repeatPassword) {
       Swal.fire('Password does not match', '', 'error');
     } else {
@@ -144,7 +158,6 @@ export class RegisterComponent implements OnInit {
     if (this.password.length == 0) {
       this.message = '';
       this.strengthMessage = 'weak';
-
     }
     if (this.password.length < 8 && this.password.length > 0) {
       this.strengthMessage = 'weak';
@@ -164,10 +177,13 @@ export class RegisterComponent implements OnInit {
   }
 
   createNewuser() {
-    if (this.firstFormGroup.invalid, this.secondFormGroup.invalid, !this.blockNumberValue) {
+    if (
+      (this.firstFormGroup.invalid,
+      this.secondFormGroup.invalid,
+      !this.blockNumberValue)
+    ) {
       this.message = 'There are still missing form fields';
-    }
-    else {
+    } else {
       this.registeredDate = new Date().toLocaleDateString();
       this.registeredTime = new Date().toLocaleTimeString();
 
@@ -186,17 +202,23 @@ export class RegisterComponent implements OnInit {
       newUser.requestStatus = 'Accepted';
       newUser.isRequested = false;
 
-      this.userService.register(this.email.trim(), this.password).then(res => {
-        this.userService.createNewUser(newUser).then(res => {
-          Swal.fire('Success!', 'User Created  ', 'success');
-        }).catch(error => {
-          Swal.fire('Error sending Email', '', 'error');
-            // console.log(error)
-          });
-      }).catch(error => {
-        Swal.fire('The email address is not valid', `${error}`, 'error');
-        // console.log(error)
-      });
+      this.userService
+        .register(this.email.trim(), this.password)
+        .then((res) => {
+          this.userService
+            .createNewUser(newUser)
+            .then((res) => {
+              Swal.fire('Success!', 'User Created  ', 'success');
+            })
+            .catch((error) => {
+              Swal.fire('Error sending Email', '', 'error');
+              // console.log(error)
+            });
+        })
+        .catch((error) => {
+          Swal.fire('The email address is not valid', `${error}`, 'error');
+          // console.log(error)
+        });
     }
   }
 
@@ -209,5 +231,4 @@ export class RegisterComponent implements OnInit {
   back() {
     this.authService.goback();
   }
-
 }

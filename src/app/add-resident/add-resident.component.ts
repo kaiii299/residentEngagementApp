@@ -1,15 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+  FormArray,
+} from '@angular/forms';
 import { Constants } from '../constants';
 import { ResidentService } from '../resident.service';
 import { Router, NavigationExtras } from '@angular/router';
 import Swal from 'sweetalert2';
-
+import { NavserviceService } from '../share/navservice.service';
 
 @Component({
   selector: 'app-add-resident',
   templateUrl: './add-resident.component.html',
-  styleUrls: ['./add-resident.component.scss']
+  styleUrls: ['./add-resident.component.scss'],
 })
 export class AddResidentComponent implements OnInit {
   addResidentForm: FormGroup;
@@ -22,12 +28,15 @@ export class AddResidentComponent implements OnInit {
   selectedZone: string;
   availableBlocks: any = [];
 
-
-  constructor(private formBuilder: FormBuilder, private residentService: ResidentService, private router: Router) {
-  }
+  constructor(
+    private navService: NavserviceService,
+    private formBuilder: FormBuilder,
+    private residentService: ResidentService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-
+    this.navService.eventcbTitle.next('Add new resident')
     this.addResidentForm = this.formBuilder.group({
       residentName: new FormControl('', [Validators.required]),
       committee: new FormControl('', [Validators.required]),
@@ -38,7 +47,7 @@ export class AddResidentComponent implements OnInit {
       ageGp: new FormControl('', [Validators.required]),
       expertise: new FormControl('', [Validators.required]),
       // activities: new FormArray([], [Validators.required]),
-      noblk: new FormControl()
+      noblk: new FormControl(),
     });
 
     // console.log(this.addResidentForm.controls.activities);
@@ -78,13 +87,12 @@ export class AddResidentComponent implements OnInit {
         expertise: value.expertise,
         // activities: value.activities,
       };
-      this.residentService.addResident(resident).then(results => {
+      this.residentService.addResident(resident).then((results) => {
         Swal.fire('Resident has been added to database');
         // console.log(results);
         // console.log(results.id);
         this.router.navigate(['residentinfo']);
       });
-
     } else {
       Swal.fire('Missing information !');
     }

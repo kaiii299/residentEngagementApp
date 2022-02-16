@@ -21,6 +21,7 @@ import { userService } from '../share/services/user.service';
 import { RequestNewUserService } from '../share/services/request-new-user.service';
 import Swal from 'sweetalert2';
 import { ForgetPasswordService } from '../share/services/forget-password.service';
+import { NavserviceService } from '../share/navservice.service';
 export interface DialogData {
   password: string;
 }
@@ -81,6 +82,7 @@ export class UserProfileComponent implements OnInit {
   _role: any;
 
   constructor(
+    private navservice: NavserviceService,
     public router: Router,
     public forgetPasswordService: ForgetPasswordService,
     public requestService: RequestNewUserService,
@@ -92,6 +94,7 @@ export class UserProfileComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
+    this.navservice.eventcbTitle.next(`User profile`)
     if (this.uid == this._uid) {
       this.isOwn = true;
     }

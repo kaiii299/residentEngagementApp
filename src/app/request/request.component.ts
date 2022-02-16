@@ -19,6 +19,7 @@ import { RequestNewUserService } from '../share/services/request-new-user.servic
 import { userService } from '../share/services/user.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
+import { NavserviceService } from '../share/navservice.service';
 
 @Component({
   selector: 'app-request',
@@ -84,6 +85,7 @@ export class RequestComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private navService: NavserviceService,
     private userService: userService,
     private requestNewUserService: RequestNewUserService,
     private _formBuilder: FormBuilder,
@@ -91,6 +93,8 @@ export class RequestComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.navService.eventcbTitle.next("Request page");
+
     this.firstFormGroup = this._formBuilder.group({
       emailCtrl: ['', Validators.required],
       usernameCtrl: ['', Validators.required],

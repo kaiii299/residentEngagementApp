@@ -1,16 +1,23 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  Validators,
+  FormArray,
+} from '@angular/forms';
 import { ResidentService } from '../resident.service';
 import { ActivatedRoute } from '@angular/router';
 import { Constants } from '../constants';
 import { Router, NavigationExtras } from '@angular/router';
 import { Authservice } from '../share/services/auth.service';
 import Swal from 'sweetalert2';
+import { NavserviceService } from '../share/navservice.service';
 
 @Component({
   selector: 'app-update-resident',
   templateUrl: './update-resident.component.html',
-  styleUrls: ['./update-resident.component.scss']
+  styleUrls: ['./update-resident.component.scss'],
 })
 export class UpdateResidentComponent implements OnInit {
   updateResidentForm: any;
@@ -24,39 +31,47 @@ export class UpdateResidentComponent implements OnInit {
 
   resid = this.activatedRoute.snapshot.queryParams.id;
 
-
-  constructor(private formBuilder: FormBuilder, private residentService: ResidentService, private activatedRoute: ActivatedRoute, private router: Router) {
+  constructor(
+    private navService: NavserviceService,
+    private formBuilder: FormBuilder,
+    private residentService: ResidentService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router
+  ) {
     this.updateResidentForm = new FormGroup({
-       residentNameControl: new FormControl('', [Validators.required]),
-        committeeControl: new FormControl('', [Validators.required]),
-        blkNumControl: new FormControl('', [Validators.required]),
-        unitNumControl: new FormControl('', [Validators.required]),
-        genderControl: new FormControl('', [Validators.required]),
-        raceControl: new FormControl('', [Validators.required]),
-        ageGpControl: new FormControl('', [Validators.required]),
-        expertiseControl: new FormControl('', [Validators.required]),
+      residentNameControl: new FormControl('', [Validators.required]),
+      committeeControl: new FormControl('', [Validators.required]),
+      blkNumControl: new FormControl('', [Validators.required]),
+      unitNumControl: new FormControl('', [Validators.required]),
+      genderControl: new FormControl('', [Validators.required]),
+      raceControl: new FormControl('', [Validators.required]),
+      ageGpControl: new FormControl('', [Validators.required]),
+      expertiseControl: new FormControl('', [Validators.required]),
     });
-
-   }
+  }
   async ngOnInit() {
+    this.navService.eventcbTitle.next('Update resident')
     const decryptedResid = this.residentService.decryptData(this.resid);
-    await this.residentService.getResidentById(decryptedResid).toPromise().then((data) => {
-      // console.log("update resident data");
-      // console.log(data);
-      const residentDetail: any = data.residentData;
-      this.selectedZone = residentDetail.committee;
-      this.availableBlocks = this.zonesInfo.get(this.selectedZone);
-      this.updateResidentForm.patchValue({
-        residentNameControl: residentDetail.residentName,
-        committeeControl: residentDetail.committee,
-        blkNumControl: residentDetail.blkNum,
-        unitNumControl: residentDetail.unitNum,
-        genderControl: residentDetail.gender,
-        raceControl: residentDetail.race,
-        ageGpControl: residentDetail.ageGp,
-        expertiseControl: residentDetail.expertise,
+    await this.residentService
+      .getResidentById(decryptedResid)
+      .toPromise()
+      .then((data) => {
+        // console.log("update resident data");
+        // console.log(data);
+        const residentDetail: any = data.residentData;
+        this.selectedZone = residentDetail.committee;
+        this.availableBlocks = this.zonesInfo.get(this.selectedZone);
+        this.updateResidentForm.patchValue({
+          residentNameControl: residentDetail.residentName,
+          committeeControl: residentDetail.committee,
+          blkNumControl: residentDetail.blkNum,
+          unitNumControl: residentDetail.unitNum,
+          genderControl: residentDetail.gender,
+          raceControl: residentDetail.race,
+          ageGpControl: residentDetail.ageGp,
+          expertiseControl: residentDetail.expertise,
+        });
       });
-    });
     // this.activitiesList.forEach(() => this.activitiesFormArray.push(new FormControl(false)));
   }
   get activitiesFormArray() {
@@ -69,16 +84,16 @@ export class UpdateResidentComponent implements OnInit {
     // console.log(this.zonesInfo.get(this.selectedZone));
 
     this.updateResidentForm.patchValue({
-           blkNumControl: '',
+      blkNumControl: '',
     });
   }
 
-  onChangeBlkNumList(value: any){
+  onChangeBlkNumList(value: any) {
     // console.log(value);
   }
 
-  updateResidentInfo(value: any){
-    if (this.updateResidentForm.valid){
+  updateResidentInfo(value: any) {
+    if (this.updateResidentForm.valid) {
       const resident = {
         residentName: value.residentNameControl,
         committee: value.committeeControl,
@@ -90,11 +105,14 @@ export class UpdateResidentComponent implements OnInit {
         expertise: value.expertiseControl,
       };
       const decryptedResid = this.residentService.decryptData(this.resid);
-      this.residentService.updateResidentInfo(decryptedResid, resident).then(res => {
-        Swal.fire('The resident\'s information hase been successfully updated');
-        this.router.navigate(['residentinfo']);
-      });
+      this.residentService
+        .updateResidentInfo(decryptedResid, resident)
+        .then((res) => {
+          Swal.fire(
+            "The resident's information hase been successfully updated"
+          );
+          this.router.navigate(['residentinfo']);
+        });
     }
   }
-
 }

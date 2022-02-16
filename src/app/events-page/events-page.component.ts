@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { DayService, WeekService, WorkWeekService, MonthService, AgendaService} from '@syncfusion/ej2-angular-schedule';
+import { NavserviceService } from '../share/navservice.service';
 
 @Component({
   selector: 'app-events-page',
@@ -18,7 +19,7 @@ export class EventsPageComponent implements OnInit  {
   public selectedDate = new Date();
   scheduleObj: any;
 
-  constructor(db: AngularFirestore) {
+  constructor(db: AngularFirestore, private navService: NavserviceService) {
     this.data = db.collection('Agenda');
     this.items = db
       .collection('Agenda')
@@ -40,7 +41,7 @@ export class EventsPageComponent implements OnInit  {
       });
   }
   ngOnInit(): void {
-
+    this.navService.eventcbTitle.next("All events");
   }
   public onActionBegin(args: any): void {
     if (args.requestType == 'eventChange') {

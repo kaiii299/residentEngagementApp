@@ -16,7 +16,7 @@
               class="example-additional-selection"
             >
               (+{{ variableValue.length - 1 }}
-              {{ variableValue?.length === 2 ? "other" : "others"  }})
+              {{ variableValue?.length === 2 ? "other" : "others" }})
             </span>
           </mat-select-trigger>
           <mat-option
@@ -67,7 +67,7 @@
         </mat-select>
 
         <mat-select
-        *ngIf="_role != normalRnMembers"
+          *ngIf="_role != normalRnMembers"
           class="select"
           placeholder="Status"
           [(ngModel)]="statusValue"
@@ -85,14 +85,18 @@
           class="select"
           *ngIf="_role == 'Admin'"
           [matBadgeHidden]="hidden"
-            matBadge={{pendingNumber}}
-            matBadgeSize="small"
-            matBadgeOverlap="true"
-            matBadgeColor="warn"
+          matBadge="{{ pendingNumber }}"
+          matBadgeSize="small"
+          matBadgeOverlap="true"
+          matBadgeColor="warn"
           placeholder="Request Status"
           [(ngModel)]="requestStatusValue"
           [ngModelOptions]="{ standalone: true }"
         >
+          <mat-option
+            value="Pending"
+            >Pending<div *ngIf="_role == 'Admin' && pendingNumber > 0" class="circle"></div></mat-option
+          >
           <mat-option
             *ngFor="let status of requestStatus"
             class="list"
@@ -185,7 +189,7 @@
             matColumnDef="{{ column }}"
             *ngFor="let column of columnsToDisplay"
           >
-            <th mat-header-cell *matHeaderCellDef>{{ column | titlecase}}</th>
+            <th mat-header-cell *matHeaderCellDef>{{ column | titlecase }}</th>
             <td mat-cell *matCellDef="let element">
               {{ element.data[column] }}
             </td>
@@ -213,10 +217,14 @@
                 </button>
 
                 <button
-                *ngIf="this.allowDeleteUser.indexOf(_role) > -1"
-                type="button"
-                (click)="deactivate(element.id)"
-                mat-button class="delete-btn">Deactivate</button>
+                  *ngIf="this.allowDeleteUser.indexOf(_role) > -1"
+                  type="button"
+                  (click)="deactivate(element.id)"
+                  mat-button
+                  class="delete-btn"
+                >
+                  Deactivate
+                </button>
               </div>
             </td>
           </ng-container>

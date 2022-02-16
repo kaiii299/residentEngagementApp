@@ -10,6 +10,7 @@ import { userDataInterface } from 'src/app/share/services/Users';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { userService } from '../share/services/user.service';
+import { NavserviceService } from '../share/navservice.service';
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -24,22 +25,28 @@ export class NavBarComponent implements OnInit {
   hidden = false;
   pendingNumber: any;
   isAdmin = false;
+  title = 'Resident App'
 
   constructor(
     public userService: userService,
+    public navService: NavserviceService,
     public authService: Authservice,
     public dialog: MatDialog,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {
     const encrypted = localStorage.getItem('username');
-    // console.log(encrypted);
+    // console.log(encrypted)
     if (encrypted) {
       this.displayName = this.authService.decryptData(encrypted);
     }
   }
 
   ngOnInit() {
+    this.navService.eventcbTitle$.subscribe((title)=>{
+      this.title = title
+    });
+
     this.authService.eventCallbackuserName$.subscribe((userName) => {
       this.displayName = userName;
       const encrypted = this.authService.encryptData(this.displayName);

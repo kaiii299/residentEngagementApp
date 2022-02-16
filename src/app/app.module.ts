@@ -67,10 +67,12 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ExcelExportResidents } from './excel-export-residents/excel-export-residents';
 import { ExcelImportResidents } from './excel-import-residents/excel-import-residents';
 import {MatBadgeModule} from '@angular/material/badge';
+import {MatRippleModule, MatPseudoCheckboxModule} from '@angular/material/core';
 // import { ExcelExportResidentsComponent } from './excel-export-residents/excel-export-residents.component';
 import { DropDownListModule }from '@syncfusion/ej2-angular-dropdowns';
 import { DateTimePickerModule }from '@syncfusion/ej2-angular-calendars';
 import { FilterPipe } from './pipes/filter.pipe';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 @NgModule({
   declarations: [
     AppComponent,
@@ -140,6 +142,9 @@ import { FilterPipe } from './pipes/filter.pipe';
     MatBadgeModule,
     DropDownListModule,
     DateTimePickerModule,
+    MatPseudoCheckboxModule,
+    MatRippleModule,
+    MatCheckboxModule,
   ],
 
   providers: [

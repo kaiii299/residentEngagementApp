@@ -15,3 +15,5 @@ backup 9 - 1:56 12/2/2022 (left with OTP, Send request email, user updating thei
 backup 10 - 1:16am 14/2/2022 (left with exccel importing, deltete data, decided to remove otp and will put to future deployment. last 2 days before submission finally got an Array filter/ find to work).
 
 backup 11 - 11:18 14/2/2022 (I am almost done with everything wasted time on things that is not possible. I hope nothing crashes sendgrid needs to give me back my account!!)
+
+back up 12 - 10:59 16/2/2022 (Im sick as f before the final presentation havent done the last push yet)

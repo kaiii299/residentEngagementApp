@@ -13,13 +13,13 @@ import { ResidentService } from '../resident.service';
 export class ExcelImportResidents {
 
     importedData = Array();
-    
+
 
     constructor(private residentService: ResidentService) {
 
     }
     onFileChange(evt: any) {
-        const target: DataTransfer = <DataTransfer>evt.target;
+        const target: DataTransfer = evt.target as DataTransfer;
         const reader: FileReader = new FileReader();
         reader.onload = (e: any) => {
             const bstr: string = e.target.result;
@@ -35,7 +35,7 @@ export class ExcelImportResidents {
         // console.log("importedData..")
         // console.log(this.importedData)
         this.residentService.addResidentList(this.importedData).then((result) => {
-            if(result){
+            if (result){
                 location.reload();
             }
         });

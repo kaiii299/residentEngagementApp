@@ -10,7 +10,7 @@ import { Location } from '@angular/common';
 import { Constants } from 'src/app/constants';
 import { MatDialog } from '@angular/material/dialog';
 import { userService } from './user.service';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -44,10 +44,10 @@ export class OTPService {
     return await this.http.get(this.baseUrl + `/sendOTP/${phoneNumber}`)
       .toPromise()
       .then((res) => {
-        this.isSent = true
+        this.isSent = true;
       })
       .catch((err) => {
-        this.isSent = false
+        this.isSent = false;
         console.log('Error sending otp', err);
       });
   }
@@ -58,13 +58,13 @@ export class OTPService {
       .toPromise()
       .then((res) => {
         const data: any = res;
-        let stringData = JSON.stringify(data.status)
+        const stringData = JSON.stringify(data.status);
         console.log(stringData);
-        if (stringData == "approved") {
+        if (stringData == 'approved') {
           this.isVerify = true;
           this.eventcbisVerified.next(this.isVerify);
-        } else if (stringData == "pending") {
-          this.isVerify = false
+        } else if (stringData == 'pending') {
+          this.isVerify = false;
           this.eventcbisVerified.next(this.isVerify);
           Swal.showValidationMessage(
             '<i class="fa fa-info-circle"></i>Invalid OTP try again.'
@@ -122,7 +122,7 @@ export class OTPService {
               if (res.isConfirmed) {
                 this.openOTP();
               }
-            })
+            });
           } else {
             Swal.fire({
               title: 'OTP',
@@ -138,19 +138,19 @@ export class OTPService {
                 `<input id="OTP" placeholder="OTP" class="swal2-input" maxlength="6" type="email">`,
               preConfirm: () => {
                 const _OTP: any = document.getElementById('OTP');
-                this.OTP = _OTP.value
+                this.OTP = _OTP.value;
                 if (!this.OTP) {
                   Swal.showValidationMessage(
                     'OTP cannot be empty'
-                  )
+                  );
                 }
                 else if (this.OTP.length < 6) {
-                  'Invalid OTP'
+                  'Invalid OTP';
                 }
               }
             }).then((res) => {
               if (res.isConfirmed) {
-                this.verifyOTP(this.phoneNumber, this.OTP)
+                this.verifyOTP(this.phoneNumber, this.OTP);
                 this.eventcbisVerified$.subscribe((verified) => {
                   if (verified = true) {
                     this.eventcbIsOTPCompleted.next(true);
@@ -159,14 +159,14 @@ export class OTPService {
                   }
                   else {
                     this.eventcbIsOTPCompleted.next(false);
-                    Swal.showValidationMessage('Invalid OTP')
+                    Swal.showValidationMessage('Invalid OTP');
                   }
-                })
+                });
               }
-            })
+            });
           }
-        })
+        });
       }
-    })
+    });
   }
 }

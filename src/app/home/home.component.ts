@@ -3,40 +3,56 @@ import { Router } from '@angular/router';
 import { Authservice } from '../share/services/auth.service';
 import * as CryptoJS from 'crypto-js';
 import { ForgetPasswordService } from '../share/services/forget-password.service';
+import Swal from 'sweetalert2';
+import { title } from 'process';
+import { NavserviceService } from '../share/navservice.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-message= " "
-email: any;
-password: any;
-hide = true
-  constructor(private forgetPasswordService: ForgetPasswordService,private authService: Authservice,private route: Router) { }
+  message = ' ';
+  email: any;
+  password: any;
+  hide = true;
+  constructor(
+    private navService: NavserviceService,
+    private forgetPasswordService: ForgetPasswordService,
+    private authService: Authservice,
+    private route: Router
+  ) {}
 
-  ngOnInit(): void {
+  ngOnInit(){
+    this.navService.eventcbTitle.next('Resident App');
   }
 
-   Login(){
-    if(this.email == ""){
-      this.message ="Please provide email"
-    }
-
-    else if(this.password == ""){
-      this.message ="Please provide Password"
-    }
-
-    else{
-      this.authService.signIn(this.email, this.password).then((res)=>{
-
-     }).catch(error=>{
-       this.message = "Wrong username or password"
-     })
+  Login() {
+    if (this.email == '') {
+      Swal.fire('Error', 'Please provide email', 'error');
+    } else if (this.password == '') {
+      Swal.fire('Error', 'Please provide password', 'error');
+    } else {
+      this.authService
+        .signIn(this.email.trim(), this.password)
+        .then((res) => {})
+        .catch((error) => {
+          Swal.fire({
+            title: 'Wrong email or passoword',
+            icon: 'error',
+            showDenyButton: true,
+            denyButtonText: 'Forget password?',
+            denyButtonColor: '#505050',
+          }).then((res) => {
+            if (res.isDenied) {
+              this.openForgetPassword();
+            }
+          });
+        });
     }
   }
-  openForgetPassword(){
-    this.forgetPasswordService.openForgetpassword(this.email)
+  openForgetPassword() {
+    this.forgetPasswordService.openForgetpassword(this.email);
   }
 }

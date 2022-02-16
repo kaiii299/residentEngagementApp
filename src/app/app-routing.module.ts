@@ -18,24 +18,24 @@ import { RequestComponent } from './request/request.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent, pathMatch: 'full' }, //login
+  { path: '', component: HomeComponent, pathMatch: 'full' }, // login
   { path: 'forgetpassword', component: ForgetPasswordComponent },
   {
     path: 'createnewuser',
     component: RegisterComponent,
-    canActivate: [AuthRouteGuard],
-    //data: { role: 'Admin' },
+    canActivate: [AuthRouteGuard, HasRoleGuard],
+    // data: { role: 'Admin' },
   },
   {
     path: 'requestaccount',
     component: RequestComponent,
-    //data: { role: 'Admin' },
+    // data: { role: 'Admin' },
   },
   {
     path: 'allusers',
     component: AllUsersComponent,
     canActivate: [AuthRouteGuard],
-    //data: { role: 'Admin' },
+    // data: { role: 'Admin' },
   },
   {
     path: 'addresident',
@@ -46,29 +46,28 @@ const routes: Routes = [
   {
     path: 'events',
     component: EventsPageComponent,
-    //canActivate: [AuthRouteGuard, HasRoleGuard],
-    //data: { role: 'Admin' },
+    canActivate: [AuthRouteGuard],
+    // data: { role: 'Admin' },
   },
   {
     path: 'list',
     component: ListComponent,
-    //canActivate: [AuthRouteGuard, HasRoleGuard],
-    //data: { role: 'Admin' },
+    // canActivate: [AuthRouteGuard, HasRoleGuard],
+    // data: { role: 'Admin' },
   },
   {
     path: 'userprofile',
     component: UserProfileComponent,
     canActivate: [AuthRouteGuard],
-    //data: { role: 'Admin' },
+    // data: { role: 'Admin' },
   },
   { path: 'updateresident', component: UpdateResidentComponent },
-  { path: 'dashboard', component: DashboardComponent},
-  { 
-    path: 'residentinfo', 
+  {
+    path: 'residentinfo',
     component: ResidentInfoComponent ,
     canActivate: [AuthRouteGuard],
   },
-  { path: "residentdetail", component: ResidentDetailComponent},
+  { path: 'residentdetail', component: ResidentDetailComponent},
   { path: '**', component: PageNotFoundComponent, pathMatch: 'full' },
 ];
 

@@ -22,8 +22,8 @@ export class ForgetPasswordService implements OnInit {
   valueArray = Array();
   user: any;
   test = false;
-  otpSent : boolean;
-  varified : boolean;
+  otpSent: boolean;
+  varified: boolean;
 
   constructor(
     private firebaseAuth: AngularFireAuth,
@@ -35,34 +35,34 @@ export class ForgetPasswordService implements OnInit {
   ngOnInit(): void {}
 
   async openForgetpassword(email_: string) {
-    var encryptedUid = localStorage.getItem('uid');
-    if(encryptedUid){ // logged in
-      var uid = this.authService.decryptData(encryptedUid);
-    await this.userService
+    const encryptedUid = localStorage.getItem('uid');
+    if (encryptedUid){ // logged in
+      const uid = this.authService.decryptData(encryptedUid);
+      await this.userService
       .getUserById(uid)
       .toPromise()
       .then((res) => {
-        this.user = res.userData
+        this.user = res.userData;
         this.email = this.user.email;
       });
-      if(email_){
-        this.email = email_
+      if (email_){
+        this.email = email_;
       }
     } else{ // not logged in
-        this.email = `""`
+        this.email = `""`;
     }
     await Swal.fire({
       title: 'Reset password',
-      showCancelButton: false,
+      showCancelButton: true,
       showConfirmButton: true,
-      showCloseButton: true,
+      showCloseButton: false,
       reverseButtons: false,
       confirmButtonText: 'Send Email',
       showLoaderOnConfirm: true,
+      // allowOutsideClick: false,
+      focusConfirm: false,
       html:
         `<input id="email" placeholder="Email" value=${this.email} class="swal2-input" type="email">`,
-      focusConfirm: false,
-      allowOutsideClick: false,
       preConfirm: () => {
         (this.email = document.getElementById('email')),
           (this.phoneNumber = document.getElementById('phoneNumber'));
@@ -77,12 +77,12 @@ export class ForgetPasswordService implements OnInit {
       },
     }).then((res) => {
       if (res.isConfirmed) {
-        let _email: string = this.email.value
-        this.sendResetPassWordEmail(_email).then(()=>{
-          Swal.fire(`Email sent to ${_email}`,'Please check your email','success');
-        }).catch((err)=>{
-          Swal.fire(`Error! sending email to ${this.email.value}` ,`${err}`,'error')
-        })
+        const _email: string = this.email.value;
+        this.sendResetPassWordEmail(_email).then(() => {
+          Swal.fire(`Email sent to ${_email}`, 'Please check your email', 'success');
+        }).catch((err) => {
+          Swal.fire(`Error! sending email to ${this.email.value}` , `${err}`, 'error');
+        });
       }
     });
   }

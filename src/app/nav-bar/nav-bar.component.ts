@@ -10,6 +10,7 @@ import { userDataInterface } from 'src/app/share/services/Users';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { userService } from '../share/services/user.service';
+import { NavserviceService } from '../share/navservice.service';
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -23,25 +24,40 @@ export class NavBarComponent implements OnInit {
   role: any;
   hidden = false;
   pendingNumber: any;
+  isAdmin = false;
+  title = 'Resident App'
+
   constructor(
     public userService: userService,
+    public navService: NavserviceService,
     public authService: Authservice,
     public dialog: MatDialog,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {
-    var encrypted = localStorage.getItem('username');
-    // console.log(encrypted);
+    const encrypted = localStorage.getItem('username');
+    // console.log(encrypted)
     if (encrypted) {
       this.displayName = this.authService.decryptData(encrypted);
     }
   }
 
   ngOnInit() {
+    this.navService.eventcbTitle$.subscribe((title)=>{
+      this.title = title
+    });
+
     this.authService.eventCallbackuserName$.subscribe((userName) => {
       this.displayName = userName;
-      var encrypted = this.authService.encryptData(this.displayName);
+      const encrypted = this.authService.encryptData(this.displayName);
       localStorage.setItem('username', encrypted);
+
+      this.authService.eventcbRole$.subscribe((role)=>{
+        if(role =="Admin"){
+          this.isAdmin = true;
+        }
+      })
+      const _role = localStorage.getItem('role');
 
     });
 
@@ -49,8 +65,8 @@ export class NavBarComponent implements OnInit {
       this.role = role;
     });
     if (!this.role || this.role == undefined) {
-      let _role = localStorage.getItem('role');
-      if(_role){
+      const _role = localStorage.getItem('role');
+      if (_role){
         this.role = this.authService.decryptData(_role);
       }
     }
@@ -58,14 +74,14 @@ export class NavBarComponent implements OnInit {
   }
 
   checkPending(){
-    this.userService.checkPendingUsers().subscribe((res)=>{
-      if(res.length !== 0){
-        this.pendingNumber = res.length
+    this.userService.checkPendingUsers().subscribe((res) => {
+      if (res.length !== 0 && this.role == "Admin"){
+        this.pendingNumber = res.length;
       }
       else{
-        this.hidden = true
+        this.hidden = true;
       }
-    })
+    });
   }
 
   userProfile() {

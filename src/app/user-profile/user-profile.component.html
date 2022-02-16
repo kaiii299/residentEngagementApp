@@ -1,8 +1,14 @@
 <body>
   <div class="container">
-    <img src="/assets/images/people/View Profile.png" alt="" class="img-web" />
+    <img src="/assets/images/people/cute.svg" alt="" class="img-web" />
+    <!-- <img
+    src="/assets/images/people/register.svg"
+    alt=""
+    class="img-web2"
+  /> -->
 
-    <div class="welcome-container">
+
+    <!-- <div class="welcome-container">
       <h1 class="welcome" *ngIf="isOwn">
         Hello
         <p class="user-name">{{ oldUserName }}</p>
@@ -12,7 +18,7 @@
         <p class="user-name">{{ oldUserName }}</p>
       </h1>
       <h6 class="login-text">Click to edit info</h6>
-    </div>
+    </div> -->
     <div class="login">
       <div class="form">
         <form class="edit-form" [formGroup]="updateUserForm">
@@ -62,7 +68,6 @@
             type="email"
             title="Email"
             placeholder="Email"
-            [readonly]="isOwn == false"
             value="{{ newEmail }}"
             formControlName="emailCtrl"
             (change)="checkUserExist()"
@@ -87,7 +92,7 @@
             class="selection-input"
             placeholder="Role"
             formControlName="roleCtrl"
-            [disabled]="_role != 'Admin'"
+            [disabled]="allowDeleteUser.indexOf(_role) == -1"
             [(ngModel)]="newRoleValue"
             [value]="newRoleValue"
           >
@@ -104,7 +109,7 @@
             placeholder="Committee"
             (ngModelChange)="onChange($event)"
             formControlName="committeeCtrl"
-            [disabled]="_role !== 'Admin'"
+            [disabled]="allowDeleteUser.indexOf(_role) == -1"
             [(ngModel)]="newCommitteeValue"
           >
             <mat-option
@@ -117,7 +122,7 @@
           <mat-label>Block Number</mat-label>
           <mat-select
             placeholder="Block Number"
-            [disabled]="_role !== 'Admin'"
+            [disabled]="allowDeleteUser.indexOf(_role) == -1"
             aria-label="Number"
             [(ngModel)]="newBlockNumber"
             formControlName="blockNumberCtrl"
@@ -150,10 +155,10 @@
             >
               Change Password
             </button>
-            <button class="forget-btn" type="button" *ngIf="requestStatus == 'Pending'" (click)="openAcceptDialog()">
+            <button class="forget-btn" type="button" *ngIf="requestStatus == 'Pending' && status == 'Pending' " (click)="openAcceptDialog()">
               Accept
             </button>
-            <button class="delete-btn" type="button" *ngIf="requestStatus == 'Pending'" (click)="openRejectDialog()">
+            <button class="delete-btn" type="button" *ngIf="requestStatus == 'Pending' && status == 'Pending' " (click)="openRejectDialog()">
               Reject
             </button>
 
@@ -164,7 +169,7 @@
               (click)="delete()"
               *ngIf="
                 this.allowDeleteUser.indexOf(_role) > -1 &&
-                requestStatus == 'Accepted' && status != 'Inactive'  && !isOwn
+                requestStatus == 'Accepted' && status != 'Inactive'
               "
             >
               Delete Account
@@ -176,7 +181,7 @@
               (click)="reactivate()"
               *ngIf="
                 this.allowDeleteUser.indexOf(_role) > -1 &&
-                requestStatus == 'Rejected' || status == 'Inactive' && !isOwn
+                requestStatus == 'Rejected' && status == 'Inactive'
               "
             >
               Reacivate Account
@@ -189,7 +194,7 @@
             (click)="deletePermanently()"
             *ngIf="
               this.allowDeleteUser.indexOf(_role) > -1 &&
-              requestStatus == 'Rejected' || status == 'Inactive' && !isOwn
+              requestStatus == 'Rejected' &&  status == 'Inactive'
             "
           >
             Delete Forever

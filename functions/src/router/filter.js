@@ -8,8 +8,7 @@ const userDb = admin.firestore().collection("Users");
 router.use(express.json());
 const {allowedUsers} = require('./authMiddleware/roleMiddleware');
 
-
-router.post("/", allowedUsers(['Admin', 'CC staff', 'Key Ccc Members', 'RN Manager', 'key RN Members', 'Normal RN Members']), async (req, res)=>{
+router.post("/", allowedUsers(['Admin', 'CC staff', 'Key Ccc Members', 'RN Manager', 'key RN Members']), async (req, res)=>{
   const users = [];
   const reqBody = req.body;
   const committee = reqBody.committee;
@@ -220,6 +219,58 @@ router.post("/", allowedUsers(['Admin', 'CC staff', 'Key Ccc Members', 'RN Manag
   }
   res.status(200).send(users);
 });
+
+// ---------------------------------------------------------------------Filter for Normal RN--------------------------------------------------------------------------------
+
+router.post("/normalRN", allowedUsers(['Normal RN Members']), async (req, res)=>{
+  const users = [];
+  const reqBody = req.body;
+  const committee = reqBody.committee;
+  const blockNumber = reqBody.blockNumber;
+  const role = reqBody.role;
+  const status = reqBody.status;
+  const requestStatus = reqBody.requestStatus;
+  // All
+  if (committee && blockNumber && role && status && requestStatus) {
+    const snapShot = await userDb
+        .where('committee', '==', committee)
+        .where('blockNumber', '==', blockNumber)
+        .where('role', '==', role)
+        .where('status', '==', status)
+        .where('requestStatus', '==', requestStatus)
+        .get();
+    snapShot.forEach((doc)=>{
+      const id = doc.id;
+      const data = doc.data();
+      users.push({id, data});
+    });
+  }
+  // 2
+  if (committee && blockNumber && !role && !status && !requestStatus) {
+    const snapShot = await userDb
+        .where('committee', '==', committee)
+        .where('blockNumber', '==', blockNumber)
+        .get();
+    snapShot.forEach((doc)=>{
+      const id = doc.id;
+      const data = doc.data();
+      users.push({id, data});
+    });
+  }
+  // 1
+  if (committee && !blockNumber && !role && !status && !requestStatus) {
+    const snapShot = await userDb
+        .where('committee', '==', committee)
+        .get();
+    snapShot.forEach((doc)=>{
+      const id = doc.id;
+      const data = doc.data();
+      users.push({id, data});
+    });
+  }
+  res.status(200).send(users);
+});
+
 
 // router.post('/NormalRn')
 module.exports = router;

@@ -19,26 +19,26 @@ export class InputSurveyComponent implements OnInit {
   resid = this.activatedRoute.snapshot.queryParams.id;
   decryptedResid = this.residentService.decryptData(this.resid);
 
-  submitStatus:String;
+  submitStatus: String;
 
   constructor(private formBuilder: FormBuilder, private activatedRoute: ActivatedRoute,
-    private residentService: ResidentService, public dialogRef: MatDialogRef<InputSurveyComponent>) {
+              private residentService: ResidentService, public dialogRef: MatDialogRef<InputSurveyComponent>) {
 
    }
 
   ngOnInit(): void {
     this.surveyForm = this.formBuilder.group({
-      date: new FormControl([],[Validators.required]),
-      contact: new FormArray([],[Validators.required]),
-      mobileNum: new FormControl('', [Validators.required]), 
+      date: new FormControl([], [Validators.required]),
+      contact: new FormArray([], [Validators.required]),
+      mobileNum: new FormControl('', [Validators.required]),
       email: new FormControl('', [Validators.required]),
-      activities: new FormArray([],[Validators.required]),
+      activities: new FormArray([], [Validators.required]),
       numElderly: new FormControl('', [Validators.required]),
       numAdult: new FormControl('', [Validators.required]),
       numYouth: new FormControl('', [Validators.required]),
       numChild: new FormControl('', [Validators.required]),
       job: new FormControl('', [Validators.required]),
-    }) 
+    });
     this.contacts.forEach(() => this.contactFormArray.push(new FormControl(false)));
     this.activitiesList.forEach(() => this.activitiesFormArray.push(new FormControl(false)));
   }
@@ -49,30 +49,30 @@ export class InputSurveyComponent implements OnInit {
     return this.surveyForm.controls.activities as FormArray;
   }
   submit(value: any){
-    let temp_contact = value.contact;
-    var selected_contact = [];
-      for (let i = 0; i < temp_contact.length; i++){
-        let get_contact = this.contacts[i];
-        if(temp_contact[i]){
+    const temp_contact = value.contact;
+    const selected_contact = [];
+    for (let i = 0; i < temp_contact.length; i++){
+        const get_contact = this.contacts[i];
+        if (temp_contact[i]){
           selected_contact.push(get_contact);
         }
       }
-    let temp_activities = value.activities;
-    var selected_activities = [];
+    const temp_activities = value.activities;
+    const selected_activities = [];
     for (let j = 0; j < temp_activities.length; j++){
-      let get_activity = this.activitiesList[j];
-      if(temp_activities[j]){
+      const get_activity = this.activitiesList[j];
+      if (temp_activities[j]){
         selected_activities.push(get_activity);
       }
     }
-    let formattedDate = value.date.toLocaleDateString();
+    const formattedDate = value.date.toLocaleDateString();
     // console.log("Formatted Date")
     // console.log(formattedDate);
-    if (this.surveyForm.valid && selected_contact.length !=0 && selected_activities.length !=0){
+    if (this.surveyForm.valid && selected_contact.length != 0 && selected_activities.length != 0){
       value.contact = selected_contact;
       value.activities = selected_activities;
       value.date = formattedDate;
-      let survey = {
+      const survey = {
         residentId: this.decryptedResid,
         date: value.date,
         contact: value.contact,
@@ -83,14 +83,14 @@ export class InputSurveyComponent implements OnInit {
         numAdult: value.numAdult,
         numYouth: value.numYouth,
         numChild: value.numChild,
-        job: value.job,        
-      }
+        job: value.job,
+      };
       this.residentService.addSurvey(survey).then((results) => {
-        if(results){
+        if (results){
           location.reload();
         }
-        
-      })
+
+      });
     }
   }
 

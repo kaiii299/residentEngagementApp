@@ -21,6 +21,7 @@ import { userService } from '../share/services/user.service';
 import { RequestNewUserService } from '../share/services/request-new-user.service';
 import Swal from 'sweetalert2';
 import { ForgetPasswordService } from '../share/services/forget-password.service';
+import { NavserviceService } from '../share/navservice.service';
 export interface DialogData {
   password: string;
 }
@@ -81,6 +82,7 @@ export class UserProfileComponent implements OnInit {
   _role: any;
 
   constructor(
+    private navservice: NavserviceService,
     public router: Router,
     public forgetPasswordService: ForgetPasswordService,
     public requestService: RequestNewUserService,
@@ -92,12 +94,13 @@ export class UserProfileComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
+    this.navservice.eventcbTitle.next(`User profile`)
     if (this.uid == this._uid) {
       this.isOwn = true;
     }
 
     const _currentUserName = localStorage.getItem('username');
-    if(_currentUserName){
+    if (_currentUserName){
       this.currentUserName = this.authService.decryptData(_currentUserName);
     }
 
@@ -132,35 +135,38 @@ export class UserProfileComponent implements OnInit {
       blockNumberCtrl: ['', Validators.required],
     });
 
+    this.authService.eventcbRole$.subscribe((role) => {
+      this._role = role;
+    });
     const _role = localStorage.getItem('role');
     this._role = this.authService.decryptData(_role);
   }
 
   openForgetPassword(){
-    this.forgetPasswordService.openForgetpassword(this.newEmail)
+    this.forgetPasswordService.openForgetpassword(this.newEmail);
   }
 
   async checkUserExist() {
-    if(this.newUserName !== this.oldUserName){
-      this.userService.checkUserName(this.newUserName).subscribe((res)=>{
-        if(res.length !== 0){
+    if (this.newUserName !== this.oldUserName){
+      this.userService.checkUserName(this.newUserName).subscribe((res) => {
+        if (res.length !== 0){
           this.isExistUserName = true;
         }else{
           this.isExistUserName = false;
         }
       });
     }
-    else if(this.newEmail.trim() !== this.oldEmail.trim()){
-      this.userService.checkEmailExist(this.newEmail).subscribe((res: any)=>{
-        console.log(res);
-        if(res.length !== 0){
+    else if (this.newEmail.trim() !== this.oldEmail.trim()){
+      this.userService.checkEmailExist(this.newEmail).subscribe((res: any) => {
+        // console.log(res);
+        if (res.length !== 0){
           this.isExistEmail = true;
         }else{
           this.isExistEmail = false;
         }
-      })
+      });
     }
-    else if(this.newUserName == ""){
+    else if (this.newUserName == ''){
       this.isExistEmail = false;
       this.isExistUserName = false;
     }
@@ -203,9 +209,9 @@ export class UserProfileComponent implements OnInit {
 
   async reactivate() {
     const decryptedid = this.authService.decryptData(this._uid);
-    let userData: any = {}
-    userData['status'] = 'Active'
-    userData['requestStatus'] = 'Accepted'
+    const userData: any = {};
+    userData.status = 'Active';
+    userData.requestStatus = 'Accepted';
     Swal.fire({
       title: 'Are you sure?',
       icon: 'warning',
@@ -213,25 +219,25 @@ export class UserProfileComponent implements OnInit {
       confirmButtonText: `Reactivate ${this.oldUserName}`
     }).then((result) => {
       if (result.isConfirmed) {
-        this.userService.updateUserData(decryptedid, userData)
+        this.userService.updateUserData(decryptedid, userData);
         Swal.fire(
           'Success',
           `${this.oldUserName} has been reactivated`,
           'success'
-        ).then(()=>{
+        ).then(() => {
           setTimeout(() => {
             location.reload(), 80000;
           });
-        })
+        });
       }
-    })
+    });
   }
 
   async delete() {
     const decryptedid = this.authService.decryptData(this._uid);
-    let userData: any = {}
-    userData['status'] = 'Inactive'
-    userData['requestStatus'] = "Rejected"
+    const userData: any = {};
+    userData.status = 'Inactive';
+    userData.requestStatus = 'Rejected';
     Swal.fire({
       title: `Deativate ${this.oldUserName}`,
       showDenyButton: true,
@@ -241,18 +247,18 @@ export class UserProfileComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.userService.updateUserData(decryptedid, userData).then(() => {
-          Swal.fire('User deactivated', '', 'success').then(()=>{
+          Swal.fire('User deactivated', '', 'success').then(() => {
             setTimeout(() => {
               location.reload(), 80000;
             });
-          })
+          });
         }).catch((err) => {
-          Swal.fire('ERROR', `${err}`, 'error')
-        })
+          Swal.fire('ERROR', `${err}`, 'error');
+        });
       } else if (result.isDenied) {
         Swal.fire({
           title: 'Are you sure?',
-          text: "You won't be able to revert this!",
+          text: 'You won\'t be able to revert this!',
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#d33',
@@ -265,18 +271,18 @@ export class UserProfileComponent implements OnInit {
               'Deleted!',
               'This user has been deleted.',
               'success'
-            )
+            );
           }
-        })
+        });
       }
-    })
+    });
   }
 
   deletePermanently(){
     const decryptedid = this.authService.decryptData(this._uid);
     Swal.fire({
       title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      text: 'You won\'t be able to revert this!',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -285,13 +291,9 @@ export class UserProfileComponent implements OnInit {
     }).then((result) => {
       if (result.isConfirmed) {
         this.userService.deleteUserbyId(decryptedid);
-        Swal.fire(
-          'Deleted!',
-          'This user has been deleted.',
-          'success'
-        )
+        this.userService.deleteUserData(decryptedid);
       }
-    })
+    });
   }
 
   openAcceptDialog(
@@ -380,13 +382,13 @@ export class saveChangesDialog {
   }
 
   update() {
-    console.log(this._data);
+    // console.log(this._data);
     this.userService
       .updateUserData(this.decryptedParamsId, this._data)
       .then(() => {
         if (this.decryptedLcId == this.decryptedParamsId) {
           // check its current logged in person
-          this.authService.eventCallbackuserName.next(this._data.userName); //update lc and navbar
+          this.authService.eventCallbackuserName.next(this._data.userName); // update lc and navbar
           const encrypt = this.authService.encryptData(this._data.userName);
           localStorage.setItem('username', encrypt);
         }
@@ -394,14 +396,14 @@ export class saveChangesDialog {
           icon: 'success',
           title: 'User profile updated',
           showConfirmButton: true,
-        }).then((res)=>{
-          if(res.isConfirmed){
+        }).then((res) => {
+          if (res.isConfirmed){
             location.reload();
           }
-        })
+        });
       })
       .catch((err) => {
-        console.log(err);
+        // console.log(err);
         this.dialogRef.close();
         Swal.fire({
           position: 'center',
@@ -415,8 +417,8 @@ export class saveChangesDialog {
   }
 
   accept() {
-    this._data.requestStatus = "Accepted";
-    this._data.status = "Acctive"
+    this._data.requestStatus = 'Accepted';
+    this._data.status = 'Active';
     this.userService.updateUserData(this.decryptedParamsId, this._data).then(() => {
       this.dialogRef.close();
       Swal.fire({
@@ -424,8 +426,8 @@ export class saveChangesDialog {
         icon: 'success',
         title: 'User accepted',
         showConfirmButton: true,
-      }).then((res)=>{
-        if(res.isConfirmed){
+      }).then((res) => {
+        if (res.isConfirmed){
           setTimeout(() => {
             location.reload(), 80000;
           });
@@ -439,20 +441,20 @@ export class saveChangesDialog {
         title: `Error accepting user, ${this._data.requestStatus}`,
         showConfirmButton: true,
       });
-    })
+    });
   }
 
   reject() {
-    this._data.requestStatus = "Rejected";
-    this._data.status = "Inactive"
+    this._data.requestStatus = 'Rejected';
+    this._data.status = 'Inactive';
     this.userService.updateUserData(this.decryptedParamsId, this._data).then(() => {
       this.dialogRef.close();
       Swal.fire({
         position: 'center',
         icon: 'success',
         title: 'User Rejected',
-        showConfirmButton: false,
-      }).then((res)=>{
+        showConfirmButton: true,
+      }).then((res) => {
         setTimeout(() => {
           location.reload(), 80000;
         });
@@ -465,7 +467,7 @@ export class saveChangesDialog {
         title: 'Error rejecting user',
         showConfirmButton: true,
       });
-    })
+    });
   }
 }
 

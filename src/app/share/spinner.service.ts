@@ -7,7 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 export class SpinnerService {
 
   private count = 0;
-  private spinner$ = new BehaviorSubject<string>('')
+  private spinner$ = new BehaviorSubject<string>('');
 
   constructor() { }
 
@@ -16,13 +16,13 @@ export class SpinnerService {
   }
 
   requestStarted(){
-    if(++this.count === 1){  //chekc if request is started
+    if (++this.count === 1){  // chekc if request is started
       this.spinner$.next('start');
     }
   }
 
   requestEnded(){
-    if(this.count === 0 || --this.count === 0){
+    if (this.count === 0 || --this.count === 0){
       this.spinner$.next('stop');
     }
   }

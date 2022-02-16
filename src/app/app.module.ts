@@ -49,7 +49,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatDividerModule} from '@angular/material/divider';
 
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireDatabaseModule } from '@angular/fire/database'
+import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { windowService } from './share/services/window.service';
@@ -67,8 +67,10 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ExcelExportResidents } from './excel-export-residents/excel-export-residents';
 import { ExcelImportResidents } from './excel-import-residents/excel-import-residents';
 import {MatBadgeModule} from '@angular/material/badge';
-
-
+// import { ExcelExportResidentsComponent } from './excel-export-residents/excel-export-residents.component';
+import { DropDownListModule }from '@syncfusion/ej2-angular-dropdowns';
+import { DateTimePickerModule }from '@syncfusion/ej2-angular-calendars';
+import { FilterPipe } from './pipes/filter.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -94,7 +96,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     RequestComponent,
     DashboardComponent,
     ExcelExportResidents,
-    ExcelImportResidents
+    ExcelImportResidents,
+    FilterPipe,
   ],
   imports: [
     CommonModule,
@@ -135,6 +138,8 @@ import {MatBadgeModule} from '@angular/material/badge';
     ScheduleModule,
     ScheduleAllModule,
     MatBadgeModule
+    DropDownListModule,
+    DateTimePickerModule,
   ],
 
   providers: [

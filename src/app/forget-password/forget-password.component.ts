@@ -17,25 +17,25 @@ export class ForgetPasswordComponent implements OnInit {
   verified = false;
   color = 'Green';
   user: any;
-  isSent: boolean = false;
+  isSent = false;
   phoneNumber: string;
   verificationCode: string;
 
-  constructor(private userService : userService,private authService: Authservice, private win: windowService) { }
+  constructor(private userService: userService, private authService: Authservice, private win: windowService) { }
 
   ngOnInit(): void {
-    var encryptedUid = localStorage.getItem('uid');
-    var uid = this.authService.decryptData(encryptedUid);
-    this.userService.getUserById(uid).toPromise().then((res)=>{
-      this.user = res.userData
+    const encryptedUid = localStorage.getItem('uid');
+    const uid = this.authService.decryptData(encryptedUid);
+    this.userService.getUserById(uid).toPromise().then((res) => {
+      this.user = res.userData;
       if (this.user.phoneNumber) {
         this.email = this.user.email;
         this.phoneNumber = this.user.phoneNumber;
       }
       else {
-        this.phoneNumber = this.phoneNumber
+        this.phoneNumber = this.phoneNumber;
       }
-    })
+    });
   }
 
   async sendOTP() {
@@ -48,10 +48,10 @@ export class ForgetPasswordComponent implements OnInit {
         if (!value) {
           Swal.showValidationMessage(
             '<i class="fa fa-info-circle"></i> Your name is required'
-          )
+          );
         }
       }
-    })
+    });
 }
 
   verify(){
@@ -59,6 +59,6 @@ export class ForgetPasswordComponent implements OnInit {
   }
 
   goBack() {
-    this.authService.goback()
+    this.authService.goback();
   }
 }

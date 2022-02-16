@@ -7,7 +7,14 @@ import {
 import * as XLSX from 'xlsx';
 import { DialogData } from '../user-profile/user-profile.component';
 import Swal from 'sweetalert2';
-import { SpreadsheetComponent, BeforeSaveEventArgs } from '@syncfusion/ej2-angular-spreadsheet';
+import {
+  SpreadsheetComponent,
+  BeforeSaveEventArgs,
+} from '@syncfusion/ej2-angular-spreadsheet';
+import { userService } from './services/user.service';
+import { confirmationDialog } from './confirmatonDialog';
+import { Subject } from 'rxjs/internal/Subject';
+import { subscribe } from 'functions/src/router/filter';
 
 @Component({
   selector: 'upload-file-dialog',
@@ -20,20 +27,32 @@ export class uploadFileDialog {
   text: any;
   fileData: [][];
   fileName = 'user-details.xlsx';
-  data = Array();
+  uploadedData = Array();
   file: any;
-  _filter: boolean ;
-  isSaved:boolean = false;
+  _filter: boolean;
+  isUploaded = false;
+  isUploadFile = false;
+  noEmptyArray = Array();
+  _role: any;
+  data: any;
+  email: any;
+  password: any;
+  userId: any;
+  newUserData = Array();
+
+  eventcbnewData = new Subject<any>();
+  eventcbnewData$ = this.eventcbnewData.asObservable();
 
   constructor(
+    public userService: userService,
     public dialogRef: MatDialogRef<uploadFileDialog>,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public _data: DialogData
   ) {
     dialogRef.disableClose = true;
-    let excelSheet = localStorage.getItem('excelSheet')
-    if(excelSheet){
-      this.data = JSON.parse(excelSheet)
+    const excelSheet = localStorage.getItem('excelSheet');
+    if (excelSheet) {
+      this.uploadedData = JSON.parse(excelSheet);
     }
   }
   @ViewChild('default')
@@ -42,80 +61,114 @@ export class uploadFileDialog {
     'https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/open';
   public saveUrl =
     'https://ej2services.syncfusion.com/production/web-services/api/spreadsheet/save';
-    created() {
-      this.spreadsheetObj.cellFormat({ fontWeight: 'bold', textAlign: 'center', verticalAlign: 'middle' }, 'A1:F1');
-      this.spreadsheetObj.cellFormat({ fontWeight: 'bold' }, 'E31:F31');
-      this.spreadsheetObj.cellFormat({ textAlign: 'left' }, 'E31');
-      if(this._filter == true){
-        alert(this._filter);
-        this.spreadsheetObj.sort({ sortDescriptors: { field: 'B' } }, 'A2:G51').then(() => {
-          // Filtered D(Department  field) column with value 'Services'
-          this.spreadsheetObj.applyFilter([{ field: 'C', operator: 'equal', value: '' }], 'A1:G51');
-        });
-      }
-    }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.data = this._data;
+    this._role = this.data.role;
+  }
 
   onFileChange(evt: any) {
-    const target: DataTransfer = <DataTransfer>evt.target;
+    const target: DataTransfer = evt.target as DataTransfer;
     const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
       const bstr: string = e.target.result;
       const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
       const wsName: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsName];
-      this.data = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      this.uploadedData = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      // console.log(this.uploadedData);
     };
     reader.readAsBinaryString(target.files[0]);
+    this.isUploadFile = true;
   }
 
-  beforeSave(args: BeforeSaveEventArgs) {}
-
-  filter(){
-
-  }
-
-  save(){
+  upload() {
+    this.uploadedData.shift();
+    this.noEmptyArray = this.uploadedData.filter((o) => o != 0); // remove all the empty arrays // higer order function
     Swal.fire({
-      title: 'Save data?',
+      showConfirmButton: true,
+      showDenyButton: true,
+      confirmButtonText: 'Create',
+      title: `Do you want to create ${this.noEmptyArray.length} users?`
+    }).then((res) => {
+      if (res.isConfirmed){
+        this.noEmptyArray.forEach((doc) => {
+          this.uploadedData.shift(); // removes the header aka first item
+          JSON.stringify(doc);
+          const userObject: any = {};
+          if (this._role == 'Admin') {
+        userObject.requestStatus = 'Accepted';
+        userObject.status = 'Active';
+      }
+          userObject.userName = doc[0];
+          userObject.phoneNumber = doc[1];
+          userObject.role = doc[2];
+          userObject.committee = doc[3];
+          userObject.blockNumber = doc[4];
+          userObject.requestStatus = 'Pending';
+          userObject.status = 'Inactive';
+          this.email = userObject.email = doc[0] + '@gmail.com';
+          this.password = userObject.password = doc[0] + 'password';
+      // this.userService.register(this.email, this.password).then(res => {
+          delete userObject.password; // remove password
+          this.newUserData.push(userObject);
+      //   console.log(userObject);
+      // }).catch(error => {
+      //   Swal.fire('The email address is not valid',`${error}`,'error')
+      //   console.log(error)
+      // });
+          this.userService.createNewuserBatch(this.newUserData);
+          this.dialogRef.close();
+    });
+  }
+  });
+}
+
+
+  beforeSave(args: BeforeSaveEventArgs) {
+    args.fileName = 'New Users Data';
+  }
+
+  filter() {
+    if (this.uploadedData !== []) {
+      this.spreadsheetObj.applyFilter();
+    } else {
+      Swal.fire('Error', 'cannot filter empty file', 'error');
+    }
+  }
+
+  save() {
+    Swal.fire({
+      title: 'Do you wnat to save changes?',
       showDenyButton: true,
       showCancelButton: true,
       confirmButtonText: 'Save',
       denyButtonText: `Don't save`,
-    }).then((res)=>{
-      if(res.isConfirmed){
-        this.isSaved = true;
-        Swal.fire('Success','changes saved','success');
-        localStorage.setItem('excelSheet', JSON.stringify(this.data));
-      }else{
-        localStorage.clear();
-        Swal.fire('','Changes not saved','error');
+      icon: 'question',
+    }).then((res) => {
+      if (res.isConfirmed) {
+        this.spreadsheetObj.save();
       }
-    })
+    });
   }
 
   close(): void {
-    if (this.data != this.data && this.isSaved == false) {
+    if (this.uploadedData !== []) {
       Swal.fire({
-        title: 'Save data?',
+        title: 'DO you want to save before closing?',
         showDenyButton: true,
         showCancelButton: true,
         confirmButtonText: 'Save',
         denyButtonText: `Don't save`,
+        icon: 'question',
       }).then((result) => {
         if (result.isConfirmed) {
-          localStorage.setItem('excelSheet', JSON.stringify(this.data));
-          Swal.fire({
-            title: 'Changes saved',
-            timer: 800,
-            icon: 'success',
-          });
+          this.spreadsheetObj.save();
+          this.dialogRef.close();
         } else if (result.isDenied) {
-          localStorage.removeItem('excelSheet')
+          this.dialogRef.close();
         }
       });
     }
-    this.dialogRef.close();
   }
 }

@@ -10,20 +10,20 @@
           [ngModelOptions]="{ standalone: true }"
         >
           <mat-select-trigger>
-            {{ variableValue  ? variableValue[0] : "" | titlecase}}
+            {{ variableValue ? variableValue[0] : "" }}
             <span
               *ngIf="variableValue.length > 1"
               class="example-additional-selection"
             >
               (+{{ variableValue.length - 1 }}
-              {{ variableValue?.length === 2 ? "other" : "others" | titlecase }})
+              {{ variableValue?.length === 2 ? "other" : "others" }})
             </span>
           </mat-select-trigger>
           <mat-option
             *ngFor="let variable of variables"
-            [value]="variable"
+            [value]="variable.value"
             class="list"
-            >{{ variable | titlecase }}</mat-option
+            >{{ variable.name }}</mat-option
           >
         </mat-select>
 
@@ -67,7 +67,7 @@
         </mat-select>
 
         <mat-select
-        *ngIf="_role != normalRnMembers"
+          *ngIf="_role != normalRnMembers"
           class="select"
           placeholder="Status"
           [(ngModel)]="statusValue"
@@ -85,14 +85,18 @@
           class="select"
           *ngIf="_role == 'Admin'"
           [matBadgeHidden]="hidden"
-            matBadge={{pendingNumber}}
-            matBadgeSize="small"
-            matBadgeOverlap="true"
-            matBadgeColor="warn"
+          matBadge="{{ pendingNumber }}"
+          matBadgeSize="small"
+          matBadgeOverlap="true"
+          matBadgeColor="warn"
           placeholder="Request Status"
           [(ngModel)]="requestStatusValue"
           [ngModelOptions]="{ standalone: true }"
         >
+          <mat-option
+            value="Pending"
+            >Pending<div *ngIf="_role == 'Admin' && pendingNumber > 0" class="circle"></div></mat-option
+          >
           <mat-option
             *ngFor="let status of requestStatus"
             class="list"
@@ -127,7 +131,7 @@
             matInput
             [(ngModel)]="searchValue"
             [ngModelOptions]="{ standalone: true }"
-            placeholder="Type user name to search"
+            placeholder="Type username to search"
             autocomplete="off"
             (input)="searchInput()"
             class="search"
@@ -150,7 +154,17 @@
                 class="excel-btn"
                 (click)="openExcelPreviewDialog()"
               >
-                <mat-icon>cloud_download</mat-icon> Upload to Excel
+                <mat-icon>cloud_download</mat-icon> Export
+              </button>
+
+              <button
+                type="button"
+                mat-button
+                class="excel-btn"
+                *ngIf="this.allowDeleteUser.indexOf(_role) > -1"
+                (click)="openUploadFileDialog()"
+              >
+                <mat-icon>attachment</mat-icon> upload
               </button>
 
               <button
@@ -203,10 +217,14 @@
                 </button>
 
                 <button
-                *ngIf="_role == 'Admin'"
-                type="button"
-                (click)="deactivate(element.id)"
-                mat-button class="delete-btn">Deactivate</button>
+                  *ngIf="this.allowDeleteUser.indexOf(_role) > -1"
+                  type="button"
+                  (click)="deactivate(element.id)"
+                  mat-button
+                  class="delete-btn"
+                >
+                  Deactivate
+                </button>
               </div>
             </td>
           </ng-container>

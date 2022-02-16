@@ -11,6 +11,8 @@ import {
   SpreadsheetComponent,
   BeforeSaveEventArgs,
 } from '@syncfusion/ej2-angular-spreadsheet';
+import { Authservice } from './services/auth.service';
+import { Constants } from '../constants';
 
 @Component({
   selector: 'excel-preview-dialog',
@@ -25,10 +27,14 @@ export class excelPreviewDialog {
   userData = Array();
   dataArray = Array();
   data: any;
-  isSaved = false;
+  importUserData = Array();
   fileName = 'user-details.xlsx';
-  _filter:boolean;
+  allowEdit = true;
+  role: any;
+  allowDelete = Constants.allowDeleteUser;
+
   constructor(
+    public authService: Authservice,
     public dialogRef: MatDialogRef<excelPreviewDialog>,
     private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public _data: DialogData
@@ -56,28 +62,30 @@ export class excelPreviewDialog {
 
 
   ngOnInit(): void {
+    this.authService.eventcbRole$.subscribe((role) => {
+      this.role = role;
+    });
+    const _role = localStorage.getItem('role');
+    this.role = this.authService.decryptData(_role);
+    if (this.allowDelete.indexOf(this.role) > -1){
+      this.allowEdit == true;
+    }
   }
 
   _close() {
       Swal.fire({
-        title: 'Do you want to save changes?',
+        title: 'Do you want save before closing?',
         showDenyButton: true,
         showCancelButton: true,
         confirmButtonText: 'Save',
         denyButtonText: `Don't save`,
+        icon: 'question',
       }).then((result) => {
         if (result.isConfirmed) {
           this.spreadsheetObj.save();
-          Swal.fire({
-            title: 'Changes saved',
-            timer: 800,
-            icon: 'success',
-          });
           this.dialogRef.close();
         } else if (result.isDenied) {
-          Swal.fire('Changes not saved','', 'error')
           this.dialogRef.close();
-          this.isSaved = false
         }
       });
   }
@@ -87,14 +95,14 @@ export class excelPreviewDialog {
   }
 
   onFileChange(evt: any) {
-    const target: DataTransfer = <DataTransfer>evt.target;
+    const target: DataTransfer = evt.target as DataTransfer;
     const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
       const bstr: string = e.target.result;
       const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
       const wsName: string = wb.SheetNames[0];
       const ws: XLSX.WorkSheet = wb.Sheets[wsName];
-      this.userData = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      this.importUserData = XLSX.utils.sheet_to_json(ws, { header: 1 });
     };
     reader.readAsBinaryString(target.files[0]);
   }
@@ -104,6 +112,7 @@ export class excelPreviewDialog {
   }
 
   beforeSave(args: BeforeSaveEventArgs) {
+    args.fileName = 'User Data';
   }
 
 }

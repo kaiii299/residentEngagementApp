@@ -28,7 +28,7 @@ export class AuthRouteGuard implements CanActivate {
     next: ActivatedRouteSnapshot,
     state: any
   ): Observable<boolean> | Promise<boolean> | boolean {
-    const permission = next.data['permission'];
+    const permission = next.data.permission;
 
     this.authService.eventcbJWT$.subscribe((jwt) => (this.jwt = jwt));
 
@@ -39,12 +39,12 @@ export class AuthRouteGuard implements CanActivate {
     if (this.jwt == undefined || !this.jwt) {
       this.jwt = this.lcjwt;
     }else{
-      this.jwt = this.jwt
+      this.jwt = this.jwt;
     }
     if (this.refreshToken == undefined || !this.refreshToken) {
       this.refreshToken = this.lcRefreshToken;
     }else{
-      this.refreshToken = this.refreshToken
+      this.refreshToken = this.refreshToken;
     }
 
     if (this.jwt && this.refreshToken) {

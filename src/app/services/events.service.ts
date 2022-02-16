@@ -6,5 +6,5 @@ import { AngularFirestore } from '@angular/fire/firestore';
 })
 export class EventsService {
 
-  
+
 }

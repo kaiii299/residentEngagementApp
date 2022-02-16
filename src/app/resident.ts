@@ -1,10 +1,10 @@
 export class Resident{
-    residentName: string = "";
-    committee: string = "";
-    blkNum: string = "";
-    unitNum: string = "";
-    gender: string = "";
-    race: string = "";
-    ageGp: string = "";
-    expertise: string = "";
+    residentName = '';
+    committee = '';
+    blkNum = '';
+    unitNum = '';
+    gender = '';
+    race = '';
+    ageGp = '';
+    expertise = '';
 }

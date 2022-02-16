@@ -54,6 +54,9 @@ export class AddResidentComponent implements OnInit {
     this.availableBlocks =this.zonesInfo.get(this.selectedZone);
     console.log(this.zonesInfo.get(this.selectedZone));
   }
+  cancel(){
+    this.router.navigate(['residentinfo']);
+  }
 
   add(value: any) {
     // let temp_activities = value.activities;

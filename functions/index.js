@@ -43,6 +43,7 @@ app.use('/filter', router);
 app.use('/sendOTP', sendMessage);
 app.options("*", cors());
 app.options("/deleteUser/:id", cors());
+app.options("/deleteResident/:id", cors());
 
 // ----------------------------------------------------------------------------------------------------USERS-----------------------------------------------------------------------------------------------
 app.all("/*", function(req, res, next) {
@@ -251,6 +252,14 @@ app.put("/updateResident/:id", async (req, res) => {
   res.status(200).send("Resident data has been successfully updated");
 });
 
+app.delete("/deleteResident/:id", async (req, res) => {
+  req.header("Access-Control-Allow-Origin", 'http://localhost:4200');
+  const id = req.params.id;
+  const snapshot = residentDb.doc(id);
+  await snapshot.delete();
+  res.status(200).send({message: "Resident data has been successfully deleted"});
+});
+
 app.post("/searchResidentByName", async (req, res) => {
   const residents = [];
   const searchKeyword = req.body.keyword;
@@ -362,6 +371,23 @@ app.get("/getSurveyByResidentId/:id", async (req, res) => {
     surverys.push({id, data});
   });
   res.status(200).send(surverys);
+});
+
+app.delete("/deleteSurveyByResidentId/:id", async (req, res) => {
+  req.header("Access-Control-Allow-Origin", 'http://localhost:4200');
+  const snapshot = await surveyDb.where('residentId', '==', req.params.id).get();
+  snapshot.forEach((doc) => {
+    doc.ref.delete();
+  });
+  res.status(200).send({message: "Surveys from the resident has been successfully deleted"});
+});
+
+app.delete("/deleteSurvey/:id", async (req, res) => {
+  req.header("Access-Control-Allow-Origin", 'http://localhost:4200');
+  const id = req.params.id;
+  const snapshot = surveyDb.doc(id);
+  await snapshot.delete();
+  res.status(200).send({message: "Survey has been successfully deleted"});
 });
 
 

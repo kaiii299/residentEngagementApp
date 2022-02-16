@@ -6,7 +6,6 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable, of, Subject, throwError } from 'rxjs';
 import * as CryptoJS from 'crypto-js';
 import { Resident } from '././resident';
-import Swal from 'sweetalert2';
 
 
 @Injectable({
@@ -33,7 +32,7 @@ export class ResidentService {
     // console.log("decrpt");
     // console.log(textToDecrypt);
     var bytes = CryptoJS.AES.decrypt(textToDecrypt, this.secretKey.trim());
-    console.log(bytes);
+    // console.log(bytes);
     return bytes.toString(CryptoJS.enc.Utf8);
   }
 
@@ -96,16 +95,14 @@ export class ResidentService {
 
   }
 
-  deleteResident(id: string) {
-    this.firestore.collection('residents').doc(id).delete().then(function () {
-      Swal.fire("Resident has been removed from the records!");
-      setTimeout(function(){
-        location.reload(),80000;
-      })
-    }).catch(
-      function (error) {
-        console.error("Error removing document: ", error);
-      });
+  async deleteResident(id: string){
+    return await this.http.delete(this.baseUrl + "/deleteResident/"+id).toPromise().then((response)=> {
+      // console.log("response..")
+      // console.log(response)
+      return response;
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
 
@@ -145,11 +142,27 @@ export class ResidentService {
     });
   }
 
-  async getSurveyByResidentID(residentId: String) {
+  async getSurveyByResidentId(residentId: String) {
     return await this.http.get(this.baseUrl+"/getSurveyByResidentId/"+residentId).toPromise().then((response:any) => {
       return response;
     }).catch(err => {
       console.log(err);
     });
+  }
+
+  async deleteSurveyByResidentId(id: String) {
+    return await this.http.delete(this.baseUrl + "/deleteSurveyByResidentId/" + id).toPromise().then((response) => {
+      return response;
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+
+  async deleteSurvey(id: string){
+    return await this.http.delete(this.baseUrl + "/deleteSurvey/" + id).toPromise().then((response) => {
+      return response;
+    }).catch(err => {
+      console.log(err);
+    })
   }
 }

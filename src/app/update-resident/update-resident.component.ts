@@ -41,8 +41,8 @@ export class UpdateResidentComponent implements OnInit {
   async ngOnInit() {
     const decryptedResid = this.residentService.decryptData(this.resid);
     await this.residentService.getResidentById(decryptedResid).toPromise().then((data) => {
-      console.log("update resident data");
-      console.log(data);
+      // console.log("update resident data");
+      // console.log(data);
       let residentDetail: any = data.residentData;
       this.selectedZone = residentDetail.committee;
       this.availableBlocks = this.zonesInfo.get(this.selectedZone);
@@ -75,6 +75,9 @@ export class UpdateResidentComponent implements OnInit {
   
   onChangeBlkNumList(value: any){
     // console.log(value);
+  }
+  cancel(){
+    this.router.navigate(['residentinfo']);
   }
 
   updateResidentInfo(value : any){

@@ -15,6 +15,7 @@ import { ResidentDetailComponent } from './resident-detail/resident-detail.compo
 import { EventsPageComponent } from './events-page/events-page.component';
 import { ListComponent } from './list/list.component';
 import { RequestComponent } from './request/request.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' }, //login
@@ -61,6 +62,7 @@ const routes: Routes = [
     //data: { role: 'Admin' },
   },
   { path: 'updateresident', component: UpdateResidentComponent },
+  { path: 'dashboard', component: DashboardComponent},
   { 
     path: 'residentinfo', 
     component: ResidentInfoComponent ,

@@ -134,7 +134,7 @@ import {MatBadgeModule} from '@angular/material/badge';
     SpreadsheetAllModule,
     ScheduleModule,
     ScheduleAllModule,
-    MatBadgeModule,
+    MatBadgeModule
   ],
 
   providers: [

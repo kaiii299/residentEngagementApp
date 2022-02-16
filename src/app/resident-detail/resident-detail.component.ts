@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, FormControl, Validators, FormArray } from '@ang
 import { InputSurveyComponent } from '../input-survey/input-survey.component';
 import { Constants } from '../constants';
 import { Router, NavigationExtras } from '@angular/router';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -55,30 +56,38 @@ export class ResidentDetailComponent implements OnInit {
       });
     })
     console.log(decryptedResid);
-    await this.residentService.getSurveyByResidentID(decryptedResid).then((res) => {
-      // console.log("get survey");
-      //console.log(res);
-      var dataList:any = [];
-      for (const e of res) {
-        let surveryData = e.data;
-        let surDate = new Date(surveryData.date);
+    await this.residentService.getSurveyByResidentId(decryptedResid).then((res) => {
 
-        surveryData.surveryDate = surDate;
-        dataList.push(surveryData);
-      }
-
-      dataList.sort((a:any, b:any) => {
-        return <any>new Date(b.surveryDate) - <any>new Date(a.surveryDate);
-      })
-      // console.log("sorted data...");
-      // console.log(dataList);
-      this.surveys = dataList;
-      console.log(this.surveys);
+      res.sort((a: any, b:any) => {
+        return <any>new Date(b.data.date) - <any>new Date(a.data.date);
+      });
+      this.surveys = res;
     })
   }
   onClickEdit(){
     let navigationExtras: NavigationExtras = {queryParams: {id : this.resid}}
     this.router.navigate(['updateresident'], navigationExtras)
+  }
+  onDeleteSurvey(id: any){
+    Swal.fire({
+      title: 'Are you sure you want to delete this survey ?',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      denyButtonText: 'Cancel',
+    }).then((result) => {
+      if (result.isConfirmed){
+        this.residentService.deleteSurvey(id);
+        Swal.fire({
+          title: 'Survey has been deleted',
+          timer: 800,
+          icon: 'success',
+        })
+        window.setTimeout(function(){location.reload()},900)
+      }
+      else if (result.isDenied){
+        Swal.fire('Action has been cancelled')
+      }
+    })
   }
 
   openSurveyDialog() {

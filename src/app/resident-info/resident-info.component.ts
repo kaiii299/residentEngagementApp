@@ -2,7 +2,7 @@ import { AfterViewInit, Component, OnInit, ViewChild, Inject } from '@angular/co
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ResidentService } from '../resident.service';
@@ -99,7 +99,7 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     });
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(){
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
@@ -136,7 +136,6 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
     this.router.navigate(['updateresident'], navigationExtras)
   }
   delete(id: any){
-    console.log(id);
     Swal.fire({
       title: 'Are you sure you want to delete this resident from records?',
       showCancelButton: true,
@@ -144,16 +143,25 @@ export class ResidentInfoComponent implements AfterViewInit, OnInit {
       denyButtonText: 'Cancel'
     }).then((result) => {
       if (result.isConfirmed){
-        this.residentService.deleteResident(id);
-        Swal.fire({
-          title: 'Resident has been removed from records',
-          timer: 800,
-          icon: 'success',
+        this.residentService.deleteSurveyByResidentId(id).then((res: any) =>{
+          if(res.message){
+            this.residentService.deleteResident(id).then((resp: any) => {
+              if(resp.message){
+                Swal.fire({
+                  title: 'Resident has been removed from records',
+                  timer: 800,
+                  icon: 'success',
+                });
+              }
+              window.setTimeout(function(){location.reload()},900)
+            });
+          }
         });
       }else if (result.isDenied){
         Swal.fire('Error removing resident !!')
       }
     })
+    
   }
   onClickFilter(event: any) {
     event.blkNumControl = event.blkNumControl.trim();

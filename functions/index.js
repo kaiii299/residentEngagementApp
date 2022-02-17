@@ -270,7 +270,7 @@ app.put("/updateResident/:id", async (req, res) => {
   res.status(200).send("Resident data has been successfully updated");
 });
 
-app.delete("/deleteResident/:id", async (req, res) => {
+app.delete("/deleteResident/:id", allowedUsers(["Admin", "Cc staff", "RN Manager"]), async (req, res) => {
   req.header("Access-Control-Allow-Origin", 'http://localhost:4200');
   const id = req.params.id;
   const snapshot = residentDb.doc(id);

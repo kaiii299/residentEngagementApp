@@ -149,11 +149,7 @@ export class UserProfileComponent implements OnInit {
   async checkUserExist() {
     if (this.newUserName !== this.oldUserName){
       this.userService.checkUserName(this.newUserName).subscribe((res) => {
-        if (res.length !== 0){
-          this.isExistUserName = true;
-        }else{
-          this.isExistUserName = false;
-        }
+        res.length !==0? this.isExistEmail = true : this.isExistEmail = false;
       });
     }
     else if (this.newEmail.trim() !== this.oldEmail.trim()){

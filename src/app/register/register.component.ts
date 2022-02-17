@@ -101,19 +101,11 @@ export class RegisterComponent implements OnInit {
   async checkUserExist() {
     if (this.userName) {
       this.userService.checkUserName(this.userName).subscribe((res) => {
-        if (res.length !== 0) {
-          this.isExistUserName = true;
-        } else {
-          this.isExistUserName = false;
-        }
+        res.length !==0? this.isExistUserName = true : this.isExistUserName = false;
       });
     } else if (this.email.trim()) {
       this.userService.checkEmailExist(this.email).subscribe((res: any) => {
-        if (res.length !== 0) {
-          this.isExistEmail = true;
-        } else {
-          this.isExistEmail = false;
-        }
+        res.length !==0? this.isExistEmail = true : this.isExistEmail = false;
       });
     } else if (this.email == '' || this.userName == '') {
       this.isExistEmail = false;
@@ -208,7 +200,9 @@ export class RegisterComponent implements OnInit {
           this.userService
             .createNewUser(newUser)
             .then((res) => {
-              Swal.fire('Success!', 'User Created  ', 'success');
+              Swal.fire('Success!', 'User Created  ', 'success').then(()=>{
+                this.router.navigate(['allusers'])
+              });
             })
             .catch((error) => {
               Swal.fire('Error sending Email', '', 'error');

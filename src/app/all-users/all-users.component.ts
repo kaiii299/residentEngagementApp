@@ -100,25 +100,19 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     private http: HttpClient
   ) {
     this.uid = authService.decryptData(this.uid);
-
-    if (localStorage.getItem('filterValue')) {
-      const stringValue = JSON.stringify(localStorage.getItem('filterValue'));
-      const parseValue = JSON.parse(JSON.parse(stringValue));
-      this.columnsToDisplay = parseValue;
-      this.variableValue = parseValue;
-    } else if (
-      !localStorage.getItem('filterValue') ||
-      this.variableValue == ''
-    ) {
-      this.variableValue = this.defaultValue;
-      this.columnsToDisplay = this.defaultValue;
-    }
   }
 
   async ngOnInit() {
+    const filterValuelc = localStorage.getItem('filterValue');
     this.eventCbisSelected$.subscribe((isSelected)=>{
       this.all = isSelected;
-      if(isSelected == true){
+      if (filterValuelc) {
+        const stringValue = JSON.stringify(filterValuelc);
+        const parseValue = JSON.parse(JSON.parse(stringValue));
+        this.columnsToDisplay = parseValue;
+        this.variableValue = parseValue;
+      }
+      else if(isSelected == true){
         this.variableValue = this.allValue;
         this.columnsToDisplay = this.allValue;
       }else{

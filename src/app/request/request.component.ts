@@ -111,21 +111,12 @@ export class RequestComponent implements OnInit {
   async checkUserExist() {
     if (this.userName){
       this.userService.checkUserName(this.userName).subscribe((res) => {
-        if (res.length !== 0){
-          this.isExistUserName = true;
-        }else{
-          this.isExistUserName = false;
-        }
+        res.length !==0? this.isExistUserName = true : this.isExistUserName = false;
       });
     }
     else if (this.email.trim()){
       this.userService.checkEmailExist(this.email).subscribe((res: any) => {
-        // console.log(res);
-        if (res.length !== 0){
-          this.isExistEmail = true;
-        }else{
-          this.isExistEmail = false;
-        }
+        res.length !==0? this.isExistEmail = true : this.isExistEmail = false;
       });
     }
     else if (this.email == '' || this.userName == ''){

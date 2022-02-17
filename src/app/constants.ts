@@ -29,7 +29,6 @@ export abstract class Constants {
     'Inactive'];
 
   static readonly requestStatus: string[] = [
-    'Pending',
     'Accepted',
     'Rejected',
   ]
@@ -92,7 +91,7 @@ export abstract class Constants {
     ["Key RN Members", {viewSearchFilterAllResident: false, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: false }],
     ["Normal RN Members", {viewSearchFilterAllResident: false, viewSearchFilterByCommittee: true, addResident: true, updateResident: true, deleteResident: false}]
   ]);
-  
+
     static readonly variables = [
 
     { name: 'Username', value: 'userName' },

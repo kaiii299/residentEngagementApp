@@ -109,7 +109,7 @@ export class userService {
         }
       });
     }else if(this.allowViewAllUsers.indexOf(this.currentRole) == -1){
-      console.log(_committee);
+      // console.log(_committee);
       return await this.http
       .post(this.baseUrl + '/searchUserByNameNormalRn', {keyword, committee: _committee})
       .toPromise()

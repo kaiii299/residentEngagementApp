@@ -20,6 +20,13 @@
             </span>
           </mat-select-trigger>
           <mat-option
+            [(ngModel)]="all"
+            [value]="all"
+            (click)="checkAll()"
+            [ngModelOptions]="{ standalone: true }"
+            >All</mat-option
+          >
+          <mat-option
             *ngFor="let variable of variables"
             [value]="variable.value"
             class="list"
@@ -34,6 +41,7 @@
           [(ngModel)]="committeesValue"
           [ngModelOptions]="{ standalone: true }"
         >
+          <mat-option>None</mat-option>
           <mat-option
             *ngFor="let committee of committees"
             class="list"
@@ -49,6 +57,7 @@
           [(ngModel)]="blockNumberValue"
           [ngModelOptions]="{ standalone: true }"
         >
+          <mat-option>None</mat-option>
           <mat-option *ngFor="let blk of availableBlocks" [value]="blk">
             {{ blk }}</mat-option
           >
@@ -61,6 +70,7 @@
           [(ngModel)]="roleValue"
           [ngModelOptions]="{ standalone: true }"
         >
+          <mat-option>None</mat-option>
           <mat-option *ngFor="let role of roles" class="list" [value]="role">{{
             role
           }}</mat-option>
@@ -73,6 +83,7 @@
           [(ngModel)]="statusValue"
           [ngModelOptions]="{ standalone: true }"
         >
+          <mat-option>None</mat-option>
           <mat-option
             *ngFor="let status of status"
             class="list"
@@ -93,10 +104,14 @@
           [(ngModel)]="requestStatusValue"
           [ngModelOptions]="{ standalone: true }"
         >
-          <mat-option
-            value="Pending"
-            >Pending<div *ngIf="_role == 'Admin' && pendingNumber > 0" class="circle"></div></mat-option
-          >
+          <mat-option>None</mat-option>
+          <mat-option value="Pending"
+            >Pending
+            <div
+              *ngIf="_role == 'Admin' && pendingNumber > 0"
+              class="circle"
+            ></div
+          ></mat-option>
           <mat-option
             *ngFor="let status of requestStatus"
             class="list"

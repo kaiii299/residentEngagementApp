@@ -9,7 +9,6 @@ import {
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
-import { userDataInterface } from 'src/app/share/services/Users';
 import { Constants } from '../constants';
 import { Authservice } from '../share/services/auth.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -21,6 +20,7 @@ import { HttpClient } from '@angular/common/http';
 import { userService } from '../share/services/user.service';
 import Swal from 'sweetalert2';
 import { NavserviceService } from '../share/navservice.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-all-users',
@@ -49,9 +49,11 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   zonesInfo = Constants.zones;
   allowViewAllUsers = Constants.allowViewAllUsers;
   allowDeleteUser = Constants.allowDeleteUser;
-  defaultValue =  ['userName', 'committee', 'blockNumber', 'role'];
+  defaultValue = Constants.defaultValues
+  allValue = Constants.allValues;
   panelOpenState = false;
-
+  all: any;
+  none = "";
   availableBlocks: any = [];
   bufferArray = Array();
   variableValue: any  = '';
@@ -72,6 +74,10 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   filterData = Array();
   totalCount: any;
   filterValue: any;
+
+  eventCBisSelected = new BehaviorSubject<boolean>(false)
+  eventCbisSelected$ = this.eventCBisSelected.asObservable();
+
 
   uid = localStorage.getItem('uid');
   // defaultValueNames = Array();
@@ -110,6 +116,16 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
   }
 
   async ngOnInit() {
+    this.eventCbisSelected$.subscribe((isSelected)=>{
+      this.all = isSelected;
+      if(isSelected == true){
+        this.variableValue = this.allValue;
+        this.columnsToDisplay = this.allValue;
+      }else{
+        this.variableValue = this.defaultValue;
+        this.columnsToDisplay = this.defaultValue;
+      }
+    })
     // console.log(this.variableValue);
     // console.log(this.columnsToDisplay);
     this.navService.eventcbTitle.next('All users');
@@ -148,6 +164,14 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
       this.userdata = data;
       this.totalCount = this.userdata.length;
     });
+  }
+
+  checkAll(){
+    if(this.all == false){
+      this.eventCBisSelected.next(true);
+    }else if(this.all == true){
+      this.eventCBisSelected.next(false);
+    }
   }
 
   checkPending() {
@@ -204,7 +228,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
       (userData.role = this.roleValue),
       (userData.status = this.statusValue),
       (userData.requestStatus = this.requestStatusValue),
-      console.log(userData);
+      // console.log(userData);
 
       this.userService.filterUser(userData);
     this.userService.eventcbUserData$.subscribe((data) => {
@@ -227,6 +251,7 @@ export class AllUsersComponent implements AfterViewInit, OnInit {
     localStorage.removeItem('filterData');
     this.searchValue = '';
     this.blockNumberValue = '';
+    this.all = false;
   }
 
   onChange(value: any) {
